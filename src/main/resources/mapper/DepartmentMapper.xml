@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.DepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.study.bean.Department">
+        <id property="id" column="id"/>
+        <result column="name" property="name"/>
+        <result column="parentId" property="parentId"/>
+        <result column="isParent" property="isParent"/>
+        <collection property="children" ofType="com.study.bean.Department" select="com.study.mapper.DepartmentMapper.getDepByPid" column="id">
+        </collection>
+    </resultMap>
+
+    <select id="getDepByPid" resultMap="BaseResultMap">
+        select d1.*from department d1 where d1.`parentId`=#{pid} AND d1.enabled=true;
+    </select>
+
+    <select id="getAllDeps" resultType="com.study.bean.Department">
+        select * from department WHERE enabled=true;
+    </select>
+
+    <select id="existParentId" resultType="Boolean" parameterType="Long">
+        select d.enabled FROM department d where d.id=#{id};
+    </select>
+
+    <insert id="addDep" parameterType="com.study.bean.Department">
+        insert into department set name=#{name},parentId=#{parentId},enabled=#{enabled};
+    </insert>
+
+    <update id="setParentById" parameterType="Long" >
+        update department set isParent=#{isParent} where id=#{id};
+    </update>
+
+    <delete id="deleteDep" parameterType="Long">
+        delete from department where id=#{id} and isParent=false;
+    </delete>
+</mapper>
