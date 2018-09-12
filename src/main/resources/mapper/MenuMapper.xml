@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.study.mapper.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.study.bean.Menu">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="parentId" property="parentId" jdbcType="INTEGER"/>
+        <collection property="roles" ofType="com.study.bean.Role">
+            <id column="rid" property="id"/>
+            <result column="rname" property="name"/>
+            <result column="rnamezh" property="nameZh"/>
+        </collection>
+    </resultMap>
+
+    <resultMap id="UniteResultMap" type="com.study.bean.Menu" extends="BaseResultMap">
+        <collection property="children" ofType="com.study.bean.Menu" select="getMenusById" column="parentId"/>
+    </resultMap>
+
+    <select id="getAllMenu" resultMap="BaseResultMap">
+        select m.*, r.`id` as rid, r.`name` as rname, r.`nameZh` as rnamezh
+        from menu m
+                 left join menu_role mr on m.`id` = mr.`mid`
+                 left join role r on mr.`rid` = r.`id`
+        WHERE m.`enabled` = true
+        order by m.`id` desc
+    </select>
+
+    <select id="getMenusByUserId" parameterType="Long" resultMap="BaseResultMap">
+        select m1.`id`, m1.`url`, m1.`name`, m2.`name` as name2, m2.`url` as url2
+        from menu m1,
+             menu m2
+        where m1.`id` = m2.`parentId`
+          and m1.`id` != 1
+          and m2.`id` in(select mr.`mid`
+                         from user_role u_r,
+                              menu_role mr
+                         where u_r.`roleid` = mr.`rid`
+                           and u_r.`userid` = #{userId})
+          and m2.`enabled` = true
+        order by m1.`id`, m2.`id`
+    </select>
+
+    <select id="menuTree" resultMap="BaseResultMap">
+        select m1.`id`, m1.`name`, m2.`id` as id2, m2.`name` as name2, m3.`id` as id3, m3.`name` as name3
+        from menu m1,
+             menu m2,
+             menu m3
+        where m1.`id` = m2.`parentId`
+          and m2.`id` = m3.`parentId`
+          and m3.`enabled` = true
+    </select>
+
+    <select id="getMenuIdByRoleId" resultType="java.lang.Long">
+        select menu_role.mid from menu_role where rid = #{userId}
+    </select>
+
+    <select id="getMenusById" resultMap="UniteResultMap">
+        select m.id, m.url, m.name from menu m where m.id=#{id}
+    </select>
+
+</mapper>

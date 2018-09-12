@@ -1,5 +1,6 @@
 package com.study.service;
 
+import com.study.bean.RespBean;
 import com.study.bean.Role;
 import com.study.mapper.RoleMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,25 @@ public class RoleService {
         return roleMapper.findRolesAll();
     }
 
-    public int addNewRole(String role, String roleZh) {
+    public RespBean addNewRole(String role, String roleZh) {
+        if (role == null || "".equals(role))
+            return new RespBean("error", "英文名不能为空");
         if (!role.startsWith("ROLE_")) {
             role = "ROLE_" + role;
         }
-        return roleMapper.addNewRole(role, roleZh);
+        if (roleMapper.findRolesByName(role, roleZh) != null)
+            return new RespBean("error", "英文或中文名已存在");
+        if (roleMapper.addNewRole(role, roleZh))
+            return new RespBean("200", "succeed");
+        return new RespBean("error", "未知错误");
+
     }
 
     public int deleteRoleById(Long rid) {
         return roleMapper.deleteRoleById(rid);
+    }
+
+    public boolean updateRole(Role role) {
+        return roleMapper.updateRole(role);
     }
 }

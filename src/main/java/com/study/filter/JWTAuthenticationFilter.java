@@ -1,10 +1,11 @@
 package com.study.filter;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.study.bean.User;
 import com.study.filter.token.CheckPOJO;
 import com.study.filter.token.TokenMgr;
 import com.study.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,6 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
+
 
 /**
  * token的校验
@@ -43,9 +46,9 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
                 String username = checkPOJO.getClaims().getSubject();
                 logger.info("checking authentication " + username);
                 if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    User user = (User) userService.loadUserByUsername(username);
+                    //User user = (User) userService.loadUserByUsername(username);
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            user.getUsername(), user.getPassword(), user.getAuthorities());
+                            username, null, User.getAut(new ObjectMapper().readValue(checkPOJO.getClaims().getAudience(), new TypeReference<List<String>>() {})));
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     logger.info("authenticated user " + username + ", setting security context");
                     SecurityContextHolder.getContext().setAuthentication(authentication);

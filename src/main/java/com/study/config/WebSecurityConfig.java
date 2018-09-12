@@ -38,29 +38,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     protected void configure(HttpSecurity http) throws Exception {
-
-        /*http
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().httpBasic()
-                .authenticationEntryPoint(entryPoint)
-                .and()
-                .authorizeRequests()
-                .antMatchers("/select").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .successHandler(successHandler) // 登录成功
-                .failureHandler(failureHandler) // 登录失败
-                .permitAll();
-
-        http.rememberMe().rememberMeParameter("remember-me")
-                .userDetailsService(userService).tokenValiditySeconds(5 * 60);*/
-
         http
                 // 由于使用的是JWT，我们这里不需要csrf
                 .csrf().disable()
-
                 // 基于token，所以不需要session
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
@@ -73,13 +53,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/register",
                         "/login",
                         "/system",
-                        "/druid/**",
+
+                        "/druid/**",//swagger api文档一律通过
+                        "/swagger-resources/**",
                         "/swagger-ui.html",
+                        "/swagger-resources",
+                        "/v2/**",
+                        "/images/**",
+                        "/webjars/**",
+                        "/configuration/**",
+
                         "/test/**",
                         "/getAll").permitAll()
 
                 // 除上面外的所有请求全部需要鉴权认证
-                //.anyRequest().authenticated()
+                .anyRequest().authenticated()
                 .and()
                 .headers().frameOptions().disable()
                 .and()

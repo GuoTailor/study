@@ -9,10 +9,12 @@ import java.util.List;
 public interface RoleMapper {
     List<Role> findRolesAll();
 
-    Role findRolesByName(@Param("name") String name);
+    Role findRolesByName(@Param("name") String name, @Param("nameZh") String nameZh);
 
-    int addNewRole(@Param("role") String role, @Param("roleZh") String roleZh);
+    boolean addNewRole(@Param("role") String role, @Param("roleZh") String roleZh);
 
     int deleteRoleById(Long rid);
+
+    boolean updateRole(Role role);
 }
 

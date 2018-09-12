@@ -20,23 +20,23 @@
 	</resultMap>
 
     <select id="getUserById" parameterType="int" resultMap="lazyLoadRoles">
-		SELECT * FROM user WHERE id = #{id}
+		SELECT * FROM user WHERE id = #{id};
 	</select>
 
 	<select id="getUserByUsername" parameterType="String" resultMap="lazyLoadRoles">
-		SELECT * FROM user WHERE username = #{username}
+		SELECT * FROM user WHERE username = #{username};
 	</select>
 
 	<select id="getRolesByUserId" resultType="com.study.bean.Role">
-		SELECT r.* FROM user_role h,role r where h.roleid=r.id AND h.userid=#{id}
+		SELECT r.* FROM user_role h,role r where h.roleid=r.id AND h.userid=#{id};
 	</select>
 
     <select id="getAll" resultType="User">
-		SELECT * FROM user
+		SELECT * FROM user;
 	</select>
 
 	<insert id="insert" parameterType="User">
-		INSERT INTO user(id, username, password, sex, name) VALUES (#{id}, #{username}, #{password}, #{sex}, #{name})
+		INSERT INTO user(id, username, password, sex, name) VALUES (#{id}, #{username}, #{password}, #{sex}, #{name});
 	</insert>
 
 	<insert id="addRolesForUser">
@@ -47,7 +47,7 @@
 	</insert>
 
 	<delete id="deleteUser" parameterType="int">
-		DELETE FROM user WHERE id=#{id}
+		DELETE FROM user WHERE id=#{id};
 	</delete>
 
 </mapper>

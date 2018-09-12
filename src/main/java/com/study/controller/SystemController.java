@@ -2,7 +2,10 @@ package com.study.controller;
 
 import com.study.bean.Department;
 import com.study.bean.RespBean;
+import com.study.bean.Role;
 import com.study.mapper.DepartmentMapper;
+import com.study.mapper.RoleMapper;
+import com.study.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +19,12 @@ import java.util.Map;
 public class SystemController {
 
     final private DepartmentMapper departmentMapper;
+    final private RoleService roleService;
 
     @Autowired
-    public SystemController(DepartmentMapper departmentMapper) {
+    public SystemController(DepartmentMapper departmentMapper, RoleService roleService) {
         this.departmentMapper = departmentMapper;
+        this.roleService = roleService;
     }
 
     @Transactional(timeout=36000,rollbackFor=Exception.class)
@@ -58,6 +63,30 @@ public class SystemController {
     @GetMapping(value = "/dep")
     public List<Department> getAllDeps() {
         return departmentMapper.getAllDeps();
+    }
+
+    @PostMapping(value = "/role")
+    public RespBean addRole(Role role) {
+        return roleService.addNewRole(role.getName(), role.getNameZh());
+    }
+
+    @DeleteMapping(value = "/role/{id}")
+    public RespBean deleteRole(@PathVariable Long id) {
+        if (roleService.deleteRoleById(id) == 1)
+            return new RespBean("200", "成功");
+        else return new RespBean("error", "删除失败");
+    }
+
+    @PostMapping(value = "/role")
+    public RespBean updateRole(Role role){
+        if (roleService.updateRole(role))
+            return new RespBean("200", "成功");
+        else return new RespBean("error", "更新失败");
+    }
+
+    @GetMapping(value = "/role")
+    public List<Role> getAll(){
+        return roleService.roles();
     }
 
 }

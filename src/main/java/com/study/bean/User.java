@@ -81,10 +81,20 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        if (this.authorities == null)
+            return null;
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Role role : this.authorities) {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
-            System.out.println(role.getName());
+        }
+        return authorities;
+    }
+
+    @JsonIgnore
+    public static Collection<? extends GrantedAuthority> getAut(List<String> aut) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (String role : aut) {
+            authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;
     }
@@ -121,9 +131,10 @@ public class User implements UserDetails {
 
     @JsonIgnore
     public String getRole() throws JsonProcessingException {
-        String[] ss = authorities.stream().map(r -> r.getName().replace("ROLE_", "")).toArray(String[]::new);
-        Arrays.stream(ss).forEach(s -> System.out.println(s + " >>>>>>>>>>>>>>>>>>>>>"));
-        return new ObjectMapper().writeValueAsString(ss);
+        String[] ss = authorities.stream().map(Role::getName).toArray(String[]::new);
+        String s = new ObjectMapper().writeValueAsString(ss);
+        System.out.println(s);
+        return s;
     }
 
     @Override

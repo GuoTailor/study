@@ -44,7 +44,7 @@ public class UserService implements UserDetailsService {
         user.setPassword(encoder.encode(user.getPassword()));
         int i = userMapper.insert(user);
         if (i == 1) {
-            Role role = roleMapper.findRolesByName("ROLE_STUDENT");
+            Role role = roleMapper.findRolesByName("ROLE_STUDENT", null);
             userMapper.addRolesForUser(userMapper.getUserByUsername(user.getUsername()).getId(),
                     new Long[]{role.getId()});
             //roleMapper.

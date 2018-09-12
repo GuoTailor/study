@@ -40,7 +40,7 @@ public class TokenMgr {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
-        System.out.println("主题" + subject);
+        System.out.println("主题" + subject + "   " + role);
         SecretKey secretKey = generalKey();
 //        JwtBuilder builder = Jwts.builder()
 //                .setId(id)
