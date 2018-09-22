@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.study.mapper.UserMapper">
+<mapper namespace="com.mebay.mapper.UserMapper">
 
-	<resultMap id="BaseResultMap" type="com.study.bean.User">
+	<resultMap id="BaseResultMap" type="com.mebay.bean.User">
 		<id column="id" property="id"/>
 		<result column="name" property="name"/>
 		<result column="phone" property="phone"/>
@@ -15,9 +15,9 @@
 		<result column="depId" property="depId"/>
 	</resultMap>
 
-	<resultMap id="lazyLoadRoles" type="com.study.bean.User" extends="BaseResultMap">
-		<collection property="authorities" ofType="com.study.bean.Role" select="com.study.mapper.UserMapper.getRolesByUserId"
-					column="id"/>
+	<resultMap id="lazyLoadRoles" type="com.mebay.bean.User" extends="BaseResultMap">
+		<collection property="authorities" ofType="com.mebay.bean.Role" select="com.mebay.mapper.UserMapper.getRolesByUserId"
+                    column="id"/>
 	</resultMap>
 
     <select id="getUserById" parameterType="int" resultMap="lazyLoadRoles">
@@ -28,7 +28,7 @@
 		SELECT * FROM user WHERE username = #{username};
 	</select>
 
-	<select id="getRolesByUserId" resultType="com.study.bean.Role">
+	<select id="getRolesByUserId" resultType="com.mebay.bean.Role">
 		SELECT r.* FROM user_role h,role r where h.roleid=r.id AND h.userid=#{id};
 	</select>
 

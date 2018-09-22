@@ -2,21 +2,21 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.study.mapper.MenuMapper">
-    <resultMap id="BaseResultMap" type="com.study.bean.Menu">
+<mapper namespace="com.mebay.mapper.MenuMapper">
+    <resultMap id="BaseResultMap" type="com.mebay.bean.Menu">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="url" property="url" jdbcType="VARCHAR"/>
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="parentId" property="parentId" jdbcType="INTEGER"/>
-        <collection property="roles" ofType="com.study.bean.Role">
+        <collection property="roles" ofType="com.mebay.bean.Role">
             <id column="rid" property="id" javaType="Long"/>
             <result column="rname" property="name"/>
             <result column="rnamezh" property="nameZh"/>
         </collection>
     </resultMap>
 
-    <resultMap id="UniteResultMap" type="com.study.bean.Menu" extends="BaseResultMap">
-        <collection property="children" ofType="com.study.bean.Menu" select="getMenusById" column="parentId"/>
+    <resultMap id="UniteResultMap" type="com.mebay.bean.Menu" extends="BaseResultMap">
+        <collection property="children" ofType="com.mebay.bean.Menu" select="getMenusById" column="parentId"/>
     </resultMap>
 
     <select id="getAllMenu" resultMap="BaseResultMap">

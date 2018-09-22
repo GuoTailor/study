@@ -2,14 +2,14 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.study.mapper.DepartmentMapper">
-    <resultMap id="BaseResultMap" type="com.study.bean.Department">
+<mapper namespace="com.mebay.mapper.DepartmentMapper">
+    <resultMap id="BaseResultMap" type="com.mebay.bean.Department">
         <id property="id" column="id"/>
         <result column="name" property="name"/>
         <result column="parentId" property="parentId"/>
         <result column="isParent" property="isParent"/>
-        <collection property="children" ofType="com.study.bean.Department"
-                    select="com.study.mapper.DepartmentMapper.getDepByPid" column="id">
+        <collection property="children" ofType="com.mebay.bean.Department"
+                    select="com.mebay.mapper.DepartmentMapper.getDepByPid" column="id">
         </collection>
     </resultMap>
 
@@ -27,7 +27,7 @@
           AND d1.enabled = true;
     </select>
 
-    <select id="getAllDeps" resultType="com.study.bean.Department">
+    <select id="getAllDeps" resultType="com.mebay.bean.Department">
         select *
         from department
         WHERE enabled = true;
@@ -39,7 +39,7 @@
         where d.id = #{id};
     </select>
 
-    <insert id="addDep" parameterType="com.study.bean.Department">
+    <insert id="addDep" parameterType="com.mebay.bean.Department">
         insert into department
         set name = #{name},
         parentId = #{parentId},

@@ -53,12 +53,12 @@
             <version>0.9.0</version>
         </dependency>
 
-        <!-- gson -->
+        <!-- gson
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
-
+        -->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>

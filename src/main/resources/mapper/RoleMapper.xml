@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.study.mapper.RoleMapper">
-    <select id="findRolesAll" resultType="com.study.bean.Role">
+<mapper namespace="com.mebay.mapper.RoleMapper">
+    <select id="findRolesAll" resultType="com.mebay.bean.Role">
         SELECT * FROM role;
     </select>
-    <select id="findRolesByName" parameterType="String" resultType="com.study.bean.Role">
+    <select id="findRolesByName" parameterType="String" resultType="com.mebay.bean.Role">
         SELECT * FROM role
         <where>
             <if test="name!=null">
@@ -27,7 +27,7 @@
         DELETE FROM role WHERE id = #{rid};
     </delete>
 
-    <update id="updateRole" parameterType="com.study.bean.Role">
+    <update id="updateRole" parameterType="com.mebay.bean.Role">
         update role
         <set>
             <if test="#{name} != null">
