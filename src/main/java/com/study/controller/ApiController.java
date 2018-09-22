@@ -9,7 +9,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@PreAuthorize("hasRole('TEACHER') or hasRole('STUDENT')")
 public class ApiController {
     /**
      * 获取request里经过正确Token解码的Claims属性

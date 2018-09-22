@@ -2,6 +2,7 @@ package com.study.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Menu {
@@ -10,7 +11,7 @@ public class Menu {
     private String name;
     private Long parentId;
     private List<Role> roles;
-    private List<Menu> children;
+    private List<Menu> children = new ArrayList<>();
 
     public Long getId() {
         return id;

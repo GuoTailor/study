@@ -2,14 +2,17 @@ package com.study.filter;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.study.Constant;
+import com.study.bean.RespBean;
+import com.study.bean.Role;
 import com.study.bean.User;
 import com.study.filter.token.CheckPOJO;
 import com.study.filter.token.TokenMgr;
 import com.study.service.UserService;
+import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -17,7 +20,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -43,16 +48,20 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
             CheckPOJO checkPOJO = TokenMgr.validateJWT(authToken);
 
             if (checkPOJO.isSuccess()) {
-                String username = checkPOJO.getClaims().getSubject();
-                logger.info("checking authentication " + username);
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    //User user = (User) userService.loadUserByUsername(username);
+                Claims claims = checkPOJO.getClaims();
+                logger.info("checking authentication " + claims.getSubject());
+                if (claims.getSubject() != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                    User user = new User();
+                    user.setId(Long.parseLong(claims.getId()));
+                    user.setName(claims.getSubject());
+                    user.setDepId(Long.parseLong(claims.getIssuer()));
+                    user.setAuthorities(new ObjectMapper().readValue(checkPOJO.getClaims().getAudience(), new TypeReference<Set<Role>>() {}));
+                    System.out.println(user.getRoleString());
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                            username, null, User.getAut(new ObjectMapper().readValue(checkPOJO.getClaims().getAudience(), new TypeReference<List<String>>() {})));
-                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    logger.info("authenticated user " + username + ", setting security context");
+                            claims.getSubject(), null, User.creationAut(new ObjectMapper().readValue(checkPOJO.getClaims().getAudience(), new TypeReference<List<String>>() {})));
+                    authentication.setDetails(user);
+                    logger.info("authenticated user " + claims.getSubject() + ", setting security context");
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-
                 }
             }
         }

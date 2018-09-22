@@ -36,7 +36,7 @@ public class TokenMgr {
      * @return
      * @throws Exception
      */
-    public static String createJWT(String id, String subject, String role, long ttlMillis) {
+    public static String createJWT(String id, String subject, String role, String issuer, long ttlMillis) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);
@@ -55,7 +55,7 @@ public class TokenMgr {
                 .setSubject(subject)                            // 主题
                 .setAudience(role)                                // 接受者
                 //.setClaims(null)                                // 自定义属性
-                .setIssuer("")                                  // 签发者
+                .setIssuer(issuer)                                  // 签发者
                 .setNotBefore(new Date())                       // 开始时间
                 .setIssuedAt(now)                                // 签发时间
                 .signWith(signatureAlgorithm, secretKey);        // 签名算法以及密匙

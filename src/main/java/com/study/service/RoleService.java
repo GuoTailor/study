@@ -1,5 +1,6 @@
 package com.study.service;
 
+import com.study.Constant;
 import com.study.bean.RespBean;
 import com.study.bean.Role;
 import com.study.mapper.RoleMapper;
@@ -22,12 +23,12 @@ public class RoleService {
 
     public RespBean addNewRole(String role, String roleZh) {
         if (role == null || "".equals(role))
-            return new RespBean("error", "英文名不能为空");
+            return new RespBean(Constant.RESCODE_EXCEPTION_DATA, "英文名不能为空");
         if (!role.startsWith("ROLE_")) {
             role = "ROLE_" + role;
         }
         if (roleMapper.findRolesByName(role, roleZh) != null)
-            return new RespBean("error", "英文或中文名已存在");
+            return new RespBean(Constant.RESCODE_CONFICT, "英文或中文名已存在");
         if (roleMapper.addNewRole(role, roleZh))
             return new RespBean("200", "succeed");
         return new RespBean("error", "未知错误");

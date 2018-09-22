@@ -9,9 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.sql.Date;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class User implements UserDetails {
-    private int id = 0;
+    private Long id = 0L;
     private String password;
     private String username;
     private String phone;
@@ -19,9 +20,11 @@ public class User implements UserDetails {
     private String name;
     private Date creationTime;
     private Date updateTime;
+    private Long depId;
     private Set<Role> authorities;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String password, String username, String phone, String sex, String name) {
         this.password = password;
@@ -31,7 +34,11 @@ public class User implements UserDetails {
         this.name = name;
     }
 
-    public int getId() {
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -75,6 +82,14 @@ public class User implements UserDetails {
         return updateTime;
     }
 
+    public Long getDepId() {
+        return depId;
+    }
+
+    public void setDepId(Long depId) {
+        this.depId = depId;
+    }
+
     public void setAuthorities(Set<Role> authorities) {
         this.authorities = authorities;
     }
@@ -83,19 +98,27 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.authorities == null)
             return null;
+        return authorities.parallelStream().map(a -> new SimpleGrantedAuthority(a.getName())).collect(Collectors.toCollection(ArrayList<GrantedAuthority>::new));
+
+        /*
         List<GrantedAuthority> authorities = new ArrayList<>();
         for (Role role : this.authorities) {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;*/
+    }
+
+    @JsonIgnore
+    public static Collection<? extends GrantedAuthority> creationAut(List<String> aut) {
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        for (String role : aut) {
+            authorities.add(new SimpleGrantedAuthority(role));
         }
         return authorities;
     }
 
     @JsonIgnore
-    public static Collection<? extends GrantedAuthority> getAut(List<String> aut) {
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (String role : aut) {
-            authorities.add(new SimpleGrantedAuthority(role));
-        }
+    public Set<Role> getRole() {
         return authorities;
     }
 
@@ -130,7 +153,7 @@ public class User implements UserDetails {
     }
 
     @JsonIgnore
-    public String getRole() throws JsonProcessingException {
+    public String getRoleString() throws JsonProcessingException {
         String[] ss = authorities.stream().map(Role::getName).toArray(String[]::new);
         String s = new ObjectMapper().writeValueAsString(ss);
         System.out.println(s);

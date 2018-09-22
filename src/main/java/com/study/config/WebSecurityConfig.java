@@ -4,7 +4,7 @@ import com.study.filter.JWTAuthenticationFilter;
 import com.study.filter.JWTLoginFilter;
 import com.study.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsUtils;
 
 @EnableWebSecurity
@@ -22,14 +23,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final MyAuthenticationFailureHandler failureHandler;
     private final MyAuthenticationSuccessHandler successHandler;
     private final AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler;
+    private final UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource;
+    private final UrlAccessDecisionManager urlAccessDecisionManager;
 
     @Autowired
-    public WebSecurityConfig(UserService userService, MyAuthenticationFailureHandler failureHandler, MyAuthenticationSuccessHandler successHandler, AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler) {
+    public WebSecurityConfig(UserService userService, MyAuthenticationFailureHandler failureHandler, MyAuthenticationSuccessHandler successHandler, AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler, UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource, UrlAccessDecisionManager urlAccessDecisionManager) {
         this.userService = userService;
         System.out.println("nmka");
         this.failureHandler = failureHandler;
         this.successHandler = successHandler;
         this.authenticationAccessDeniedHandler = authenticationAccessDeniedHandler;
+        this.urlFilterInvocationSecurityMetadataSource = urlFilterInvocationSecurityMetadataSource;
+        this.urlAccessDecisionManager = urlAccessDecisionManager;
     }
 
     @Override
@@ -45,6 +50,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
                 .authorizeRequests()
+                .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
+                    @Override
+                    public <O extends FilterSecurityInterceptor> O postProcess(O o) {
+                        o.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource);
+                        o.setAccessDecisionManager(urlAccessDecisionManager);
+                        return o;
+                    }
+                })
                 //.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
                 // 对于获取token的rest api要允许匿名访问
@@ -52,7 +65,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/",
                         "/register",
                         "/login",
-                        "/system",
 
                         "/druid/**",//swagger api文档一律通过
                         "/swagger-resources/**",
@@ -62,10 +74,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/images/**",
                         "/webjars/**",
                         "/configuration/**",
-
-                        "/test/**",
+                        "/images/**",
                         "/getAll").permitAll()
-
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()

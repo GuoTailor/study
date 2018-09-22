@@ -45,7 +45,7 @@ public class UserService implements UserDetailsService {
         int i = userMapper.insert(user);
         if (i == 1) {
             Role role = roleMapper.findRolesByName("ROLE_STUDENT", null);
-            userMapper.addRolesForUser(userMapper.getUserByUsername(user.getUsername()).getId(),
+            userMapper.addRolesForUser(userMapper.getUserByUsername(user.getUsername()).getId().intValue(),
                     new Long[]{role.getId()});
             //roleMapper.
             return new RespBean("success", "注册成功!");

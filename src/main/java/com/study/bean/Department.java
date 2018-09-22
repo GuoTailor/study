@@ -1,7 +1,6 @@
 package com.study.bean;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,9 +10,12 @@ import java.util.List;
 public class Department {
     private Long id;
     private String name;
+    @NotNull(message = "不能为空")
     private Long parentId;
-    private boolean enabled;
-    private boolean isParent;
+    private Boolean enabled;
+    private Boolean isParent;
+    private Long creationUid;
+    private String logoPath;
 
     private List<Department> children = new ArrayList<>();
 
@@ -34,9 +36,20 @@ public class Department {
         return name != null ? name.equals(that.name) : that.name == null;
     }
 
-    @Override
-    public int hashCode() {
-        return name != null ? name.hashCode() : 0;
+    public Department existId(Long id) {
+        System.out.println(">>>>>>>>>>>" + id);
+        if (id == null)
+            return null;
+        if (this.id.equals(id))
+            return this;
+        if (!children.isEmpty()) {
+            for (Department dep : children) {
+                if (dep.existId(id) != null) {
+                    return dep;
+                }
+            }
+        }
+        return null;
     }
 
     public List<Department> getChildren() {
@@ -71,7 +84,7 @@ public class Department {
         this.parentId = parentId;
     }
 
-    public boolean isEnabled() {
+    public Boolean isEnabled() {
         return enabled;
     }
 
@@ -79,11 +92,27 @@ public class Department {
         this.enabled = enabled;
     }
 
-    public boolean isParent() {
+    public Boolean isParent() {
         return isParent;
     }
 
     public void setParent(boolean parent) {
         isParent = parent;
+    }
+
+    public Long getCreationUid() {
+        return creationUid;
+    }
+
+    public void setCreationUid(Long creationUid) {
+        this.creationUid = creationUid;
+    }
+
+    public String getLogoPath() {
+        return logoPath;
+    }
+
+    public void setLogoPath(String logoPath) {
+        this.logoPath = logoPath;
     }
 }

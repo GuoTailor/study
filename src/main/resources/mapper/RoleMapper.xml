@@ -20,26 +20,23 @@
     </select>
 
     <insert id="addNewRole">
-        INSERT INTO role
-        set name   = #{role},
-            nameZh = #{roleZh};
+        INSERT INTO role set name   = #{role}, nameZh = #{roleZh};
     </insert>
 
     <delete id="deleteRoleById" parameterType="Long">
-        DELETE
-        FROM role
-        WHERE id = #{rid};
+        DELETE FROM role WHERE id = #{rid};
     </delete>
 
     <update id="updateRole" parameterType="com.study.bean.Role">
         update role
         <set>
-            <if test="role.name != null">
-                name = #{role.name}
+            <if test="#{name} != null">
+                name = #{name},
             </if>
-            <if test="role.nameZh != null">
-                nameZh = #{role.anmeZh}
+            <if test="#{nameZh} != null">
+                nameZh = #{nameZh},
             </if>
         </set>
+        where id = #{id}
     </update>
 </mapper>

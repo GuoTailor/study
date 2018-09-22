@@ -1,6 +1,5 @@
 package com.study.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.study.Constant;
 import com.study.bean.RespBean;
@@ -21,7 +20,7 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
-        String token = TokenMgr.createJWT(user.getId() + "", user.getUsername(), user.getRole(), Constant.JWT_TTL);
+        String token = TokenMgr.createJWT(user.getId() + "", user.getUsername(), user.getRoleString(), user.getDepId().toString(), Constant.JWT_TTL);
         httpServletResponse.setContentType("application/json;charset=utf-8");
         httpServletResponse.addHeader("Authorization", "Bearer " + token);
         httpServletResponse.setHeader("Access-Control-Allow-Origin", "*");

@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
-@PreAuthorize("hasRole('STUDENT') or hasRole('TEACHER')")
 public class UserController {
 
     @Autowired

@@ -9,7 +9,7 @@
         <result column="name" property="name" jdbcType="VARCHAR"/>
         <result column="parentId" property="parentId" jdbcType="INTEGER"/>
         <collection property="roles" ofType="com.study.bean.Role">
-            <id column="rid" property="id"/>
+            <id column="rid" property="id" javaType="Long"/>
             <result column="rname" property="name"/>
             <result column="rnamezh" property="nameZh"/>
         </collection>
@@ -29,18 +29,22 @@
     </select>
 
     <select id="getMenusByUserId" parameterType="Long" resultMap="BaseResultMap">
-        select m1.`id`, m1.`url`, m1.`name`, m2.`name` as name2, m2.`url` as url2
-        from menu m1,
-             menu m2
-        where m1.`id` = m2.`parentId`
-          and m1.`id` != 1
-          and m2.`id` in(select mr.`mid`
-                         from user_role u_r,
-                              menu_role mr
-                         where u_r.`roleid` = mr.`rid`
-                           and u_r.`userid` = #{userId})
-          and m2.`enabled` = true
-        order by m1.`id`, m2.`id`
+        select m.id, m.url, m.name, m.parentId
+        from menu m
+        where m.id in (select mr.`mid`
+                       from user_role u_r,
+                            menu_role mr
+                       where u_r.`roleid` = mr.`rid`
+                         and u_r.`userid` = #{userId})
+        and m.enabled = true;
+    </select>
+
+    <select id="getMenuIdByUserId" resultType="Long">
+        select mr.`mid`
+        from user_role u_r,
+             menu_role mr
+        where u_r.`roleid` = mr.`rid`
+          and u_r.`userid` = #{id}
     </select>
 
     <select id="menuTree" resultMap="BaseResultMap">
@@ -54,11 +58,15 @@
     </select>
 
     <select id="getMenuIdByRoleId" resultType="java.lang.Long">
-        select menu_role.mid from menu_role where rid = #{userId}
+        select menu_role.mid
+        from menu_role
+        where rid = #{userId}
     </select>
 
     <select id="getMenusById" resultMap="UniteResultMap">
-        select m.id, m.url, m.name from menu m where m.id=#{id}
+        select m.id, m.url, m.name
+        from menu m
+        where m.id = #{id}
     </select>
 
 </mapper>

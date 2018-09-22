@@ -12,6 +12,7 @@
 		<result column="sex" property="sex"/>
 		<result column="creationTime" property="creationTime"/>
 		<result column="updateTime" property="updateTime"/>
+		<result column="depId" property="depId"/>
 	</resultMap>
 
 	<resultMap id="lazyLoadRoles" type="com.study.bean.User" extends="BaseResultMap">

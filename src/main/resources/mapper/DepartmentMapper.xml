@@ -8,31 +8,88 @@
         <result column="name" property="name"/>
         <result column="parentId" property="parentId"/>
         <result column="isParent" property="isParent"/>
-        <collection property="children" ofType="com.study.bean.Department" select="com.study.mapper.DepartmentMapper.getDepByPid" column="id">
+        <collection property="children" ofType="com.study.bean.Department"
+                    select="com.study.mapper.DepartmentMapper.getDepByPid" column="id">
         </collection>
     </resultMap>
 
+    <select id="getDepById" resultMap="BaseResultMap">
+        select d1.*
+        from department d1
+        where d1.`id` = #{id}
+          AND d1.enabled = true;
+    </select>
+
     <select id="getDepByPid" resultMap="BaseResultMap">
-        select d1.*from department d1 where d1.`parentId`=#{pid} AND d1.enabled=true;
+        select d1.*
+        from department d1
+        where d1.`parentId` = #{pid}
+          AND d1.enabled = true;
     </select>
 
     <select id="getAllDeps" resultType="com.study.bean.Department">
-        select * from department WHERE enabled=true;
+        select *
+        from department
+        WHERE enabled = true;
     </select>
 
     <select id="existParentId" resultType="Boolean" parameterType="Long">
-        select d.enabled FROM department d where d.id=#{id};
+        select d.enabled
+        FROM department d
+        where d.id = #{id};
     </select>
 
     <insert id="addDep" parameterType="com.study.bean.Department">
-        insert into department set name=#{name},parentId=#{parentId},enabled=#{enabled};
+        insert into department
+        set name = #{name},
+        parentId = #{parentId},
+        <if test="logoPath != null">
+            logoPath = #{logoPath},
+        </if>
+        <if test="creationUid != null">
+            creationUid = #{creationUid},
+        </if>
+        enabled = #{enabled};
     </insert>
 
-    <update id="setParentById" parameterType="Long" >
-        update department set isParent=#{isParent} where id=#{id};
+    <update id="setParentById" >
+        update department
+        set isParent = #{isParent}
+        where id = #{id};
     </update>
 
     <delete id="deleteDep" parameterType="Long">
-        delete from department where id=#{id} and isParent=false;
+        delete
+        from department
+        where id = #{id}
+          and isParent = false;
     </delete>
+
+    <update id="updateDep">
+        update department
+        <set>
+            <if test="dep.id != null">
+                id = #{dep.id},
+            </if>
+            <if test="dep.name != null">
+                name = #{dep.name},
+            </if>
+            <if test="dep.parentId != null">
+                parentId = #{dep.parentId},
+            </if>
+            <if test="dep.enabled != null">
+                enabled = #{dep.enabled},
+            </if>
+            <if test="dep.isParent != null">
+                isParent = #{dep.isParent},
+            </if>
+            <if test="dep.creationUid != null">
+                creationUid = #{dep.creationUid},
+            </if>
+            <if test="dep.logoPath != null">
+                logoPath = #{dep.logoPath},
+            </if>
+        </set>
+        where id = #{originalId}
+    </update>
 </mapper>

@@ -2,14 +2,18 @@ package com.study.bean;
 
 public class RespBean {
     private String status;
-    private String message;
+    private Object message;
 
     public RespBean() {
     }
 
-    public RespBean(String status, String message) {
-
+    public RespBean(String status, Object message) {
         this.status = status;
+        this.message = message;
+    }
+
+    public RespBean(int status, Object message) {
+        this.status = Integer.toString(status);
         this.message = message;
     }
 
@@ -21,12 +25,28 @@ public class RespBean {
         this.status = status;
     }
 
-    public String getMessage() {
+    public void setStatus(int status) {
+        this.status = Integer.toString(status);
+    }
+
+    public Object getMessage() {
 
         return message;
     }
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public void setMessage(Object message) {
+        this.message = message;
+    }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "\"status\": \"" + status + '\"' +
+                ", \"message\": \"" + message +
+                "\"}";
     }
 }
