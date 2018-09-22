@@ -9,6 +9,7 @@ public class Constant {
     /**
      * 成功
      */
+
     public static final int RESCODE_SUCCESS = 200;                  //成功
     public static final int RESCODE_SUCCESS_DATA = 201;         //成功(有返回数据)
     public static final int RESCODE_NOEXIST = 204;                  //查询结果为空
