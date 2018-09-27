@@ -1,4 +1,4 @@
-package com.mebay.controller;
+package com.mebay.controller.system;
 
 import com.mebay.Constant;
 import com.mebay.bean.RespBean;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/root")
+@RequestMapping("/system")
 public class RootController {
 
     final private RoleService roleService;

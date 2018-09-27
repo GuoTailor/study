@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mebay.mapper.DeviceMapper">
+
+    <select id="getDeviceByUserId" resultType="com.mebay.bean.Device">
+        select *
+        from device_detail
+        where userId = #{userId};
+    </select>
+
+    <select id="getDeviceByDepId" resultType="com.mebay.bean.Device">
+        select *
+        from device_detail
+        where depId = #{depId};
+    </select>
+
+    <select id="getDeviceById" resultType="com.mebay.bean.Device">
+        select *
+        from device_detail
+        where id = #{id};
+    </select>
+
+    <update id="updateDevice">
+        update device_detail
+        <set>
+            <if test="DTUId != null">
+                DTUId = #{DTUId},
+            </if>
+            <if test="DTUModel != null">
+                DTUModel = #{DTUModel},
+            </if>
+            <if test="siteName != null">
+                siteName = #{siteName},
+            </if>
+            <if test="controllerModel != null">
+                controllerModel = #{controllerModel},
+            </if>
+            <if test="communicationNumber != null">
+                communicationNumber = #{communicationNumber},
+            </if>
+            <if test="registrationDate != null">
+                registrationDate = #{registrationDate},
+            </if>
+            <if test="licenseExpirationDate != null">
+                licenseExpirationDate = #{licenseExpirationDate},
+            </if>
+            <if test="uploadPhoto != null">
+                uploadPhoto = #{uploadPhoto},
+            </if>
+            <if test="controllerBrand != null">
+                controllerBrand = #{controllerBrand},
+            </if>
+            <if test="controllerType != null">
+                controllerType = #{controllerType},
+            </if>
+            <if test="userId != null">
+                userId = #{userId},
+            </if>
+            <if test="licensePeriod != null">
+                licensePeriod = #{licensePeriod},
+            </if>
+            <if test="deviceStatus != null">
+                deviceStatus = #{deviceStatus},
+            </if>
+            <if test="other != null">
+                other = #{other},
+            </if>
+            <if test="unitModel != null">
+                unitModel = #{unitModel},
+            </if>
+            <if test="engineModel != null">
+                engineModel = #{engineModel},
+            </if>
+            <if test="speedControlType != null">
+                speedControlType = #{speedControlType},
+            </if>
+            <if test="speedControlBoardModel != null">
+                speedControlBoardModel = #{speedControlBoardModel},
+            </if>
+            <if test="pressureRegulatorType != null">
+                pressureRegulatorType = #{pressureRegulatorType},
+            </if>
+            <if test="manufacturer != null">
+                manufacturer = #{manufacturer},
+            </if>
+            <if test="electricGeneratorModel != null">
+                electricGeneratorModel = #{electricGeneratorModel},
+            </if>
+            <if test="actuatorType != null">
+                actuatorType = #{actuatorType},
+            </if>
+            <if test="fuelTankCapacity != null">
+                fuelTankCapacity = #{fuelTankCapacity},
+            </if>
+            <if test="reference != null">
+                reference = #{reference},
+            </if>
+            <if test="accessory != null">
+                accessory = #{accessory},
+            </if>
+            <if test="electronicFenceStatus != null">
+                electronicFenceStatus = #{electronicFenceStatus},
+            </if>
+            <if test="electronicFenceScope != null">
+                electronicFenceScope = #{electronicFenceScope},
+            </if>
+            <if test="createTime != null">
+                createTime = #{createTime},
+            </if>
+            <if test="depId != null">
+                depId = #{depId},
+            </if>
+        </set>
+        where id = #{id};
+    </update>
+
+    <insert id="addDevice">
+        insert into device_detail
+        value (0,
+               #{DTUId},
+               #{DTUModel},
+               #{siteName},
+               #{controllerModel},
+               #{communicationNumber},
+               #{ergistrationDate},
+               #{licenseExpirationDate},
+               #{uploadPhoto},
+               #{controllerBrand},
+               #{controllerType},
+               #{userId},
+               #{licensePeriod},
+               #{deviceStatus},
+               #{other},
+               #{unitModel},
+               #{engineModel},
+               #{speedControlType},
+               #{speedControlBoardModel},
+               #{pressureRegulatorType},
+               #{manufacturer},
+               #{electricGeneratorModel},
+               #{actuatorType},
+               #{fuelTankCapacity},
+               #{reference},
+               #{accessory},
+               #{electronicFenceStatus},
+               #{electronicFenceScope},
+               #{createTime},
+               #{depId});
+    </insert>
+
+    <delete id="deleteDeviceById" >
+        delete from device_detail where id=#{id};
+    </delete>
+</mapper>

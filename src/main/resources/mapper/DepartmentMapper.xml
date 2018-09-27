@@ -33,9 +33,15 @@
         WHERE enabled = true;
     </select>
 
-    <select id="existParentId" resultType="Boolean" parameterType="Long">
+    <select id="enable" resultType="Boolean" parameterType="Long">
         select d.enabled
         FROM department d
+        where d.id = #{id};
+    </select>
+
+    <select id="isParent" resultType="Boolean" parameterType="Long">
+        select d.isParent
+        from department d
         where d.id = #{id};
     </select>
 
@@ -68,9 +74,6 @@
     <update id="updateDep">
         update department
         <set>
-            <if test="dep.id != null">
-                id = #{dep.id},
-            </if>
             <if test="dep.name != null">
                 name = #{dep.name},
             </if>

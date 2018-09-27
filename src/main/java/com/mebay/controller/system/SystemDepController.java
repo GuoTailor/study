@@ -24,7 +24,7 @@ public class SystemDepController {
     }
 
     @PostMapping(value = "/dep")
-    public RespBean addDep(@Valid Department department, @RequestParam("file") MultipartFile file) {
+    public RespBean addDep(@Valid Department department, @RequestParam(value = "file", required = false) MultipartFile file) {
         RespBean respBean = new RespBean();
         String filePath = null;
         if (FileUtil.getFileType(file) != null) {
@@ -93,10 +93,13 @@ public class SystemDepController {
 
     @DeleteMapping(value = "/dep/{did}")
     public RespBean deleteDep(@PathVariable Long did) {
-        if (departmentService.deleteDep(did) == 1) {
-            return new RespBean("200", "删除成功!");
+        int i = departmentService.deleteDep(did);
+        if (i == 1) {
+            return new RespBean(Constant.RESCODE_SUCCESS, "删除成功!");
+        }else if (i == -1){
+            return new RespBean(Constant.NotModified, "删除失败!存在子节点");
         }
-        return new RespBean(Constant.NotModified, "删除失败!资源未找到");
+        return new RespBean(Constant.RESCODE_EXCEPTION_DATA, "删除失败!资源未找到");
     }
 
     @GetMapping(value = "/dep")

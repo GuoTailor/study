@@ -19,9 +19,11 @@ public interface DepartmentMapper {
 
     List<Department> getAllDeps();
 
-    boolean existParentId(@Param("id") Long parentId);
+    boolean enable(@Param("id") Long parentId);
 
-    void setParentById(@Param("id") Long id, @Param("isParent") boolean isParent);
+    boolean isPaerent(@Param("id") Long id);
+
+    boolean setParentById(@Param("id") Long id, @Param("isParent") boolean isParent);
 
     int updateDep(@Param("dep")Department dep, @Param("originalId") Long id);
 }

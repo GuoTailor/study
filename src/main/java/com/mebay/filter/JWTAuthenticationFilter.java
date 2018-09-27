@@ -53,7 +53,7 @@ public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
                     user.setName(claims.getSubject());
                     user.setDepId(Long.parseLong(claims.getIssuer()));
                     user.setAuthorities(new ObjectMapper().readValue(checkPOJO.getClaims().getAudience(), new TypeReference<Set<Role>>() {}));
-                    System.out.println(user.getRoleString());
+                    //System.out.println(user.getRoleString());
                     UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                             claims.getSubject(), null, User.creationAut(new ObjectMapper().readValue(checkPOJO.getClaims().getAudience(), new TypeReference<List<String>>() {})));
                     authentication.setDetails(user);

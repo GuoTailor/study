@@ -21,6 +21,8 @@ public class FileUtil {
     }
 
     public static String getFileType(MultipartFile file) {
+        if (file == null)
+            return null;
         byte[] b = new byte[4];
         try (InputStream is = file.getInputStream()){
             is.read(b);

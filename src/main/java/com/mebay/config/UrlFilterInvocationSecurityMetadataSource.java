@@ -19,23 +19,25 @@ import java.util.List;
  */
 @Component
 public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
-    private final MenuService menuService;
+    private final List<Menu> allMenu;
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
     @Autowired
     public UrlFilterInvocationSecurityMetadataSource(MenuService menuService) {
-        this.menuService = menuService;
+        allMenu = menuService.getAllMenu();
     }
 
     @Override
     public Collection<ConfigAttribute> getAttributes(Object o) throws IllegalArgumentException {
         //获取请求地址
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
+        ((FilterInvocation) o).getHttpRequest().getMethod();
+        System.out.println(requestUrl);
         if ("/login".equals(requestUrl)) {
             return null;
         }
-        //TODO 程序启动时加载一次菜单
-        List<Menu> allMenu = menuService.getAllMenu();
+        if (allMenu == null)
+            System.out.println("<<<<<<<<<<<<出错》》》》》》》》》》》》");
         /*allMenu.parallelStream().filter(menu -> antPathMatcher.match(menu.getUrl(), requestUrl) && menu.getRoles().size()>0)
                 .map(menu -> menu.getRoles().stream().map(Role::getName)).toArray(String[]::new);*/
 

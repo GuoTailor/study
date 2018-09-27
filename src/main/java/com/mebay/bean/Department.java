@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by GYH on 2018/9/3.
  */
-public class Department {
+public class Department implements StreamTerr{
     private Long id;
     private String name;
     @NotNull(message = "不能为空")
@@ -37,7 +37,6 @@ public class Department {
     }
 
     public Department existId(Long id) {
-        System.out.println(">>>>>>>>>>>" + id);
         if (id == null)
             return null;
         if (this.id.equals(id))

@@ -6,7 +6,6 @@ import com.mebay.bean.LoggerEntity;
 import com.mebay.common.UserUtils;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,16 +41,6 @@ public class LogAspect implements HandlerInterceptor {
         request.setAttribute(LOGGER_SEND_TIME, System.currentTimeMillis());
         request.setAttribute(LOGGER_ENTITY, logger);
         return true;
-    }
-
-    @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
-                           @Nullable ModelAndView modelAndView) throws Exception {
-        String output = "";
-        if (modelAndView != null) {
-            output = new ObjectMapper().writeValueAsString(modelAndView.getModelMap());
-            System.out.println(">>>>>>>>" + output);
-        }
     }
 
     @Override

@@ -9,26 +9,33 @@ import com.mebay.mapper.DepartmentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import java.util.logging.Logger;
 
 @Service
-@Transactional
+@Transactional(rollbackFor={Exception.class})
 public class DepartmentService {
     private static final Logger logger = Logger.getLogger(DepartmentService.class.getSimpleName());
+    private final DepartmentMapper departmentMapper;
+
     @Autowired
-    DepartmentMapper departmentMapper;
+    public DepartmentService(DepartmentMapper departmentMapper) {
+        this.departmentMapper = departmentMapper;
+    }
 
     public int creationDep(Department department) {
         department.setEnabled(true);
+        department.setParent(false);
         User user = UserUtils.getCurrentUser();
         Department deps = getDepById(user.getDepId());
         logger.info(department.getParentId() + " " + (deps == null));
         if (!user.getRole().contains(new Role("ROLE_HIGH_GRADE_ADMIN")))
             department.setCreationUid(user.getId());
-        if (deps != null && deps.existId(department.getParentId()) != null && departmentMapper.existParentId(department.getParentId())) {
+        if (deps != null && deps.existId(department.getParentId()) != null && departmentMapper.enable(department.getParentId())) {
             if (departmentMapper.addDep(department) == 1) {
-                departmentMapper.setParentById(department.getParentId(), true);
+                if (!departmentMapper.setParentById(department.getParentId(), true))
+                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();  //手动回滚事务
                 return 1;
             }
             return 0;
@@ -57,6 +64,8 @@ public class DepartmentService {
     }
 
     public int deleteDep(Long id) {
+        if (departmentMapper.isPaerent(id))
+            return -1;
         return departmentMapper.deleteDep(id);
     }
 
@@ -64,8 +73,8 @@ public class DepartmentService {
         return departmentMapper.getDepByPid(pid);
     }
 
-    public boolean existParentId(Long parentId) {
-        return departmentMapper.existParentId(parentId);
+    public boolean enable(Long parentId) {
+        return departmentMapper.enable(parentId);
     }
 
     public void setParentById(Long id, boolean isParent) {

@@ -13,8 +13,12 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class MenuService {
+    private final MenuMapper mapper;
+
     @Autowired
-    MenuMapper mapper;
+    public MenuService(MenuMapper mapper) {
+        this.mapper = mapper;
+    }
 
     public Menu getMenusByUserId(Long hrId) {
         List<Menu> menus = mapper.getAllMenu();
