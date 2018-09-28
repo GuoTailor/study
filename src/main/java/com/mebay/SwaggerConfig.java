@@ -27,7 +27,8 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("api文档")
-                .description("restfun 风格接口")
+                .description("restfun 风格接口\n" +
+                        "这里面的所有接口访问都需要权限验证")
                 //服务条款网址
                 .termsOfServiceUrl("http://www.baidu.com")
                 .version("0.1.0")

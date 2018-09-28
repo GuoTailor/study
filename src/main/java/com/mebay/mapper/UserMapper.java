@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface UserMapper {
 
-    User getUserById(@Param("id") int id);
+    User getUserById(@Param("id") Long id);
 
     User getUserByToken(@Param("token") String token);
 

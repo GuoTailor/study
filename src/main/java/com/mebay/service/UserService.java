@@ -1,5 +1,6 @@
 package com.mebay.service;
 
+import com.mebay.Constant;
 import com.mebay.bean.RespBean;
 import com.mebay.bean.Role;
 import com.mebay.mapper.RoleMapper;
@@ -12,6 +13,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @Transactional
@@ -26,6 +29,14 @@ public class UserService implements UserDetailsService {
         this.roleMapper = roleMapper;
     }
 
+    public User getUserById(Long id){
+        return userMapper.getUserById(id);
+    }
+
+    public List<User> getAll() {
+        return userMapper.getAll();
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println(username);
@@ -36,9 +47,9 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public RespBean register(User user) {
+    public RespBean<String> register(User user) {
         if (userMapper.getUserByUsername(user.getUsername()) != null) {
-            return new RespBean("error", "用户名重复，注册失败!");
+            return new RespBean<>(Constant.NotModified, "用户名重复，注册失败!");
         }
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(user.getPassword()));
@@ -48,9 +59,9 @@ public class UserService implements UserDetailsService {
             userMapper.addRolesForUser(userMapper.getUserByUsername(user.getUsername()).getId().intValue(),
                     new Long[]{role.getId()});
             //roleMapper.
-            return new RespBean("success", "注册成功!");
+            return new RespBean<>(Constant.RESCODE_SUCCESS, "注册成功!");
         }
-        return new RespBean("error", "注册失败!");
+        return new RespBean<>(Constant.RESCODE_EXCEPTION_DATA, "注册失败!");
     }
 
 }

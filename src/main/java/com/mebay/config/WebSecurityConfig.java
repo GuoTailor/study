@@ -50,6 +50,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 
                 .authorizeRequests()
+                //.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
+                // 除上面外的所有请求全部需要鉴权认证
+                .anyRequest().authenticated()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
@@ -58,28 +62,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         return o;
                     }
                 })
-                //.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                // 对于获取token的rest api要允许匿名访问
-                .antMatchers("/auth/**").permitAll()
-                .antMatchers("/",
-                        "/register",
-                        "/login",
-
-                        "/druid/**",//swagger api文档一律通过
-                        "/swagger-resources/**",
-                        "/swagger-ui.html",
-                        "/swagger-resources",
-                        "/v2/**",
-                        "/images/**",
-                        "/webjars/**",
-                        "/configuration/**",
-                        "/images/**",
-                        "/getAll").permitAll()
-                // 除上面外的所有请求全部需要鉴权认证
-                .anyRequest().authenticated()
-                .and()
-                .headers().frameOptions().disable()
+                //.and()
+                //.headers().frameOptions().disable()
                 .and()
                 .exceptionHandling().accessDeniedHandler(authenticationAccessDeniedHandler)
                 .and()

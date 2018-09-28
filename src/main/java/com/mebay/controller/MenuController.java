@@ -19,4 +19,5 @@ public class MenuController {
     public Menu getMenu(){
         return menuService.getMenusByUserId(UserUtils.getCurrentUser().getId());
     }
+
 }

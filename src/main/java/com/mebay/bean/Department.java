@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * Created by GYH on 2018/9/3.
  */
-public class Department implements StreamTerr{
+public class Department implements StreamTree {
     private Long id;
     private String name;
     @NotNull(message = "不能为空")

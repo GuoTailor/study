@@ -3,6 +3,8 @@ package com.mebay.bean;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,16 +13,25 @@ import java.sql.Date;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@ApiModel(description = "用户")
 public class User implements UserDetails {
+    @ApiModelProperty(hidden = true)
     private Long id = 0L;
+    @ApiModelProperty(required = true)
     private String password;
+    @ApiModelProperty(required = true)
     private String username;
     private String phone;
     private String sex;
+    @ApiModelProperty(required = true)
     private String name;
+    @ApiModelProperty(hidden = true)
     private Date creationTime;
+    @ApiModelProperty(hidden = true)
     private Date updateTime;
+    @ApiModelProperty(required = true)
     private Long depId;
+    @ApiModelProperty(hidden = true)
     private Set<Role> authorities;
 
     public User() {
@@ -108,6 +119,7 @@ public class User implements UserDetails {
         return authorities;*/
     }
 
+    @ApiModelProperty(hidden = true)
     @JsonIgnore
     public static Collection<? extends GrantedAuthority> creationAut(List<String> aut) {
         List<GrantedAuthority> authorities = new ArrayList<>();
@@ -117,6 +129,7 @@ public class User implements UserDetails {
         return authorities;
     }
 
+    @ApiModelProperty(hidden = true)
     @JsonIgnore
     public Set<Role> getRole() {
         return authorities;
@@ -132,26 +145,31 @@ public class User implements UserDetails {
         return username;
     }
 
+    @ApiModelProperty(hidden = true)
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
 
+    @ApiModelProperty(hidden = true)
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
 
+    @ApiModelProperty(hidden = true)
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
+    @ApiModelProperty(hidden = true)
     @Override
     public boolean isEnabled() {
         return true;
     }
 
+    @ApiModelProperty(hidden = true)
     @JsonIgnore
     public String getRoleString() throws JsonProcessingException {
         String[] ss = authorities.stream().map(Role::getName).toArray(String[]::new);

@@ -78,15 +78,12 @@ public class SystemDepController {
         int i = departmentService.updateDep(department, did);
         if (i == 1)
             return new RespBean(200, department);
-        else if (i == 0) {
-            if (filePath != null) {
-                FileUtil.deleteFile(filePath);
-            }
+        if (filePath != null) {
+            FileUtil.deleteFile(filePath);
+        }
+        if (i == -1) {
             return new RespBean(Constant.NotModified, "更新失败!");
         } else {
-            if (filePath != null) {
-                FileUtil.deleteFile(filePath);
-            }
             return new RespBean(Constant.RESCODE_EXCEPTION_DATA, "更新失败!没有该节点权限或父节点不存在");
         }
     }
