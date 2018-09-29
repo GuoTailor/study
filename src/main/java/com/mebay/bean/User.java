@@ -17,19 +17,19 @@ import java.util.stream.Collectors;
 public class User implements UserDetails {
     @ApiModelProperty(hidden = true)
     private Long id = 0L;
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(value = "用户密码", required = true)
     private String password;
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(value = "用户名", required = true)
     private String username;
     private String phone;
     private String sex;
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(value = "真实姓名", required = true)
     private String name;
     @ApiModelProperty(hidden = true)
     private Date creationTime;
     @ApiModelProperty(hidden = true)
     private Date updateTime;
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(value = "属于哪个单位（单位id）", required = true)
     private Long depId;
     @ApiModelProperty(hidden = true)
     private Set<Role> authorities;

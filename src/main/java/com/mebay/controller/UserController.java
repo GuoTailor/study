@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//TODO 该类存在权限问题
+//TODO ----------------该类存在权限逻辑问题------------------
 @RestController
 @RequestMapping("/users")
-@Api(value = "关于用户")
+@Api(tags = "关于用户", value = "无需权限的接口")
 public class UserController {
     private final UserService userService;
 

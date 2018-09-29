@@ -1,8 +1,16 @@
 package com.mebay.bean;
 
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiModelProperty;
+
+@Api(description = "权限")
 public class Role {
+    @ApiModelProperty(hidden = true)
     private Long id;
+    @ApiModelProperty(value = "权限名称", required = true)
     private String name;
+    @ApiModelProperty(value = "权限的中文名称（新增一个新权限的时候该字段必传）")
     private String nameZh;
 
     public Role(String name) {
