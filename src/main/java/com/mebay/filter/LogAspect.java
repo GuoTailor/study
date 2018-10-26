@@ -10,6 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
+import java.util.Enumeration;
 
 public class LogAspect implements HandlerInterceptor {
 
@@ -28,6 +29,12 @@ public class LogAspect implements HandlerInterceptor {
         String url = request.getRequestURI();
         //获取请求参数信息
         String paramData = new ObjectMapper().writeValueAsString(request.getParameterMap());
+
+        /*for (Enumeration<String> e = request.getHeaderNames(); e.hasMoreElements();) {
+            String header = e.nextElement();
+            System.out.println(header + " : " + request.getHeader(header));
+        }*/
+
         logger.setIp(UserUtils.getIpAddr(request));
         //设置请求方法
         logger.setMethod(request.getMethod());

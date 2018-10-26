@@ -15,26 +15,19 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
-@SuppressWarnings("restriction")
 public class TokenMgr {
 
     /**
      * 创建SecretKey
      */
-    public static SecretKey generalKey() {
+    private static SecretKey generalKey() {
         byte[] encodedKey = Base64.decode(Constant.JWT_SECRET);
-        SecretKey key = new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
-        return key;
+        return new SecretKeySpec(encodedKey, 0, encodedKey.length, "AES");
     }
 
     /**
      * 签发JWT
      *
-     * @param id
-     * @param subject
-     * @param ttlMillis
-     * @return
-     * @throws Exception
      */
     public static String createJWT(String id, String subject, String role, String issuer, long ttlMillis) {
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
@@ -55,7 +48,7 @@ public class TokenMgr {
                 .setSubject(subject)                            // 主题
                 .setAudience(role)                                // 接受者
                 //.setClaims(null)                                // 自定义属性
-                .setIssuer(issuer)                                  // 签发者
+                .setIssuer(issuer)                                 // 签发者
                 .setNotBefore(new Date())                       // 开始时间
                 .setIssuedAt(now)                                // 签发时间
                 .signWith(signatureAlgorithm, secretKey);        // 签名算法以及密匙
@@ -70,8 +63,6 @@ public class TokenMgr {
     /**
      * 验证JWT
      *
-     * @param jwtStr
-     * @return
      */
     public static CheckPOJO validateJWT(String jwtStr) {
         CheckPOJO checkResult = new CheckPOJO();
@@ -95,12 +86,8 @@ public class TokenMgr {
 
     /**
      * 解析JWT字符串
-     *
-     * @param jwt
-     * @return
-     * @throws Exception
      */
-    public static Claims parseJWT(String jwt) {
+    private static Claims parseJWT(String jwt) {
         SecretKey secretKey = generalKey();
         return Jwts.parser()
                 .setSigningKey(secretKey)

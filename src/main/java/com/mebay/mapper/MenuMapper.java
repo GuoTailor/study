@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface MenuMapper {
-    List<Menu> getAllMenu();
+    List<Menu> getAllMenu(@Param("rid") Long rid);
 
     //List<Menu> getMenusByUserId(Long hrId);
 
@@ -15,4 +15,6 @@ public interface MenuMapper {
     List<Menu> menuTree();
 
     List<Long> getMenusByRid(Long rid);
+
+    List<Long> getMenusByRoleId(@Param("rid") Long rid);
 }

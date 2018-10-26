@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import io.swagger.annotations.ApiParam;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,12 +17,14 @@ import java.util.stream.Collectors;
 @ApiModel(description = "用户")
 public class User implements UserDetails {
     @ApiModelProperty(hidden = true)
-    private Long id = 0L;
-    @ApiModelProperty(value = "用户密码", required = true)
-    private String password;
-    @ApiModelProperty(value = "用户名", required = true)
+    private Long id;
+    @ApiModelProperty(value = "用户名", required = true, example = "test")
     private String username;
+    @ApiModelProperty(value = "用户密码", required = true, example = "admin")
+    private String password;
+    @ApiModelProperty(value = "手机号")
     private String phone;
+    @ApiModelProperty(value = "性别")
     private String sex;
     @ApiModelProperty(value = "真实姓名", required = true)
     private String name;
@@ -31,8 +34,17 @@ public class User implements UserDetails {
     private Date updateTime;
     @ApiModelProperty(value = "属于哪个单位（单位id）", required = true)
     private Long depId;
-    @ApiModelProperty(hidden = true)
-    private Set<Role> authorities;
+    @ApiModelProperty(value = "权限集合", hidden = true)
+    private List<Role> authorities;
+    @ApiModelProperty(value = "logo路径", hidden = true)
+    private String logo;
+    @ApiModelProperty(value = "邮箱")
+    private String email;
+    @ApiModelProperty(value = "上级单位名", hidden = true)    //仅提供前端显示用
+    private String superiorName;
+    @JsonIgnore
+    @ApiModelProperty(value = "旧密码")    //仅提供前端修改密码用
+    private String oldPassword;
 
     public User() {
     }
@@ -101,22 +113,50 @@ public class User implements UserDetails {
         this.depId = depId;
     }
 
-    public void setAuthorities(Set<Role> authorities) {
+    public void setAuthorities(List<Role> authorities) {
         this.authorities = authorities;
     }
 
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSuperiorName() {
+        return superiorName;
+    }
+
+    public void setSuperiorName(String superiorName) {
+        this.superiorName = superiorName;
+    }
+
+    public String getOldPassword() {
+        return oldPassword;
+    }
+
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
+    }
+
     @Override
+    @JsonIgnore
+    @ApiModelProperty(hidden = true)
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.authorities == null)
             return null;
-        return authorities.parallelStream().map(a -> new SimpleGrantedAuthority(a.getName())).collect(Collectors.toCollection(ArrayList<GrantedAuthority>::new));
+        return authorities.parallelStream().map(a -> new SimpleGrantedAuthority(a.getName())).collect(Collectors.toList());
 
-        /*
-        List<GrantedAuthority> authorities = new ArrayList<>();
-        for (Role role : this.authorities) {
-            authorities.add(new SimpleGrantedAuthority(role.getName()));
-        }
-        return authorities;*/
     }
 
     @ApiModelProperty(hidden = true)
@@ -130,8 +170,8 @@ public class User implements UserDetails {
     }
 
     @ApiModelProperty(hidden = true)
-    @JsonIgnore
-    public Set<Role> getRole() {
+    @ApiParam(name = "role",hidden = true)
+    public List<Role> getRole() {
         return authorities;
     }
 
@@ -147,24 +187,28 @@ public class User implements UserDetails {
 
     @ApiModelProperty(hidden = true)
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @ApiModelProperty(hidden = true)
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @ApiModelProperty(hidden = true)
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @ApiModelProperty(hidden = true)
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
@@ -176,6 +220,20 @@ public class User implements UserDetails {
         String s = new ObjectMapper().writeValueAsString(ss);
         System.out.println(s);
         return s;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, username);
     }
 
     @Override

@@ -7,24 +7,89 @@
         <id property="id" column="id"/>
         <result column="name" property="name"/>
         <result column="parentId" property="parentId"/>
-        <result column="isParent" property="isParent"/>
+        <result column="enabled" property="enabled"/>
+        <result column="creationUid" property="creationUid"/>
+        <result column="logo" property="logo"/>
+        <result column="type" property="type"/>
+        <result column="creationTime" property="creationTime"/>
+        <result column="deptSite" property="deptSite"/>
+        <result column="contact" property="contact"/>
+        <result column="contactPhone" property="contactPhone"/>
+        <result column="email" property="email"/>
+        <result column="deptUrl" property="deptUrl"/>
+        <association property="superiorName" column="parentId" select="com.mebay.mapper.DepartmentMapper.getDeptNameById"/>
+    </resultMap>
+    
+    <resultMap id="elementaryResultMap" type="com.mebay.bean.Department" extends="BaseResultMap">
         <collection property="children" ofType="com.mebay.bean.Department"
                     select="com.mebay.mapper.DepartmentMapper.getDepByPid" column="id">
         </collection>
     </resultMap>
 
-    <select id="getDepById" resultMap="BaseResultMap">
+    <resultMap id="DeptTreeId" type="com.mebay.bean.DeptTreeId">
+        <id property="id" column="id"/>
+        <collection property="children" ofType="com.mebay.bean.DeptTreeId"
+                    select="getDeptIdTreeByPid" column="id"/>
+    </resultMap>
+
+    <select id="getDeptIdTreeByPid" resultMap="DeptTreeId">
+        select d.id from department d where d.parentId = #{id} and d.enabled = true
+    </select>
+
+    <select id="getDeptIdTreeById" resultMap="DeptTreeId">
+        select d.id from department d where d.id = #{id} and d.enabled = true
+    </select>
+
+    <select id="getDeptNameById" resultType="String">
+        select name from department where id = #{id};
+    </select>
+
+    <select id="getDeptById" resultMap="BaseResultMap">
         select d1.*
         from department d1
         where d1.`id` = #{id}
+          AND d1.enabled = true
+    </select>
+
+    <select id="getDeptsTreeById" resultMap="elementaryResultMap">
+        select d1.*
+        from department d1
+        where d1.`id` = #{id}
+          AND d1.enabled = true
+    </select>
+
+    <select id="findDeptByPid" resultType="com.mebay.bean.Department">
+        select d1.*
+        from department d1
+        where d1.`parentId` = #{id}
           AND d1.enabled = true;
     </select>
 
-    <select id="getDepByPid" resultMap="BaseResultMap">
+    <select id="getDepByPid" resultMap="elementaryResultMap">
         select d1.*
         from department d1
-        where d1.`parentId` = #{pid}
+        where d1.`parentId` = #{id}
           AND d1.enabled = true;
+    </select>
+
+    <select id="getDeptByIds" resultMap="BaseResultMap">
+        select d1.*
+        from department d1
+        where d1.`id` in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+          AND d1.enabled = true
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <select id="getDeptsByCreationId" resultMap="DeptTreeId">
+        select d1.id
+        from department d1
+        where d1.`creationUid` = #{uid}
+          AND d1.enabled = true
     </select>
 
     <select id="getAllDeps" resultType="com.mebay.bean.Department">
@@ -39,36 +104,38 @@
         where d.id = #{id};
     </select>
 
-    <select id="isParent" resultType="Boolean" parameterType="Long">
-        select d.isParent
-        from department d
-        where d.id = #{id};
-    </select>
-
     <insert id="addDep" parameterType="com.mebay.bean.Department">
         insert into department
         set name = #{name},
         parentId = #{parentId},
-        <if test="logoPath != null">
-            logoPath = #{logoPath},
+        <if test="logo != null">
+            logo = #{logo},
         </if>
         <if test="creationUid != null">
             creationUid = #{creationUid},
         </if>
+        <if test="deptSite">
+            deptSite = #{deptSite},
+        </if>
+        type = #{type},
+        <if test="time != null">
+            creationTime = #{time},
+        </if>
+        <if test="email != null">
+            email = #{email},
+        </if>
+        <if test="deptUrl != null">
+            deptUrl = #{deptUrl},
+        </if>
+        contact = #{contact},
+        contactPhone = #{contactPhone},
         enabled = #{enabled};
     </insert>
-
-    <update id="setParentById" >
-        update department
-        set isParent = #{isParent}
-        where id = #{id};
-    </update>
 
     <delete id="deleteDep" parameterType="Long">
         delete
         from department
         where id = #{id}
-          and isParent = false;
     </delete>
 
     <update id="updateDep">
@@ -83,14 +150,32 @@
             <if test="dep.enabled != null">
                 enabled = #{dep.enabled},
             </if>
-            <if test="dep.isParent != null">
-                isParent = #{dep.isParent},
-            </if>
             <if test="dep.creationUid != null">
                 creationUid = #{dep.creationUid},
             </if>
-            <if test="dep.logoPath != null">
-                logoPath = #{dep.logoPath},
+            <if test="dep.logo != null">
+                logo = #{dep.logo},
+            </if>
+            <if test="dep.type != null">
+                type = #{dep.type},
+            </if>
+            <if test="dep.time != null">
+                creationTime = #{dep.time},
+            </if>
+            <if test="dep.deptSite != null">
+                deptSite = #{dep.deptSite},
+            </if>
+            <if test="dep.contact != null">
+                contact = #{dep.contact},
+            </if>
+            <if test="dep.contactPhone != null">
+                contactPhone = #{dep.contactPhone},
+            </if>
+            <if test="dep.email != null">
+                email = #{dep.email},
+            </if>
+            <if test="dep.deptUrl != null">
+                deptUrl = #{dep.deptUrl},
             </if>
         </set>
         where id = #{originalId}

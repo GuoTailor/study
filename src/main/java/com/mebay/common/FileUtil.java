@@ -56,20 +56,20 @@ public class FileUtil {
             String suffixName = "";
             if (fileName != null)
                 suffixName = fileName.substring(fileName.lastIndexOf("."));
-            System.out.println("原文件后缀名： " + suffixName + "\n新文件后缀名：" + FileUtil.getFileType(file));
 
             // 重新生成唯一文件名，用于存储数据库
             String type = getFileType(file);
+            System.out.println("原文件后缀名： " + suffixName + "\n新文件后缀名：" + type);
             String newFileName = UUID.randomUUID().toString() + "-" + System.currentTimeMillis() + (type == null ? suffixName : type);
             System.out.println("新的文件名： " + newFileName);
             File f = new File(path);
             if (!f.exists() && !f.mkdirs())
                 return null;
-            if (path.charAt(path.length() - 1) != '\\' || path.charAt(path.length() - 1) != '/')
-                path += '/';
-            System.out.println(path);
+            System.out.println(path + " >> " + f.getAbsolutePath());
             try {
-                file.transferTo(new File(path, newFileName));
+                file.transferTo(new File(f.getCanonicalPath(), newFileName));
+                if (path.charAt(path.length() - 1) != '\\' || path.charAt(path.length() - 1) != '/')
+                    path += "/";
                 return path + newFileName;
             } catch (IOException e) {
                 e.printStackTrace();

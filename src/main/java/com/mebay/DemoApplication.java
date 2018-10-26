@@ -2,6 +2,7 @@ package com.mebay;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -10,6 +11,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.io.IOException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 @SpringBootApplication
@@ -26,17 +29,19 @@ public class DemoApplication {
     }
 
     @Bean
-    public FilterRegistrationBean corsFilter() {
+    public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(false);
-        config.addAllowedOrigin("*");
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin("c");
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+
         source.registerCorsConfiguration("/**", config);
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
-        return bean;
+        System.out.println(">>>>>>>>>>>");
+        return new CorsFilter(source);
     }
 
 

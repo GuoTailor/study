@@ -46,7 +46,6 @@ public class Menu {
         this.parentId = parentId;
     }
 
-    @JsonIgnore
     public List<Role> getRoles() {
         return roles;
     }
@@ -61,5 +60,35 @@ public class Menu {
 
     public void setChildren(List<Menu> children) {
         this.children = children;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Menu menu = (Menu) o;
+
+        if (id != null ? !id.equals(menu.id) : menu.id != null) return false;
+        return url != null ? url.equals(menu.url) : menu.url == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (url != null ? url.hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "id=" + id +
+                ", url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", parentId=" + parentId +
+                ", roles=" + roles +
+                ", children=" + children +
+                '}';
     }
 }

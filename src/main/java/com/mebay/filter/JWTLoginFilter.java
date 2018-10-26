@@ -48,6 +48,7 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                 user = new ObjectMapper().readValue(req.getInputStream(), User.class);
                 logger.info(user.toString());
             } catch (IOException e) {
+                logger.info("登陆失败，账号密码解析错误");
                 throw new RuntimeException(e);
             }
         } else {

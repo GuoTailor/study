@@ -1,37 +1,71 @@
 package com.mebay.bean;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
+@ApiModel(value = "设备")
 public class Device {
+    @ApiModelProperty(hidden = true)
     private Long id;                        //ID
+    @ApiModelProperty(value = "DTU编号", required = true)
     private String DTUId;                   //DTU编号
+    @ApiModelProperty(value = "DTU型号")
     private String DTUModel;                //DTU型号
+    @ApiModelProperty(value = "站点名称", required = true)
     private String siteName;                //站点名称
+    @ApiModelProperty(value = "控制器型号")
     private String controllerModel;         //控制器型号
+    @ApiModelProperty(value = "通信号码", required = true)
     private String communicationNumber;     //通信号码
+    @ApiModelProperty(value = "注册日期", required = true)
     private Date registrationDate;          //注册日期
+    @ApiModelProperty(value = "许可到期日", required = true)
     private Date licenseExpirationDate;     //许可到期日
+    @ApiModelProperty(hidden = true)
     private String uploadPhoto;             //照片上传
+    @ApiModelProperty(value = "控制器品牌")
     private String controllerBrand;         //控制器品牌
+    @ApiModelProperty(value = "控制器类型", required = true)
     private String controllerType;          //控制器类型
+    @ApiModelProperty(value = "操作员", required = true)
     private Long userId;                    //操作员
+    @ApiModelProperty(value = "许可周期", required = true)
     private String licensePeriod;           //许可周期
+    @ApiModelProperty(value = "设备状态", required = true)
     private String deviceStatus;            //设备状态
+    @ApiModelProperty(value = "其他")
     private String other;                   //其他
+    @ApiModelProperty(value = "机组型号", required = true)
     private String unitModel;               //机组型号
+    @ApiModelProperty(value = "发动机型号", required = true)
     private String engineModel;             //发动机型号
+    @ApiModelProperty(value = "调速类型")
     private String speedControlType;        //调速类型
+    @ApiModelProperty(value = "调速板型号")
     private String speedControlBoardModel;  //调速板型号
+    @ApiModelProperty(value = "调压器类型")
     private String pressureRegulatorType;   //调压器类型
+    @ApiModelProperty(value = "生产厂家")
     private String manufacturer;            //生产厂家
+    @ApiModelProperty(value = "发电机型号", required = true)
     private String electricGeneratorModel;  //发电机型号
+    @ApiModelProperty(value = "执行器类型")
     private String actuatorType;            //执行器类型
+    @ApiModelProperty(value = "油箱容量")
     private Float fuelTankCapacity;         //油箱容量
+    @ApiModelProperty(value = "备注")
     private String reference;               //备注
+    @ApiModelProperty(hidden = true)
     private String accessory;               //附件
+    @ApiModelProperty(value = "电子围栏状态")
     private Boolean electronicFenceStatus;  //电子围栏状态
+    @ApiModelProperty(value = "围栏范围设置")
     private String electronicFenceScope;    //围栏范围设置
+    @ApiModelProperty(hidden = true)
     private Date createTime;                //添加时间
+    @ApiModelProperty(hidden = true)
     private Long depId;                     //单位id
 
     public Long getId() {

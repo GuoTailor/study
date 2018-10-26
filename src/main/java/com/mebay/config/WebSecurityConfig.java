@@ -3,6 +3,7 @@ package com.mebay.config;
 import com.mebay.filter.JWTAuthenticationFilter;
 import com.mebay.filter.JWTLoginFilter;
 import com.mebay.service.UserService;
+import io.swagger.models.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;

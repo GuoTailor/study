@@ -4,6 +4,19 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mebay.mapper.RequestMethodMapper">
     <select id="getAll" resultType="com.mebay.bean.RequestMethod">
-        select * from request_method;
+        select *
+        from request_method;
+    </select>
+
+    <select id="getRequestMethodByMenuId" resultType="com.mebay.bean.RequestMethod">
+        select *
+        from request_method
+        where menuId = #{menuId};
+    </select>
+
+    <select id="getRequestMethodByRoleId" resultType="com.mebay.bean.RequestMethod">
+        select *
+        from request_method
+        where roleId = #{roleId};
     </select>
 </mapper>

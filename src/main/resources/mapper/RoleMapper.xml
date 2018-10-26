@@ -3,9 +3,25 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.mebay.mapper.RoleMapper">
-    <select id="findRolesAll" resultType="com.mebay.bean.Role">
-        SELECT * FROM role;
+    <resultMap id="BaseResultMap" type="com.mebay.bean.Role">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="nameZh" property="nameZh"/>
+        <result column="parentId" property="parentId"/>
+        <collection property="children" ofType="com.mebay.bean.Role" column="id" select="findRoleByPid"/>
+    </resultMap>
+
+    <select id="findRolesById" resultMap="BaseResultMap">
+        SELECT * FROM role where id = #{id}
     </select>
+
+    <select id="findAllRole" resultType="com.mebay.bean.Role">
+        select * from role
+        <if test="search != null">
+            where ${search}
+        </if>
+    </select>
+
     <select id="findRolesByName" parameterType="String" resultType="com.mebay.bean.Role">
         SELECT * FROM role
         <where>
@@ -16,16 +32,35 @@
                 or nameZh = #{nameZh}
             </if>
         </where>
+    </select>
 
+    <select id="findRoleByPid" resultMap="BaseResultMap">
+        select * from role where pid = #{pid};
+    </select>
+
+    <select id="findRoleById" resultType="com.mebay.bean.Role">
+        select * from role where id = #{id}
     </select>
 
     <insert id="addNewRole">
-        INSERT INTO role set name   = #{role}, nameZh = #{roleZh};
+        INSERT INTO role set name = #{role}, nameZh = #{roleZh};
     </insert>
 
-    <delete id="deleteRoleById" parameterType="Long">
-        DELETE FROM role WHERE id = #{rid};
-    </delete>
+    <insert id="addMenuToRole">
+        insert into menu_role(mid, rid) values
+        <foreach collection="mids" separator="," item="mid">
+            (#{mid}, #{rid})
+        </foreach>
+    </insert>
+
+    <insert id="addMenuMethodToRole">
+        <foreach collection="menuIds" item="menuId" index="key" separator=";">
+            insert into request_method(method, roleId, menuId) values
+            <foreach collection="menuId" separator="," item="method">
+                (#{method}, #{rid}, #{key})
+            </foreach>
+        </foreach>
+    </insert>
 
     <update id="updateRole" parameterType="com.mebay.bean.Role">
         update role
@@ -39,4 +74,25 @@
         </set>
         where id = #{id}
     </update>
+
+    <delete id="deleteRoleById" parameterType="Long">
+        DELETE FROM role WHERE id = #{rid};
+    </delete>
+
+    <delete id="removeMenuByRole">
+        delete FROM menu_role where rid = #{rid} and mid inupdateRole
+        <foreach collection="mids" open="(" separator="," close=")" item="mid">
+            #{mid}
+        </foreach>
+    </delete>
+
+    <delete id="removeMenuMethodByRole">
+        <foreach collection="menuIds" item="menuId" index="key" separator=";">
+            delete from request_method where menuId = #{key} and roleId = #{rid} and method in
+            <foreach collection="menuId" open="(" separator="," close=")" item="method">
+                #{method}
+            </foreach>
+        </foreach>
+    </delete>
+
 </mapper>

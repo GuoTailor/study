@@ -1,16 +1,19 @@
 package com.mebay.service;
 
-import com.mebay.bean.Department;
-import com.mebay.bean.Role;
-import com.mebay.bean.User;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.mebay.bean.*;
 import com.mebay.common.FileUtil;
 import com.mebay.common.UserUtils;
+import com.mebay.common.Util;
 import com.mebay.mapper.DepartmentMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
 
 @Service
@@ -18,6 +21,8 @@ import java.util.logging.Logger;
 public class DepartmentService {
     private static final Logger logger = Logger.getLogger(DepartmentService.class.getSimpleName());
     private final DepartmentMapper departmentMapper;
+    @Autowired
+    private UserService userService;
 
     @Autowired
     public DepartmentService(DepartmentMapper departmentMapper) {
@@ -26,59 +31,88 @@ public class DepartmentService {
 
     public int creationDep(Department department) {
         department.setEnabled(true);
-        department.setParent(false);
         User user = UserUtils.getCurrentUser();
-        Department deps = getDepById(user.getDepId());
-        logger.info(department.getParentId() + " " + (deps == null));
-        if (!user.getRole().contains(new Role("ROLE_HIGH_GRADE_ADMIN")))
-            department.setCreationUid(user.getId());
-        if (deps != null && deps.existId(department.getParentId()) != null && departmentMapper.enable(department.getParentId())) {
-            if (departmentMapper.addDep(department) == 1) {
-                if (!departmentMapper.setParentById(department.getParentId(), true))
-                    TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();  //手动回滚事务
-                return 1;
+        department.setParentId(UserUtils.getCurrentUser().getDepId());
+        //logger.info(department.getParentId() + " " + (deps == null));
+        if (user.getRole().contains(new Role("ROLE_HIGH_GRADE_ADMIN"))) {
+            if (department.getParentId().equals(1L)) {
+                department.setCreationUid(user.getId());
+                logger.info("nmka>>>>>>>>>>>");
             }
-            return 0;
+        }
+        if (departmentMapper.enable(department.getParentId())) {
+            return departmentMapper.addDep(department);
         }
         return -1;
     }
 
     public int updateDep(Department dep, Long did) {
-        Department deps = getDepByUid();
-        Department d = deps.existId(did);
-        if (d == null) {
-            return -1;
+        if (Util.isEmpty(dep))
+            return -2;
+        List<DeptTreeId> deptTreeIds = getDeptIdTreeByUser();
+        for (DeptTreeId deptId : deptTreeIds) {
+            DeptTreeId d = deptId.findSubById(did);
+            if (d != null) {
+                String logoPath = getDepById(d.getId()).getLogo();
+                int i = departmentMapper.updateDep(dep, did);
+                if (i == 1 && logoPath != null) {
+                    FileUtil.deleteFile(logoPath);
+                }
+                return i;
+            }
         }
-        if (d.getLogoPath() != null) {
-            FileUtil.deleteFile(d.getLogoPath());
-        }
-        return departmentMapper.updateDep(dep, did);
+        return -1;
     }
 
-    public Department getDepByUid() {
-        return getDepById(UserUtils.getCurrentUser().getDepId());
+    public List<DeptTreeId> getDeptIdTreeByUser() {
+        User user = UserUtils.getCurrentUser();
+        if (Util.hasAny(Role::equalsRole, user.getRole(), "ROLE_HIGH_GRADE_ADMIN")) {
+            return departmentMapper.getDeptsByCreationId(user.getId());
+        }
+        return Collections.singletonList(departmentMapper.getDeptIdTreeById(user.getDepId()));
+    }
+
+    /**
+     * 获取单位
+     * @return 单位
+     */
+    public PageView<Department> getDeptByUid(PageQuery pageQuery) {
+        List<Long> ids = new LinkedList<>();
+        getDeptIdTreeByUser().forEach(d -> d.getIDs(ids));
+        Page<Department> page = PageHelper.startPage(pageQuery);
+        departmentMapper.getDeptByIds(ids, pageQuery.buildSubSql());
+        return PageView.build(page);
     }
 
     public Department getDepById(Long id) {
-        return departmentMapper.getDepById(id);
+        return departmentMapper.getDeptById(id);
     }
 
     public int deleteDep(Long id) {
-        if (departmentMapper.isPaerent(id))
-            return -1;
-        return departmentMapper.deleteDep(id);
+        List<DeptTreeId> deptTreeIds = getDeptIdTreeByUser();
+        for (DeptTreeId deptId : deptTreeIds) {
+            DeptTreeId d = deptId.findSubById(id);
+            if (d != null) {
+                String logoPath = getDepById(d.getId()).getLogo();
+                if(d.getChildren().isEmpty() && userService.getUserByDepId(d.getId()) == null) {
+                    int i = departmentMapper.deleteDep(id);
+                    if(i == 1) {
+                        FileUtil.deleteFile(logoPath);
+                    }
+                    return i;
+                }else
+                    return -2;
+            }
+        }
+        return -1;
     }
 
-    public Department getDepByPid(Long pid) {
-        return departmentMapper.getDepByPid(pid);
+    public List<Department> getDepByPid(Long pid) {
+        return departmentMapper.findDeptByPid(pid);
     }
 
     public boolean enable(Long parentId) {
         return departmentMapper.enable(parentId);
-    }
-
-    public void setParentById(Long id, boolean isParent) {
-        departmentMapper.setParentById(id, isParent);
     }
 
 }

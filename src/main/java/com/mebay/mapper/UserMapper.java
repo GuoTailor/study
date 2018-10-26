@@ -12,7 +12,9 @@ public interface UserMapper {
 
     User getUserByToken(@Param("token") String token);
 
-    List<User> getAll();
+    User getUserByDeptId(@Param("deptId")Long id);
+
+    List<User> getUsersByDeptId(@Param("listId") List<Long> listId, @Param("search") String search);
 
     int insert(User user);
 
@@ -20,7 +22,13 @@ public interface UserMapper {
 
     List<Role> getRolesByUserId(@Param("id") Long id);
 
-    int addRolesForUser(@Param("userid") int id, @Param("rids") Long[] rids);
+    int addRolesForUser(@Param("userid") Long id, @Param("rids") Long[] rids);
 
-    int deleteUser(@Param("id") int id);
+    int addRoleForUser(@Param("userid") Long id, @Param("rid") Long rid);
+
+    int deleteRoleForUser(@Param("userid") Long id, @Param("rid") Long rids);
+
+    int deleteUser(@Param("id") Long id);
+
+    int updateUser(@Param("id") Long id, @Param("user") User user);
 }

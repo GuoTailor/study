@@ -2,6 +2,7 @@ package com.mebay.common;
 
 import com.mebay.bean.User;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.InetAddress;
@@ -18,6 +19,19 @@ public class UserUtils {
             logger.warning("user不存在");
         }
         return user;
+    }
+
+    public static String passwordEncoder(String password) {
+        if (password == null || password.isEmpty()) return null;
+        return new BCryptPasswordEncoder().encode(password);
+    }
+
+    public static boolean isAdmin() {
+        return getCurrentUser().getRole().stream().anyMatch(r -> isAdmin(r.getName()));
+    }
+
+    public static boolean isAdmin(String role) {
+        return role.matches("ROLE_[\\w]*_ADMIN");
     }
 
     /**
