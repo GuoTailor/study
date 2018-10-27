@@ -3,8 +3,9 @@ package com.mebay.config;
 import com.mebay.filter.JWTAuthenticationFilter;
 import com.mebay.filter.JWTLoginFilter;
 import com.mebay.service.UserService;
-import io.swagger.models.HttpMethod;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -12,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsUtils;
@@ -26,9 +28,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler;
     private final UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource;
     private final UrlAccessDecisionManager urlAccessDecisionManager;
+    private final MyAuthenticationProvider myAuthenticationProvider;
 
     @Autowired
-    public WebSecurityConfig(UserService userService, MyAuthenticationFailureHandler failureHandler, MyAuthenticationSuccessHandler successHandler, AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler, UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource, UrlAccessDecisionManager urlAccessDecisionManager) {
+    public WebSecurityConfig(UserService userService, MyAuthenticationFailureHandler failureHandler, MyAuthenticationSuccessHandler successHandler, AuthenticationAccessDeniedHandler authenticationAccessDeniedHandler, UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource, UrlAccessDecisionManager urlAccessDecisionManager, MyAuthenticationProvider myAuthenticationProvider) {
         this.userService = userService;
         System.out.println("nmka");
         this.failureHandler = failureHandler;
@@ -36,11 +39,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.authenticationAccessDeniedHandler = authenticationAccessDeniedHandler;
         this.urlFilterInvocationSecurityMetadataSource = urlFilterInvocationSecurityMetadataSource;
         this.urlAccessDecisionManager = urlAccessDecisionManager;
+        this.myAuthenticationProvider = myAuthenticationProvider;
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
+        //auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
+        myAuthenticationProvider.setUserService(userService);
+        myAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
+        auth.authenticationProvider(myAuthenticationProvider);
     }
 
     protected void configure(HttpSecurity http) throws Exception {
@@ -69,10 +76,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling().accessDeniedHandler(authenticationAccessDeniedHandler)
                 .and()
                 .addFilter(new JWTLoginFilter(authenticationManager(), failureHandler, successHandler))
-                .addFilter(new JWTAuthenticationFilter(authenticationManager(), userService));
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()));
 
         // 禁用缓存
         http.headers().cacheControl();
-        authenticationManager();
+    }
+
+    @Bean
+    @Override
+    public UserDetailsService userDetailsServiceBean() throws Exception {
+        return super.userDetailsServiceBean();
     }
 }

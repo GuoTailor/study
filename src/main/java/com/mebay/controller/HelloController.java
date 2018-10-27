@@ -30,7 +30,8 @@ public class HelloController {
     @ApiOperation(value = "登陆", notes = "测试账号：test，密码：admin\n")
     @ApiImplicitParams({
             @ApiImplicitParam(paramType = "query", name = "username", value = "用户名", required = true, dataType = "String"),
-            @ApiImplicitParam(paramType = "query", name = "password", value = "密码", required = true, dataType = "String")
+            @ApiImplicitParam(paramType = "query", name = "password", value = "密码", required = true, dataType = "String"),
+            @ApiImplicitParam(paramType = "query", name = "superiorName", value = "单位", required = true, dataType = "String")
     })
     @ApiResponse(code = 200, message = "成功")
     @PostMapping("/login")

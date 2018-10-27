@@ -33,10 +33,11 @@ public class UserController {
     public RespBody<String> logon(@ModelAttribute User user) {
         System.out.println(user.toString());
         return new RespBody<String>(userService.register(user))
-                .put(-2, "用户名重复，注册失败!")
+                .put(-2, "注册失败!用户名重复")
                 .put(-1, "该用户不能在该单位下，注册失败")
                 .put(1, "注册成功!")
-                .put(0, "注册失败!");
+                .put(0, "系统异常!请联系管理员")
+                .put(-3, "注册失败!密码必须为大写字母+小写字母+数字");
     }
 
     @ApiOperation(value = "获取当前用户所属节点下的所有用户", notes = "如果自己也在该单位下那么也能查出自己，如果用户不能查看其他人账户将只返回他自己")

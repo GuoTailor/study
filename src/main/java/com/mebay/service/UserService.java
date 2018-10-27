@@ -2,7 +2,6 @@ package com.mebay.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.mebay.Constant;
 import com.mebay.bean.*;
 import com.mebay.common.UserUtils;
 import com.mebay.common.Util;
@@ -17,7 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 @Service
 @Transactional
@@ -74,7 +77,9 @@ public class UserService implements UserDetailsService {
         if (userMapper.getUserByUsername(user.getUsername()) != null) {
             return -2;
         }
-
+        if (!Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\S]{6,16}$").matcher(user.getPassword()).matches()) {
+            return -3;
+        }
         if (user.getDepId() != null) {
             List<DeptTreeId> dept = departmentService.getDeptIdTreeByUser();
             for (DeptTreeId d : dept) {
@@ -82,6 +87,8 @@ public class UserService implements UserDetailsService {
                     return -1;
                 }
             }
+        }else {
+            user.setDepId(UserUtils.getCurrentUser().getDepId());
         }
         user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
         int i = userMapper.insert(user);

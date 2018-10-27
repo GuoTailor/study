@@ -42,24 +42,26 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
         User user = new User();
         String username = obtainUsername(req);
         String password = obtainPassword(req);
-        logger.info("nmka>>>>>" + username + " " + password);
-        if (username == null || password == null) {
+        String superiorName = req.getParameter("superiorName");
+        logger.info("nmka>>>>>" + username + " " + password + "  " + superiorName);
+        if (username == null || password == null || superiorName == null) {
             try {
                 user = new ObjectMapper().readValue(req.getInputStream(), User.class);
                 logger.info(user.toString());
             } catch (IOException e) {
                 logger.info("登陆失败，账号密码解析错误");
-                throw new RuntimeException(e);
+                user.setUsername(username);
+                user.setPassword(password);
             }
         } else {
             user.setUsername(username);
             user.setPassword(password);
         }
-        return authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        user.getUsername(),
-                        user.getPassword())
-        );
+        UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getUsername(),
+                user.getPassword());
+        authRequest.setDetails(superiorName);
+        System.out.println(getAuthenticationManager() == null);
+        return authenticationManager.authenticate(authRequest);
     }
 
     // 用户成功登录后，这个方法会被调用，我们在这个方法里生成token

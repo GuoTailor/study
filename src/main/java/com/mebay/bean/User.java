@@ -32,7 +32,7 @@ public class User implements UserDetails {
     private Date creationTime;
     @ApiModelProperty(hidden = true)
     private Date updateTime;
-    @ApiModelProperty(value = "属于哪个单位（单位id）", required = true)
+    @ApiModelProperty(value = "属于哪个单位（单位id）")
     private Long depId;
     @ApiModelProperty(value = "权限集合", hidden = true)
     private List<Role> authorities;
@@ -240,14 +240,19 @@ public class User implements UserDetails {
     public String toString() {
         return "User{" +
                 "id=" + id +
-                ", password='" + password + '\'' +
                 ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
                 ", phone='" + phone + '\'' +
                 ", sex='" + sex + '\'' +
                 ", name='" + name + '\'' +
                 ", creationTime=" + creationTime +
                 ", updateTime=" + updateTime +
+                ", depId=" + depId +
                 ", authorities=" + authorities +
+                ", logo='" + logo + '\'' +
+                ", email='" + email + '\'' +
+                ", superiorName='" + superiorName + '\'' +
+                ", oldPassword='" + oldPassword + '\'' +
                 '}';
     }
 }

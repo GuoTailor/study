@@ -19,9 +19,10 @@ import java.io.IOException;
 public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
+    public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         User user = (User) authentication.getPrincipal();
-        String token = TokenMgr.createJWT(user.getId() + "", user.getUsername(), user.getRoleString(), user.getDepId().toString(), Constant.JWT_TTL);
+        //authentication.getDetails()
+        String token = TokenMgr.createJWT(user.getId().toString(), user.getUsername(), user.getRoleString(), user.getDepId().toString(), Constant.JWT_TTL);
         httpServletResponse.setContentType("application/json;charset=utf-8");
         httpServletResponse.addHeader("Authorization", "Bearer " + token);
         Util.addHeader(httpServletResponse, httpServletRequest);

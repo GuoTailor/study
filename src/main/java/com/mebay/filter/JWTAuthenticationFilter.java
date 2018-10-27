@@ -30,18 +30,16 @@ import java.util.Set;
  */
 public class JWTAuthenticationFilter extends BasicAuthenticationFilter {
 
-    private UserService userService;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
-        this.userService = userService;
     }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            final String authToken = authHeader.replace("Bearer ", ""); // The part after "Bearer "
+            final String authToken = authHeader.replaceFirst("Bearer ", ""); // The part after "Bearer "
             CheckPOJO checkPOJO = TokenMgr.validateJWT(authToken);
 
             if (checkPOJO.isSuccess()) {

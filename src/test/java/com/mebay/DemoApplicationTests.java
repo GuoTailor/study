@@ -71,6 +71,7 @@ public class DemoApplicationTests {
         System.out.println(matcher.matches());
         Matcher matcher2 = Pattern.compile("/[\\w/]*\\.json").matcher("/user/1.json");
         System.out.println(matcher2.matches());
+        System.out.println(Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\S]{6,16}$").matcher("123D5a").matches());
         System.out.println("./dfj.jsjk".replaceFirst("\\.", ""));
     }
 
