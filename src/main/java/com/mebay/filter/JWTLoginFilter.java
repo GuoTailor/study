@@ -52,14 +52,16 @@ public class JWTLoginFilter extends UsernamePasswordAuthenticationFilter {
                 logger.info("登陆失败，账号密码解析错误");
                 user.setUsername(username);
                 user.setPassword(password);
+                user.setSuperiorName(superiorName);
             }
         } else {
             user.setUsername(username);
             user.setPassword(password);
+            user.setSuperiorName(superiorName);
         }
         UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(user.getUsername(),
                 user.getPassword());
-        authRequest.setDetails(superiorName);
+        authRequest.setDetails(user.getSuperiorName());
         System.out.println(getAuthenticationManager() == null);
         return authenticationManager.authenticate(authRequest);
     }

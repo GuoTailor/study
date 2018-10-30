@@ -37,7 +37,7 @@ public class MyAuthenticationProvider extends AbstractUserDetailsAuthenticationP
                     "AbstractUserDetailsAuthenticationProvider.badCredentials",
                     "Bad credentials"));
         }
-
+        System.out.println(superiorName);
         String presentedPassword = authentication.getCredentials().toString();
         if (StringUtils.isEmpty(superiorName) || !superiorName.equals(user.getSuperiorName())) {
             logger.debug("单位验证失败:单位名与存储值不匹配");

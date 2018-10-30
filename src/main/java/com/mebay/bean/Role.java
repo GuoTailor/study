@@ -16,7 +16,7 @@ public class Role implements StreamTree<Role>{
     @ApiModelProperty(hidden = true)
     private List<String> method;
     @ApiModelProperty(value = "权限的上一级id")
-    private Long parentId;
+    private Long pid;
     private List<Role> children;
 
     public Role(String name) {
@@ -65,12 +65,12 @@ public class Role implements StreamTree<Role>{
         this.children = children;
     }
 
-    public Long getParentId() {
-        return parentId;
+    public Long getPid() {
+        return pid;
     }
 
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 
     @Override

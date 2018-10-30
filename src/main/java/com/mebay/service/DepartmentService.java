@@ -56,7 +56,7 @@ public class DepartmentService {
                 String logoPath = getDepById(d.getId()).getLogo();
                 int i = departmentMapper.updateDep(dep, did);
                 if (i == 1 && logoPath != null) {
-                    FileUtil.deleteFile(logoPath);
+                    FileUtil.deleteFile("." + logoPath);
                 }
                 return i;
             }
@@ -97,7 +97,7 @@ public class DepartmentService {
                 if(d.getChildren().isEmpty() && userService.getUserByDepId(d.getId()) == null) {
                     int i = departmentMapper.deleteDep(id);
                     if(i == 1) {
-                        FileUtil.deleteFile(logoPath);
+                        FileUtil.deleteFile("." + logoPath);
                     }
                     return i;
                 }else

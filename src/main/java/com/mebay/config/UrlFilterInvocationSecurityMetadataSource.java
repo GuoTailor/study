@@ -79,7 +79,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
             logger.info("OPTIONS");
             return null;
         }
-        //TODO 菜单刷新问题
+
         for (Menu menu : allMenu) {
             if (Pattern.compile(menu.getUrl()).matcher(requestUrl).matches() && menu.getRoles().size() > 0) {
                 logger.info(method + "访问:" + menu.getUrl());

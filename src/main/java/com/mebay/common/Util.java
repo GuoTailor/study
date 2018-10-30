@@ -1,5 +1,7 @@
 package com.mebay.common;
 
+import com.mebay.bean.StreamTree;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.beans.IntrospectionException;
@@ -24,6 +26,17 @@ public class Util {
         return false;
     }
 
+    /**
+     * 用自己的方法判断{@code} element 是否在{@code} gather 里面出现过<p>
+     * 该方法不支持对继承了{@link com.mebay.bean.StreamTree}方法的 Children 遍历
+     *
+     * @param fun     判断方法
+     * @param gather  目标集合
+     * @param element 要检查的集合
+     * @param <T>     目标对象
+     * @param <K>     检查对象
+     * @return 如果 {@code} element 中的任何一个元素在{@code} gather 里面出现过就返回true 否则返回false
+     */
     public static <T, K> boolean hasAny(BiFunction<T, K, Boolean> fun, List<T> gather, K... element) {
         for (T t : gather) {
             for (K k : element) {
@@ -34,7 +47,7 @@ public class Util {
         return false;
     }
 
-    public static boolean isEmpty(Object obj){
+    public static boolean isEmpty(Object obj) {
         Class c = obj.getClass();
         Field[] fields = obj.getClass().getDeclaredFields();
         for (Field field : fields) {
@@ -45,14 +58,14 @@ public class Util {
                 e.printStackTrace();
             }
             if (o instanceof String) {
-                if (!((String)o).isEmpty()) {
+                if (!((String) o).isEmpty()) {
                     System.out.println(o);
                     return false;
-                }else
+                } else
                     continue;
             }
             if (o instanceof Collection) {
-                if (!((Collection)o).isEmpty())
+                if (!((Collection) o).isEmpty())
                     return false;
                 else
                     continue;
@@ -73,7 +86,7 @@ public class Util {
                 + " Pragma, Last-Modified, Cache-Control, Expires, Content-Type, "
                 + "X-E4M-With,userId,token,Authorization,deviceId,Access-Control-Allow-Origin,Access-Control-Allow-Headers,Access-Control-Allow-Methods");
         httpServletResponse.setHeader("Access-Control-Allow-Credentials", "true");
-        httpServletResponse.setHeader("Access-Control-Expose-Headers","Authorization");
+        httpServletResponse.setHeader("Access-Control-Expose-Headers", "Authorization");
         httpServletResponse.setHeader("XDomainRequestAllowed", "1");
     }
 

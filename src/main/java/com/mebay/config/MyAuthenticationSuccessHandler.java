@@ -21,7 +21,6 @@ public class MyAuthenticationSuccessHandler implements AuthenticationSuccessHand
     @Override
     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) throws IOException {
         User user = (User) authentication.getPrincipal();
-        //authentication.getDetails()
         String token = TokenMgr.createJWT(user.getId().toString(), user.getUsername(), user.getRoleString(), user.getDepId().toString(), Constant.JWT_TTL);
         httpServletResponse.setContentType("application/json;charset=utf-8");
         httpServletResponse.addHeader("Authorization", "Bearer " + token);

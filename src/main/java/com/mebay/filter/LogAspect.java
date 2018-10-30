@@ -16,7 +16,7 @@ public class LogAspect implements HandlerInterceptor {
 
     private static String LOGGER_SEND_TIME = "_send_time";
     private static String LOGGER_ENTITY = "_logger_entity";
-    private static String LOGGER_RETURN = "_return_data";
+    public static ThreadLocal<String> threadLocal = new ThreadLocal<>();
     private SimpleDateFormat format = new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒");
 
     @Override
@@ -29,7 +29,7 @@ public class LogAspect implements HandlerInterceptor {
         String url = request.getRequestURI();
         //获取请求参数信息
         String paramData = new ObjectMapper().writeValueAsString(request.getParameterMap());
-
+        System.out.println();
         /*for (Enumeration<String> e = request.getHeaderNames(); e.hasMoreElements();) {
             String header = e.nextElement();
             System.out.println(header + " : " + request.getHeader(header));
@@ -60,7 +60,11 @@ public class LogAspect implements HandlerInterceptor {
         loggerEntity.setTime((int) (currentTime - time));
         loggerEntity.setReturnTime(format.format(currentTime));
         loggerEntity.setStatusCode(Integer.toString(status));
-        loggerEntity.setReturnData(new ObjectMapper().writeValueAsString(request.getAttribute(LOGGER_RETURN)));
+        try {
+            loggerEntity.setReturnData(threadLocal.get());
+        } finally {
+            threadLocal.remove();
+        }
         System.out.println(loggerEntity);
     }
 

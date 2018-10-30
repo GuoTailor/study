@@ -91,20 +91,10 @@ public class UserService implements UserDetailsService {
             user.setDepId(UserUtils.getCurrentUser().getDepId());
         }
         user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
-        int i = userMapper.insert(user);
-        //user.getRole().forEach(System.out::println);
-        if (i == 1) {
-            //TODO 添加权限验证
-            /*Role role = roleMapper.findRolesByName("ROLE_STUDENT", null);
-            userMapper.addRolesForUser(userMapper.getUserByUsername(user.getUsername()).getId().intValue(),
-                    new Long[]{role.getId()});*/
-            //roleMapper.
-            return 1;
-        }
-        return 0;
+        return userMapper.insert(user);
     }
 
-    public int update(User user, Long id) {     //TODO 判断自己能否修改
+    public int update(User user, Long id) {
         if (Util.isEmpty(user))
             return -2;
         User present = userMapper.getUserById(UserUtils.getCurrentUser().getId());
@@ -123,6 +113,9 @@ public class UserService implements UserDetailsService {
         if (user.getPassword() != null && !user.getPassword().equals(""))
             user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
         else user.setPassword(null);
+        List<DeptTreeId> deptId = departmentService.getDeptIdTreeByUser();
+        if (!Util.hasAny((t, k) -> t.findSubById(id) != null,deptId, id))   //如果不在自己单位下就么有权限
+            return -3;
         if(UserUtils.isAdmin()) {
             //user.setId(null);
             return userMapper.updateUser(id, user);
@@ -134,10 +127,13 @@ public class UserService implements UserDetailsService {
         User present = userMapper.getUserById(UserUtils.getCurrentUser().getId());
         Role roles = roleMapper.findRolesById(present.getRole().stream().max(Comparator.comparing(Role::getId)).get().getId());
         List<Role> roleList = userMapper.getRolesByUserId(uid);
-        if (roles.findSubById(rid) != null && !Util.hasAny((r, l) -> r.getId().equals(l), roleList, rid)) {     //TODO 提示重负添加
-            return userMapper.addRoleForUser(uid, rid);
+        if (roles.findSubById(rid) == null) {
+            return -1;
         }
-        return -1;
+        if (Util.hasAny((r, l) -> r.getId().equals(l), roleList, rid)) {
+            return -2;
+        }
+        return userMapper.addRoleForUser(uid, rid);
     }
 
 
@@ -148,7 +144,8 @@ public class UserService implements UserDetailsService {
             if (d.findSubById(user.getDepId()) != null) {
                 List<Role> roleList = userMapper.getRolesByUserId(uid);
                 if (Util.hasAny((r, l) -> r.getId().equals(l), roleList, rid)) //如果用户不具有该权限就返回-1
-                    return userMapper.deleteRoleForUser(uid, rid);  //TODO 提示用户没有该权限
+                    return userMapper.deleteRoleForUser(uid, rid);
+                else return -2;
             }
         }
         return -1;
@@ -157,10 +154,5 @@ public class UserService implements UserDetailsService {
     public int delete(Long id) {
         return userMapper.deleteUser(id);
     }
-
-    /*public int updateRole(List<Role> rolesList) {
-    //TODO 权限更新待做
-
-    }*/
 
 }

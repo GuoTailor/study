@@ -56,7 +56,8 @@ public class UserController {
                 .put(1, "更新成功")
                 .put(-1, "没有该用户，或没有该用户的操作权限")
                 .put(0, "更新失败，未知错误")
-                .put(-2, "更新失败!请至少更新一个属性（字段）");
+                .put(-2, "更新失败!请至少更新一个属性（字段）")
+                .put(-3, "没有该用户的操作权限,不在自己单位下");
     }
 
     @DeleteMapping("/{id}")
@@ -77,6 +78,7 @@ public class UserController {
     public RespBody<String> addRole(@PathVariable Long id, @RequestParam Long rid) {
         return new RespBody<String>(userService.addRole(id, rid))
                 .put(-1, "没有该用户或角色，或没有该用户的操作权限")
+                .put(-2, "重复添加")
                 .put(1,"添加成功")
                 .put(0, "添加失败，未知错误");
     }
@@ -89,6 +91,7 @@ public class UserController {
     })
     public RespBody<String> deleteRole(@PathVariable Long id, @RequestParam Long rid) {
         return new RespBody<String>(userService.deleteRole(id, rid))
+                .put(-2, "该用户没有该权限")
                 .put(-1, "没有该用户或角色，或没有该用户的操作权限")
                 .put(1,"删除成功")
                 .put(0, "删除失败，未知错误");

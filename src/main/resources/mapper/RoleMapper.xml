@@ -7,7 +7,7 @@
         <id column="id" property="id"/>
         <result column="name" property="name"/>
         <result column="nameZh" property="nameZh"/>
-        <result column="parentId" property="parentId"/>
+        <result column="pid" property="pid"/>
         <collection property="children" ofType="com.mebay.bean.Role" column="id" select="findRoleByPid"/>
     </resultMap>
 

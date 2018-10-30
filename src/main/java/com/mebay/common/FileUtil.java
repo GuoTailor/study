@@ -79,6 +79,7 @@ public class FileUtil {
     }
 
     public static boolean deleteFile(String path) {
+        System.out.println(path);
         File file = new File(path);
         return file.delete();
     }

@@ -2,6 +2,7 @@ package com.mebay.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mebay.bean.RespBody;
+import com.mebay.common.Util;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
@@ -31,6 +32,7 @@ public class MyAuthenticationFailureHandler implements AuthenticationFailureHand
         }else if (e instanceof DisabledException) {
             respBean.put(0, "账户被禁用，登录失败，请联系管理员!");
         }
+        Util.addHeader(httpServletResponse, httpServletRequest);
         httpServletResponse.getWriter().write(new ObjectMapper().writeValueAsString(respBean));
     }
 }

@@ -1,0 +1,2061 @@
+swagger: '2.0'
+info:
+  description: |-
+    restfun 风格接口
+    这里面的所有接口访问都需要权限验证
+    都要在请求头中加入”authorization: Bearer “
+    在空格后面加token
+    用户登陆成功后返回的头中会有”authorization: Bearer token“
+  version: 0.0.13-SNAPSHOT
+  title: 铭贝api开发规范
+  contact:
+    name: 作者
+    url: 'https://baike.baidu.com/search/none?word=%E9%83%AD%E9%9B%A8%E8%A1%A1&pn=0&rn=10&enc=utf8'
+    email: 2350871838@qq.com
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'
+host: 39.108.114.59
+basePath: /
+tags:
+  - name: 其他杂项接口
+    description: 只有login无需jwt验证
+  - name: 单位
+    description: Dep Controller
+  - name: 用户
+    description: User Controller
+  - name: 系统角色
+    description: Role Controller
+  - name: 设备
+    description: Device Controller
+paths:
+  /device:
+    post:
+      tags:
+        - 设备
+      summary: 添加一个设备
+      operationId: addDeviceUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: DTUId
+          in: query
+          description: DTU编号
+          required: true
+          type: string
+        - name: DTUModel
+          in: query
+          description: DTU型号
+          required: false
+          type: string
+        - name: actuatorType
+          in: query
+          description: 执行器类型
+          required: false
+          type: string
+        - name: communicationNumber
+          in: query
+          description: 通信号码
+          required: true
+          type: string
+        - name: controllerBrand
+          in: query
+          description: 控制器品牌
+          required: false
+          type: string
+        - name: controllerModel
+          in: query
+          description: 控制器型号
+          required: false
+          type: string
+        - name: controllerType
+          in: query
+          description: 控制器类型
+          required: true
+          type: string
+        - name: deviceStatus
+          in: query
+          description: 设备状态
+          required: true
+          type: string
+        - name: electricGeneratorModel
+          in: query
+          description: 发电机型号
+          required: true
+          type: string
+        - name: electronicFenceScope
+          in: query
+          description: 围栏范围设置
+          required: false
+          type: string
+        - name: electronicFenceStatus
+          in: query
+          description: 电子围栏状态
+          required: false
+          type: boolean
+        - name: engineModel
+          in: query
+          description: 发动机型号
+          required: true
+          type: string
+        - name: fuelTankCapacity
+          in: query
+          description: 油箱容量
+          required: false
+          type: number
+          format: float
+        - name: licenseExpirationDate
+          in: query
+          description: 许可到期日
+          required: true
+          type: string
+          format: date-time
+        - name: licensePeriod
+          in: query
+          description: 许可周期
+          required: true
+          type: string
+        - name: manufacturer
+          in: query
+          description: 生产厂家
+          required: false
+          type: string
+        - name: other
+          in: query
+          description: 其他
+          required: false
+          type: string
+        - name: pressureRegulatorType
+          in: query
+          description: 调压器类型
+          required: false
+          type: string
+        - name: reference
+          in: query
+          description: 备注
+          required: false
+          type: string
+        - name: registrationDate
+          in: query
+          description: 注册日期
+          required: true
+          type: string
+          format: date-time
+        - name: siteName
+          in: query
+          description: 站点名称
+          required: true
+          type: string
+        - name: speedControlBoardModel
+          in: query
+          description: 调速板型号
+          required: false
+          type: string
+        - name: speedControlType
+          in: query
+          description: 调速类型
+          required: false
+          type: string
+        - name: unitModel
+          in: query
+          description: 机组型号
+          required: true
+          type: string
+        - name: userId
+          in: query
+          description: 操作员
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /device/edit:
+    get:
+      tags:
+        - 设备
+      summary: 获取用户能编辑的设备
+      operationId: getEditDevicesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: orderBy
+          in: query
+          description: 排序
+          required: false
+          type: string
+        - name: pageNum
+          in: query
+          description: 当前页号
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          description: 一页数量
+          required: false
+          type: integer
+          format: int32
+        - name: searchField
+          in: query
+          description: 查找字段
+          required: false
+          type: string
+          x-example: name
+        - name: searchOper
+          in: query
+          description: 查找方式
+          required: false
+          type: string
+          enum:
+            - '[[''cn'''
+            - '''包含'']'
+            - '[''eq'''
+            - '''等于'']'
+            - '[''nc'''
+            - '''不包含'']'
+            - '[''ne'''
+            - '''不等于'']'
+            - '[''gt'''
+            - '''大于'']'
+            - '[''lt'''
+            - '''小于'']'
+            - '[''bw'''
+            - '''开始于'']'
+            - '[''bn'''
+            - '''不开始于'']'
+            - '[''ew'''
+            - '''结束于'']'
+            - '[''en'''
+            - '''不结束于'']]'
+        - name: searchString
+          in: query
+          description: 查找的字符
+          required: false
+          type: string
+          x-example: 张
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«分页对象«设备»»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /device/look:
+    get:
+      tags:
+        - 设备
+      summary: 获取当前用户能查看的设备
+      operationId: getLookDevicesUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: orderBy
+          in: query
+          description: 排序
+          required: false
+          type: string
+        - name: pageNum
+          in: query
+          description: 当前页号
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          description: 一页数量
+          required: false
+          type: integer
+          format: int32
+        - name: searchField
+          in: query
+          description: 查找字段
+          required: false
+          type: string
+          x-example: name
+        - name: searchOper
+          in: query
+          description: 查找方式
+          required: false
+          type: string
+          enum:
+            - '[[''cn'''
+            - '''包含'']'
+            - '[''eq'''
+            - '''等于'']'
+            - '[''nc'''
+            - '''不包含'']'
+            - '[''ne'''
+            - '''不等于'']'
+            - '[''gt'''
+            - '''大于'']'
+            - '[''lt'''
+            - '''小于'']'
+            - '[''bw'''
+            - '''开始于'']'
+            - '[''bn'''
+            - '''不开始于'']'
+            - '[''ew'''
+            - '''结束于'']'
+            - '[''en'''
+            - '''不结束于'']]'
+        - name: searchString
+          in: query
+          description: 查找的字符
+          required: false
+          type: string
+          x-example: 张
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«分页对象«设备»»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/device/{id}':
+    put:
+      tags:
+        - 设备
+      summary: update
+      operationId: updateUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: DTUId
+          in: query
+          description: DTU编号
+          required: false
+          type: string
+        - name: DTUModel
+          in: query
+          description: DTU型号
+          required: false
+          type: string
+        - name: actuatorType
+          in: query
+          description: 执行器类型
+          required: false
+          type: string
+        - name: communicationNumber
+          in: query
+          description: 通信号码
+          required: false
+          type: string
+        - name: controllerBrand
+          in: query
+          description: 控制器品牌
+          required: false
+          type: string
+        - name: controllerModel
+          in: query
+          description: 控制器型号
+          required: false
+          type: string
+        - name: controllerType
+          in: query
+          description: 控制器类型
+          required: false
+          type: string
+        - name: deviceStatus
+          in: query
+          description: 设备状态
+          required: false
+          type: string
+        - name: electricGeneratorModel
+          in: query
+          description: 发电机型号
+          required: false
+          type: string
+        - name: electronicFenceScope
+          in: query
+          description: 围栏范围设置
+          required: false
+          type: string
+        - name: electronicFenceStatus
+          in: query
+          description: 电子围栏状态
+          required: false
+          type: boolean
+        - name: engineModel
+          in: query
+          description: 发动机型号
+          required: false
+          type: string
+        - name: fuelTankCapacity
+          in: query
+          description: 油箱容量
+          required: false
+          type: number
+          format: float
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+        - name: licenseExpirationDate
+          in: query
+          description: 许可到期日
+          required: false
+          type: string
+          format: date-time
+        - name: licensePeriod
+          in: query
+          description: 许可周期
+          required: false
+          type: string
+        - name: manufacturer
+          in: query
+          description: 生产厂家
+          required: false
+          type: string
+        - name: other
+          in: query
+          description: 其他
+          required: false
+          type: string
+        - name: pressureRegulatorType
+          in: query
+          description: 调压器类型
+          required: false
+          type: string
+        - name: reference
+          in: query
+          description: 备注
+          required: false
+          type: string
+        - name: registrationDate
+          in: query
+          description: 注册日期
+          required: false
+          type: string
+          format: date-time
+        - name: siteName
+          in: query
+          description: 站点名称
+          required: false
+          type: string
+        - name: speedControlBoardModel
+          in: query
+          description: 调速板型号
+          required: false
+          type: string
+        - name: speedControlType
+          in: query
+          description: 调速类型
+          required: false
+          type: string
+        - name: unitModel
+          in: query
+          description: 机组型号
+          required: false
+          type: string
+        - name: userId
+          in: query
+          description: 操作员
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - 设备
+      summary: 删除一个设备
+      operationId: deleteUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 设备id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /login:
+    post:
+      tags:
+        - 其他杂项接口
+      summary: 登陆
+      description: |
+        测试账号：test，密码：admin, 单位:重庆铭贝科技有限公司
+      operationId: loginUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: password
+          in: query
+          description: 密码
+          required: true
+          type: string
+          x-example: admin
+        - name: superiorName
+          in: query
+          description: 单位
+          required: true
+          type: string
+          x-example: 重庆铭贝科技有限公司
+        - name: username
+          in: query
+          description: 用户名
+          required: true
+          type: string
+          x-example: test
+      responses:
+        '200':
+          description: OK
+          schema:
+            type: object
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /menu:
+    get:
+      tags:
+        - 其他杂项接口
+      summary: 获取该用户能访问的菜单
+      description: 如果该用户未登陆就返回null
+      operationId: getMenuUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«Menu»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /system/dep:
+    get:
+      tags:
+        - 单位
+      summary: 获取该用户的所在单位
+      operationId: getDepsUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: orderBy
+          in: query
+          description: 排序
+          required: false
+          type: string
+        - name: pageNum
+          in: query
+          description: 当前页号
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          description: 一页数量
+          required: false
+          type: integer
+          format: int32
+        - name: searchField
+          in: query
+          description: 查找字段
+          required: false
+          type: string
+          x-example: name
+        - name: searchOper
+          in: query
+          description: 查找方式
+          required: false
+          type: string
+          enum:
+            - '[[''cn'''
+            - '''包含'']'
+            - '[''eq'''
+            - '''等于'']'
+            - '[''nc'''
+            - '''不包含'']'
+            - '[''ne'''
+            - '''不等于'']'
+            - '[''gt'''
+            - '''大于'']'
+            - '[''lt'''
+            - '''小于'']'
+            - '[''bw'''
+            - '''开始于'']'
+            - '[''bn'''
+            - '''不开始于'']'
+            - '[''ew'''
+            - '''结束于'']'
+            - '[''en'''
+            - '''不结束于'']]'
+        - name: searchString
+          in: query
+          description: 查找的字符
+          required: false
+          type: string
+          x-example: 张
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«分页对象«Department»»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - 单位
+      summary: 添加一个单位到另一个单位下
+      operationId: addDepUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: contact
+          in: query
+          description: 联系人
+          required: true
+          type: string
+        - name: contactPhone
+          in: query
+          description: 联系电话
+          required: true
+          type: string
+        - name: creationTime
+          in: query
+          description: 创建时间
+          required: false
+          type: string
+        - name: deptSite
+          in: query
+          description: 单位地址
+          required: false
+          type: string
+        - name: deptUrl
+          in: query
+          description: 单位网址
+          required: false
+          type: string
+        - name: email
+          in: query
+          description: 邮件
+          required: false
+          type: string
+        - name: logo
+          in: query
+          description: 单位logo
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: 单位名称
+          required: true
+          type: string
+        - name: parentId
+          in: query
+          description: 父节点id
+          required: false
+          type: integer
+          format: int64
+        - name: type
+          in: query
+          description: 单位类型
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/system/dep/{id}':
+    delete:
+      tags:
+        - 单位
+      summary: 删除单位
+      description: 删除前请确保不存在子单位且单位下不存在用户
+      operationId: deleteDepUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 单位id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/system/dep/{putid}':
+    put:
+      tags:
+        - 单位
+      summary: 更新单位信息
+      operationId: updateDepUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: contact
+          in: query
+          description: 联系人
+          required: false
+          type: string
+        - name: contactPhone
+          in: query
+          description: 联系电话
+          required: false
+          type: string
+        - name: creationTime
+          in: query
+          description: 创建时间
+          required: false
+          type: string
+        - name: deptSite
+          in: query
+          description: 单位地址
+          required: false
+          type: string
+        - name: deptUrl
+          in: query
+          description: 单位网址
+          required: false
+          type: string
+        - name: email
+          in: query
+          description: 邮件
+          required: false
+          type: string
+        - name: logo
+          in: query
+          description: 单位logo
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: 单位名称
+          required: false
+          type: string
+        - name: parentId
+          in: query
+          description: 父节点id
+          required: false
+          type: integer
+          format: int64
+        - name: putId
+          in: path
+          description: 单位id
+          required: true
+          type: integer
+          format: int64
+        - name: type
+          in: query
+          description: 单位类型
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /system/role:
+    get:
+      tags:
+        - 系统角色
+      summary: 获取所有的角色列表
+      operationId: getAllUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: orderBy
+          in: query
+          description: 排序
+          required: false
+          type: string
+        - name: pageNum
+          in: query
+          description: 当前页号
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          description: 一页数量
+          required: false
+          type: integer
+          format: int32
+        - name: searchField
+          in: query
+          description: 查找字段
+          required: false
+          type: string
+          x-example: name
+        - name: searchOper
+          in: query
+          description: 查找方式
+          required: false
+          type: string
+          enum:
+            - '[[''cn'''
+            - '''包含'']'
+            - '[''eq'''
+            - '''等于'']'
+            - '[''nc'''
+            - '''不包含'']'
+            - '[''ne'''
+            - '''不等于'']'
+            - '[''gt'''
+            - '''大于'']'
+            - '[''lt'''
+            - '''小于'']'
+            - '[''bw'''
+            - '''开始于'']'
+            - '[''bn'''
+            - '''不开始于'']'
+            - '[''ew'''
+            - '''结束于'']'
+            - '[''en'''
+            - '''不结束于'']]'
+        - name: searchString
+          in: query
+          description: 查找的字符
+          required: false
+          type: string
+          x-example: 张
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«分页对象«Role»»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - 系统角色
+      summary: 添加一个角色
+      operationId: addRoleUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: name
+          in: query
+          description: 权限名称
+          required: true
+          type: string
+        - name: nameZh
+          in: query
+          description: 角色中文名称（角色描述）
+          required: true
+          type: string
+        - name: pid
+          in: query
+          description: 权限的上一级id
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/system/role/assignment/{id}':
+    get:
+      tags:
+        - 系统角色
+      summary: 获取角色的具体权限
+      operationId: getUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 角色id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«List«Menu»»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - 系统角色
+      summary: 为指定权限添加具体能访问的路径
+      description: 权限点自定义
+      operationId: addUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 角色id
+          required: true
+          type: integer
+          format: int64
+        - in: body
+          name: params
+          description: params
+          required: true
+          schema:
+            type: object
+            additionalProperties:
+              type: array
+              items:
+                type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/system/role/{PutId}':
+    put:
+      tags:
+        - 系统角色
+      summary: 更新角色信息
+      operationId: updateRoleUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: PutId
+          in: path
+          description: PutId
+          required: true
+          type: integer
+          format: int64
+        - name: name
+          in: query
+          description: 角色名
+          required: false
+          type: string
+        - name: nameZh
+          in: query
+          description: 权限的中文名称（权限描述）
+          required: false
+          type: string
+        - name: pid
+          in: query
+          description: 权限的上一级id
+          required: false
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/system/role/{id}':
+    delete:
+      tags:
+        - 系统角色
+      summary: 删除一个角色
+      operationId: deleteRoleUsingDELETE
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  /update:
+    get:
+      tags:
+        - 其他杂项接口
+      summary: update
+      operationId: updateUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /upload:
+    post:
+      tags:
+        - 其他杂项接口
+      summary: 上传文件
+      operationId: uploadUsingPOST
+      consumes:
+        - multipart/form-data
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: file
+          in: formData
+          description: file
+          required: false
+          type: file
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  /user:
+    get:
+      tags:
+        - 用户
+      summary: 获取当前用户所属节点下的所有用户
+      description: 如果自己也在该单位下那么也能查出自己，如果用户不能查看其他人账户将只返回他自己
+      operationId: getAllUsingGET_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: orderBy
+          in: query
+          description: 排序
+          required: false
+          type: string
+        - name: pageNum
+          in: query
+          description: 当前页号
+          required: false
+          type: integer
+          format: int32
+        - name: pageSize
+          in: query
+          description: 一页数量
+          required: false
+          type: integer
+          format: int32
+        - name: searchField
+          in: query
+          description: 查找字段
+          required: false
+          type: string
+          x-example: name
+        - name: searchOper
+          in: query
+          description: 查找方式
+          required: false
+          type: string
+          enum:
+            - '[[''cn'''
+            - '''包含'']'
+            - '[''eq'''
+            - '''等于'']'
+            - '[''nc'''
+            - '''不包含'']'
+            - '[''ne'''
+            - '''不等于'']'
+            - '[''gt'''
+            - '''大于'']'
+            - '[''lt'''
+            - '''小于'']'
+            - '[''bw'''
+            - '''开始于'']'
+            - '[''bn'''
+            - '''不开始于'']'
+            - '[''ew'''
+            - '''结束于'']'
+            - '[''en'''
+            - '''不结束于'']]'
+        - name: searchString
+          in: query
+          description: 查找的字符
+          required: false
+          type: string
+          x-example: 张
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«分页对象«User»»'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    post:
+      tags:
+        - 用户
+      summary: 注册用户
+      description: 权限存在问题，关于权限字段不用传
+      operationId: logonUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: depId
+          in: query
+          description: 属于哪个单位（单位id）
+          required: false
+          type: integer
+          format: int64
+        - name: email
+          in: query
+          description: 邮箱
+          required: false
+          type: string
+        - name: name
+          in: query
+          description: 真实姓名
+          required: true
+          type: string
+        - name: oldPassword
+          in: query
+          description: 旧密码
+          required: false
+          type: string
+        - name: password
+          in: query
+          description: 用户密码
+          required: true
+          type: string
+          x-example: admin
+        - name: phone
+          in: query
+          description: 手机号
+          required: false
+          type: string
+        - name: sex
+          in: query
+          description: 性别
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: 用户名
+          required: true
+          type: string
+          x-example: test
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+  '/user/role/{id}':
+    post:
+      tags:
+        - 用户
+      summary: 为用户添加一个角色
+      operationId: addRoleUsingPOST_1
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 用户id
+          required: true
+          type: integer
+          format: int64
+        - name: rid
+          in: query
+          description: 角色id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - 用户
+      summary: 为用户删除一个角色
+      operationId: deleteRoleUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 用户id
+          required: true
+          type: integer
+          format: int64
+        - name: rid
+          in: query
+          description: 角色id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+  '/user/{id}':
+    get:
+      tags:
+        - 用户
+      summary: 获取用户信息 根据用户id
+      description: 并不是所有用户都能获取，有权限
+      operationId: getUserByIdUsingGET
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: 用户Id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    put:
+      tags:
+        - 用户
+      summary: 更新用户资料(可以更新自己的资料也可以更新下属的资料)
+      description: |-
+        也可以更改自己的资料
+      operationId: updateUserRoleUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: depId
+          in: query
+          description: 属于哪个单位（单位id）
+          required: false
+          type: integer
+          format: int64
+        - name: email
+          in: query
+          description: 邮箱
+          required: false
+          type: string
+        - name: id
+          in: path
+          description: 用户id
+          required: true
+          type: integer
+          format: int64
+        - name: name
+          in: query
+          description: 真实姓名
+          required: false
+          type: string
+        - name: oldPassword
+          in: query
+          description: 旧密码
+          required: false
+          type: string
+        - name: password
+          in: query
+          description: 用户密码
+          required: false
+          type: string
+          x-example: admin
+        - name: phone
+          in: query
+          description: 手机号
+          required: false
+          type: string
+        - name: sex
+          in: query
+          description: 性别
+          required: false
+          type: string
+        - name: username
+          in: query
+          description: 用户名
+          required: false
+          type: string
+          x-example: test
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      deprecated: false
+    delete:
+      tags:
+        - 用户
+      summary: 通过用户id删除用户
+      operationId: deleteUsingDELETE_1
+      produces:
+        - '*/*'
+      parameters:
+        - name: Authorization
+          in: header
+          description: 令牌
+          required: true
+          type: string
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/返回对象«string»'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      deprecated: false
+definitions:
+  Department:
+    type: object
+    required:
+      - contact
+      - contactPhone
+      - name
+      - type
+    properties:
+      children:
+        type: array
+        items:
+          $ref: '#/definitions/Department'
+      contact:
+        type: string
+        description: 联系人
+      contactPhone:
+        type: string
+        description: 联系电话
+      creationTime:
+        type: string
+        description: 创建时间
+      deptSite:
+        type: string
+        description: 单位地址
+      deptUrl:
+        type: string
+        description: 单位网址
+      email:
+        type: string
+        description: 邮件
+      logo:
+        type: string
+        description: 单位logo
+      name:
+        type: string
+        description: 单位名称
+      parentId:
+        type: integer
+        format: int64
+        description: 父节点id
+      type:
+        type: string
+        description: 单位类型
+    title: Department
+    description: 单位
+  Menu:
+    type: object
+    properties:
+      children:
+        type: array
+        items:
+          $ref: '#/definitions/Menu'
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      roles:
+        type: array
+        items:
+          $ref: '#/definitions/Role'
+      url:
+        type: string
+    title: Menu
+  Role:
+    type: object
+    required:
+      - name
+    properties:
+      children:
+        type: array
+        items:
+          $ref: '#/definitions/Role'
+      name:
+        type: string
+        description: 权限名称
+      nameZh:
+        type: string
+        description: 权限的中文名称（权限描述）
+      pid:
+        type: integer
+        format: int64
+        description: 权限的上一级id
+    title: Role
+  User:
+    type: object
+    required:
+      - name
+      - password
+      - username
+    properties:
+      depId:
+        type: integer
+        format: int64
+        description: 属于哪个单位（单位id）
+      email:
+        type: string
+        description: 邮箱
+      name:
+        type: string
+        description: 真实姓名
+      password:
+        type: string
+        example: admin
+        description: 用户密码
+      phone:
+        type: string
+        description: 手机号
+      sex:
+        type: string
+        description: 性别
+      username:
+        type: string
+        example: test
+        description: 用户名
+    title: User
+    description: 用户
+  分页对象«Department»:
+    type: object
+    properties:
+      list:
+        type: array
+        description: 结果集
+        items:
+          $ref: '#/definitions/Department'
+      pageNum:
+        type: integer
+        format: int32
+        description: 当前页号
+      pageSize:
+        type: integer
+        format: int32
+        description: 每页的数量
+      pages:
+        type: integer
+        format: int32
+        description: 总页数
+      total:
+        type: integer
+        format: int64
+        description: 总记录数
+    title: 分页对象«Department»
+  分页对象«Role»:
+    type: object
+    properties:
+      list:
+        type: array
+        description: 结果集
+        items:
+          $ref: '#/definitions/Role'
+      pageNum:
+        type: integer
+        format: int32
+        description: 当前页号
+      pageSize:
+        type: integer
+        format: int32
+        description: 每页的数量
+      pages:
+        type: integer
+        format: int32
+        description: 总页数
+      total:
+        type: integer
+        format: int64
+        description: 总记录数
+    title: 分页对象«Role»
+  分页对象«User»:
+    type: object
+    properties:
+      list:
+        type: array
+        description: 结果集
+        items:
+          $ref: '#/definitions/User'
+      pageNum:
+        type: integer
+        format: int32
+        description: 当前页号
+      pageSize:
+        type: integer
+        format: int32
+        description: 每页的数量
+      pages:
+        type: integer
+        format: int32
+        description: 总页数
+      total:
+        type: integer
+        format: int64
+        description: 总记录数
+    title: 分页对象«User»
+  分页对象«设备»:
+    type: object
+    properties:
+      list:
+        type: array
+        description: 结果集
+        items:
+          $ref: '#/definitions/设备'
+      pageNum:
+        type: integer
+        format: int32
+        description: 当前页号
+      pageSize:
+        type: integer
+        format: int32
+        description: 每页的数量
+      pages:
+        type: integer
+        format: int32
+        description: 总页数
+      total:
+        type: integer
+        format: int64
+        description: 总记录数
+    title: 分页对象«设备»
+  设备:
+    type: object
+    required:
+      - communicationNumber
+      - controllerType
+      - deviceStatus
+      - electricGeneratorModel
+      - engineModel
+      - licenseExpirationDate
+      - licensePeriod
+      - registrationDate
+      - siteName
+      - unitModel
+      - userId
+    properties:
+      actuatorType:
+        type: string
+        description: 执行器类型
+      communicationNumber:
+        type: string
+        description: 通信号码
+      controllerBrand:
+        type: string
+        description: 控制器品牌
+      controllerModel:
+        type: string
+        description: 控制器型号
+      controllerType:
+        type: string
+        description: 控制器类型
+      deviceStatus:
+        type: string
+        description: 设备状态
+      dtuid:
+        type: string
+      dtumodel:
+        type: string
+      electricGeneratorModel:
+        type: string
+        description: 发电机型号
+      electronicFenceScope:
+        type: string
+        description: 围栏范围设置
+      electronicFenceStatus:
+        type: boolean
+        description: 电子围栏状态
+      engineModel:
+        type: string
+        description: 发动机型号
+      fuelTankCapacity:
+        type: number
+        format: float
+        description: 油箱容量
+      licenseExpirationDate:
+        type: string
+        format: date-time
+        description: 许可到期日
+      licensePeriod:
+        type: string
+        description: 许可周期
+      manufacturer:
+        type: string
+        description: 生产厂家
+      other:
+        type: string
+        description: 其他
+      pressureRegulatorType:
+        type: string
+        description: 调压器类型
+      reference:
+        type: string
+        description: 备注
+      registrationDate:
+        type: string
+        format: date-time
+        description: 注册日期
+      siteName:
+        type: string
+        description: 站点名称
+      speedControlBoardModel:
+        type: string
+        description: 调速板型号
+      speedControlType:
+        type: string
+        description: 调速类型
+      unitModel:
+        type: string
+        description: 机组型号
+      userId:
+        type: integer
+        format: int64
+        description: 操作员
+    title: 设备
+  返回对象:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        type: object
+        description: 对应信息
+    title: 返回对象
+    description: 统一返回格式
+  返回对象«List«Menu»»:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        type: array
+        description: 对应信息
+        items:
+          originalRef: Menu
+          $ref: '#/definitions/Menu'
+    title: 返回对象«List«Menu»»
+    description: 统一返回格式
+  返回对象«Menu»:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        description: 对应信息
+        originalRef: Menu
+        $ref: '#/definitions/Menu'
+    title: 返回对象«Menu»
+    description: 统一返回格式
+  返回对象«string»:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        type: string
+        description: 对应信息
+    title: 返回对象«string»
+    description: 统一返回格式
+  返回对象«分页对象«Department»»:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        description: 对应信息
+        $ref: '#/definitions/分页对象«Department»'
+    title: 返回对象«分页对象«Department»»
+    description: 统一返回格式
+  返回对象«分页对象«Role»»:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        description: 对应信息
+        $ref: '#/definitions/分页对象«Role»'
+    title: 返回对象«分页对象«Role»»
+    description: 统一返回格式
+  返回对象«分页对象«User»»:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        description: 对应信息
+        $ref: '#/definitions/分页对象«User»'
+    title: 返回对象«分页对象«User»»
+    description: 统一返回格式
+  返回对象«分页对象«设备»»:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+        description: 状态码
+        enum:
+          - '1:操作成功'
+          - '0:操作失败'
+      msg:
+        description: 对应信息
+        $ref: '#/definitions/分页对象«设备»'
+    title: 返回对象«分页对象«设备»»
+    description: 统一返回格式
