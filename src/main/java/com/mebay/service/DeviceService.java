@@ -31,6 +31,10 @@ public class DeviceService {
         return deviceMapper.getDeviceByUserId(UserUtils.getCurrentUser().getId());
     }
 
+    /**
+     * 获取该单位下的所有设备
+     * @param pageQuery 分页参数
+     */
     public PageView<Device> getDeviceByDepId(PageQuery pageQuery) {
         List<DeptTreeId> deptId = departmentService.getDeptIdTreeByUser();
         List<Long> ids = new LinkedList<>();
@@ -40,11 +44,19 @@ public class DeviceService {
         return PageView.build(page);
     }
 
+    /**
+     * 添加设备
+     * @param device 设备信息
+     */
     public int addDevice(Device device) {
         device.setDepId(UserUtils.getCurrentUser().getDepId());
         return deviceMapper.addDevice(device);
     }
 
+    /**
+     * 删除设备，只能删除自己能访问的设备
+     * @param id 设备id
+     */
     public int deleteDevice(Long id) {
         List<Device> deviceList = getEditDevices(null);
         for (Device d : deviceList) {
@@ -55,6 +67,11 @@ public class DeviceService {
         return -1;
     }
 
+    /**
+     * 更新设备，只能更新自己能访问的设备
+     * @param id 设备id
+     * @param device 要跟新的信息
+     */
     public int updateDevice(Long id, Device device) {
         List<Device> deviceList = getEditDevices(null);
         for (Device d : deviceList) {

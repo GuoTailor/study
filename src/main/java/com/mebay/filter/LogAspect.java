@@ -12,6 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.Enumeration;
 
+/**
+ * 日志记录 <p>
+ * TODO 保持日志
+ */
 public class LogAspect implements HandlerInterceptor {
 
     private static String LOGGER_SEND_TIME = "_send_time";

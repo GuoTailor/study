@@ -15,6 +15,9 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
+/**
+ * 签发和验证token的类
+ */
 public class TokenMgr {
 
     /**

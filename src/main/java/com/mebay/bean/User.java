@@ -36,7 +36,7 @@ public class User implements UserDetails {
     private Long depId;
     @ApiModelProperty(value = "权限集合", hidden = true)
     private List<Role> authorities;
-    @ApiModelProperty(value = "logo路径", hidden = true)
+    @ApiModelProperty(value = "logo路径")
     private String logo;
     @ApiModelProperty(value = "邮箱")
     private String email;

@@ -1,6 +1,5 @@
 package com.mebay.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
@@ -8,13 +7,13 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.stereotype.Component;
-import org.springframework.util.AntPathMatcher;
 
 import java.util.Collection;
 import java.util.logging.Logger;
 
 /**
  * Created by gyh on 2018/9/14.
+ * url具体的权限验证
  */
 @Component
 public class UrlAccessDecisionManager implements AccessDecisionManager {

@@ -10,6 +10,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 自定义的权限属性
+ */
 public class SecurityAttribute implements ConfigAttribute {
     private final String attrib;
     private final String url;

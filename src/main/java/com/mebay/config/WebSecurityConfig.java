@@ -18,6 +18,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.web.cors.CorsUtils;
 
+/**
+ * SpringSecurity 的配置类
+ */
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -42,12 +45,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.myAuthenticationProvider = myAuthenticationProvider;
     }
 
+    /**
+     * 配置自定义的用户权限验证
+     * @param auth 认证管理器
+     */
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         //auth.userDetailsService(userService).passwordEncoder(new BCryptPasswordEncoder());
-        myAuthenticationProvider.setUserService(userService);
-        myAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());
-        auth.authenticationProvider(myAuthenticationProvider);
+        myAuthenticationProvider.setUserService(userService);   //配置用户的加载类
+        myAuthenticationProvider.setPasswordEncoder(new BCryptPasswordEncoder());   //配置密码加密算法
+        auth.authenticationProvider(myAuthenticationProvider);  //配置自己的用户验证类
     }
 
     protected void configure(HttpSecurity http) throws Exception {
@@ -65,8 +72,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
                     @Override
                     public <O extends FilterSecurityInterceptor> O postProcess(O o) {
-                        o.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource);
-                        o.setAccessDecisionManager(urlAccessDecisionManager);
+                        o.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource); //配置自己的url权限
+                        o.setAccessDecisionManager(urlAccessDecisionManager);   //配置自己的url鉴权
                         return o;
                     }
                 })

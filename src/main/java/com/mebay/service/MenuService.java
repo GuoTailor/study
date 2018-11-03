@@ -23,6 +23,10 @@ public class MenuService {
         this.mapper = mapper;
     }
 
+    /**
+     * 获取菜单通过当前用户
+     * @return 菜单
+     */
     public Menu getMenusByUserId() {
         User user = UserUtils.getCurrentUser();
         if (user.getId() == null){

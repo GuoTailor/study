@@ -46,6 +46,8 @@ public class Department implements StreamTree<Department> {
     private String email;
     @ApiModelProperty(value = "单位网址")
     private String deptUrl;
+    @ApiModelProperty(value = "备注")
+    private String remark;
     @ApiModelProperty(hidden = true)
     @JsonIgnore
     private Date time;
@@ -194,5 +196,13 @@ public class Department implements StreamTree<Department> {
 
     public void setTime(Date time) {
         this.time = time;
+    }
+
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 }

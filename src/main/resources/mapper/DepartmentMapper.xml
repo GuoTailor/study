@@ -17,6 +17,7 @@
         <result column="contactPhone" property="contactPhone"/>
         <result column="email" property="email"/>
         <result column="deptUrl" property="deptUrl"/>
+        <result column="remark" property="remark"/>
         <association property="superiorName" column="parentId" select="com.mebay.mapper.DepartmentMapper.getDeptNameById"/>
     </resultMap>
     
@@ -127,6 +128,9 @@
         <if test="deptUrl != null">
             deptUrl = #{deptUrl},
         </if>
+        <if test="remark != null">
+            remark = #{remark},
+        </if>
         contact = #{contact},
         contactPhone = #{contactPhone},
         enabled = #{enabled};
@@ -176,6 +180,9 @@
             </if>
             <if test="dep.deptUrl != null">
                 deptUrl = #{dep.deptUrl},
+            </if>
+            <if test="dep.remark != null">
+                remark = #{dep.remark},
             </if>
         </set>
         where id = #{originalId}

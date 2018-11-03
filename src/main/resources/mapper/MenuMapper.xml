@@ -70,14 +70,8 @@
           and m3.`enabled` = true
     </select>
 
-    <select id="getMenuIdByRoleId" resultType="java.lang.Long">
-        select menu_role.mid
-        from menu_role
-        where rid = #{userId}
-    </select>
-
     <select id="getMenusById" resultMap="UniteResultMap">
-        select m.id, m.url, m.name
+        select m.*
         from menu m
         where m.id = #{id}
     </select>

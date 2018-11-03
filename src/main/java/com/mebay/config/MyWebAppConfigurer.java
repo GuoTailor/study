@@ -11,6 +11,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * 用于实现一些配置，该类会在程序启动的时候加载
+ */
 @Configuration
 public class MyWebAppConfigurer implements WebMvcConfigurer {
     @Value("${resourcesPath}")

@@ -12,6 +12,7 @@ import java.io.PrintWriter;
 
 /**
  * Created by sang on 2017/12/29.
+ * 权限不足的提示类
  */
 @Component
 public class AuthenticationAccessDeniedHandler implements AccessDeniedHandler {

@@ -22,6 +22,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * user的数据库连接服务
+ */
 @Service
 @Transactional
 public class UserService implements UserDetailsService {
@@ -37,7 +40,14 @@ public class UserService implements UserDetailsService {
         this.roleMapper = roleMapper;
     }
 
-    public User getUserById(Long id){
+    /**
+     * 通过id来获取用户
+     * 如果获取的用户不在自己管辖的范围内就返回null
+     *
+     * @param id 用户id
+     * @return 用户
+     */
+    public User getUserById(Long id) {
         User user = userMapper.getUserById(id);
         List<DeptTreeId> deptId = departmentService.getDeptIdTreeByUser();
         for (DeptTreeId d : deptId) {     //如果获取的用户不在自己管辖的范围内疚返回null
@@ -48,17 +58,33 @@ public class UserService implements UserDetailsService {
         return null;
     }
 
+    /**
+     * 获取自己能访问的所有用户<P>
+     * 如果自己是管理员就返回自己单位下的所有用户，
+     * 如果自己是超级管理员就放回所有用户，
+     * 否则就放回自己
+     *
+     * @param pageQuery 分页参数
+     * @return 用户列表
+     */
     public PageView<User> getAll(PageQuery pageQuery) {
-        if(!UserUtils.isAdmin()) {
+        if (!UserUtils.isAdmin()) {
             return PageView.build(Collections.singletonList(userMapper.getUserById(UserUtils.getCurrentUser().getId())));
         }
         List<Long> ids = new LinkedList<>();
-        departmentService.getDeptIdTreeByUser().forEach(d ->d.getIDs(ids));
+        departmentService.getDeptIdTreeByUser().forEach(d -> d.getIDs(ids));
         Page<User> page = PageHelper.startPage(pageQuery.getPageNum(), pageQuery.getPageSize(), pageQuery.getOrderBy());
         userMapper.getUsersByDeptId(ids, pageQuery.buildSubSql());
         return PageView.build(page);
     }
 
+    /**
+     * 获取单位下的所有用户<p>
+     * 注意：该方法不会鉴权
+     *
+     * @param id 单位id
+     * @return 用户列表
+     */
     public List<User> getUserByDepId(Long id) {
         return userMapper.getUsersByDeptId(Collections.singletonList(id), null);
     }
@@ -73,10 +99,17 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+    /**
+     * 注册一个用户
+     *
+     * @param user 用户信息
+     * @return 返会参数请看 {@link com.mebay.controller.UserController}.logon()
+     */
     public int register(User user) {
         if (userMapper.getUserByUsername(user.getUsername()) != null) {
             return -2;
         }
+        //用户密码必须为大写加小写字母加数字长度为6-16位
         if (!Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\S]{6,16}$").matcher(user.getPassword()).matches()) {
             return -3;
         }
@@ -87,13 +120,18 @@ public class UserService implements UserDetailsService {
                     return -1;
                 }
             }
-        }else {
+        } else {
             user.setDepId(UserUtils.getCurrentUser().getDepId());
         }
         user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
         return userMapper.insert(user);
     }
 
+    /**
+     * 更新，只能更新自己和自己单位下
+     * @param user 更新信息
+     * @param id 要更新的用户id
+     */
     public int update(User user, Long id) {
         if (Util.isEmpty(user))
             return -2;
@@ -106,7 +144,7 @@ public class UserService implements UserDetailsService {
                     user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
                 else
                     return -2;
-            }else
+            } else
                 user.setPassword(null);
             return userMapper.updateUser(id, user);
         }
@@ -114,15 +152,22 @@ public class UserService implements UserDetailsService {
             user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
         else user.setPassword(null);
         List<DeptTreeId> deptId = departmentService.getDeptIdTreeByUser();
-        if (!Util.hasAny((t, k) -> t.findSubById(id) != null,deptId, id))   //如果不在自己单位下就么有权限
+        if (!Util.hasAny((t, k) -> t.findSubById(id) != null, deptId, id))   //如果不在自己单位下就么有权限
             return -3;
-        if(UserUtils.isAdmin()) {
+        if (UserUtils.isAdmin()) {
             //user.setId(null);
             return userMapper.updateUser(id, user);
         }
         return -1;
     }
 
+    /**
+     * 为用户添加一个角色，
+     * 只能添加低于自己的角色
+     *
+     * @param uid 用户id
+     * @param rid 角色id
+     */
     public int addRole(Long uid, Long rid) {
         User present = userMapper.getUserById(UserUtils.getCurrentUser().getId());
         Role roles = roleMapper.findRolesById(present.getRole().stream().max(Comparator.comparing(Role::getId)).get().getId());
@@ -136,7 +181,12 @@ public class UserService implements UserDetailsService {
         return userMapper.addRoleForUser(uid, rid);
     }
 
-
+    /**
+     * 为一个用户去除一个角色
+     *
+     * @param uid 用户id
+     * @param rid 角色id
+     */
     public int deleteRole(Long uid, Long rid) {
         User user = userMapper.getUserById(uid);
         List<DeptTreeId> dept = departmentService.getDeptIdTreeByUser();
@@ -151,8 +201,18 @@ public class UserService implements UserDetailsService {
         return -1;
     }
 
+    /**
+     * 删除，只能删除自己和自己单位下
+     * @param id 要删除的用户id
+     */
     public int delete(Long id) {
-        return userMapper.deleteUser(id);
+        if (UserUtils.getCurrentUser().getId().equals(id)) {   //如果修改的是自己
+            return userMapper.deleteUser(id);
+        }
+        List<DeptTreeId> deptId = departmentService.getDeptIdTreeByUser();
+        if (Util.hasAny((t, k) -> t.findSubById(id) != null, deptId, id))   //如果在自己单位下
+            return userMapper.deleteUser(id);
+        return -1;
     }
 
 }

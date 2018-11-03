@@ -11,6 +11,11 @@ import java.util.logging.Logger;
 public class UserUtils {
     private static Logger logger = Logger.getLogger(UserUtils.class.getSimpleName());
 
+    /**
+     * 获取当前登陆的用户<P>
+     *     注意：该方法只返回用户的id，用户名，角色的中文名，dapid
+     * @return 用户
+     */
     public static User getCurrentUser() {
         User user = new User();
         try {
@@ -21,21 +26,35 @@ public class UserUtils {
         return user;
     }
 
+    /**
+     * 用户{@link BCryptPasswordEncoder}编码密码
+     * @param password 未编码的密码
+     * @return 编码后的密码
+     */
     public static String passwordEncoder(String password) {
         if (password == null || password.isEmpty()) return null;
         return new BCryptPasswordEncoder().encode(password);
     }
 
+    /**
+     * 判断当前用户是否为管理员
+     * @return true：是管理员，false：不是
+     */
     public static boolean isAdmin() {
         return getCurrentUser().getRole().stream().anyMatch(r -> isAdmin(r.getName()));
     }
 
+    /**
+     * 判断给定用户是否为管理员
+     * @param role 用户的角色的中文名
+     * @return true：是管理员，false：不是
+     */
     public static boolean isAdmin(String role) {
         return role.matches("ROLE_[\\w]*_ADMIN");
     }
 
     /**
-     * @Description: 获取客户端IP地址
+     *  获取客户端IP地址
      */
     public static String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
@@ -67,6 +86,11 @@ public class UserUtils {
         return ip;
     }
 
+    /**
+     * 获取请求类型
+     * @param request 请求
+     * @return 类型
+     */
     public static String getRequestType(HttpServletRequest request) {
         String requestType = request.getHeader("X-Requested-With");
         return "XMLHttpRequest".equals(requestType) ? "ajax" : "json";

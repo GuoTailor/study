@@ -2,6 +2,9 @@ package com.mebay.filter.token;
 
 import io.jsonwebtoken.Claims;
 
+/**
+ * token 用的实体类
+ */
 public class CheckPOJO {
     private int errCode;
 

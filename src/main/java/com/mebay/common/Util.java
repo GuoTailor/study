@@ -1,19 +1,14 @@
 package com.mebay.common;
 
-import com.mebay.bean.StreamTree;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.stream.Stream;
 
 public class Util {
     public static <T> boolean hasAny(List<T> gather, T... element) {
@@ -47,6 +42,18 @@ public class Util {
         return false;
     }
 
+    /**
+     * 判断一个（bean）实体类对象是否为空<p>
+     * 判断为空的标准为：<P>
+     * <ol>
+     * <li>如果实体类的属性为{@link String}那么字符串长度为0或为null就认为为空</li>
+     * <li>如果属性为{@link Collection}的子类那么集合的长度为0或为null就认为为空</li>
+     * <li>如果属性不为上述的就为null才认为为空</li>
+     * </ol>
+     *
+     * @param obj 一个实体类（bean）对象
+     * @return true：如果该实体类的所有属性都为空，false：其中的任意一个属性不为空
+     */
     public static boolean isEmpty(Object obj) {
         Class c = obj.getClass();
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -76,6 +83,12 @@ public class Util {
         return true;
     }
 
+    /**
+     * 添加跨域支持
+     *
+     * @param httpServletResponse 响应
+     * @param httpServletRequest 请求
+     */
     public static void addHeader(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         System.out.println(UserUtils.getIpAddr(httpServletRequest) + "   " + httpServletRequest.getHeader("Origin"));
         httpServletResponse.setContentType("application/json;charset=utf-8");

@@ -29,6 +29,10 @@ public class DepartmentService {
         this.departmentMapper = departmentMapper;
     }
 
+    /**
+     * 创建一个单位
+     * @param department 单位信息
+     */
     public int creationDep(Department department) {
         department.setEnabled(true);
         User user = UserUtils.getCurrentUser();
@@ -64,6 +68,10 @@ public class DepartmentService {
         return -1;
     }
 
+    /**
+     * 获取单位id树通过当前用户。
+     * 单位id树：为了节省性能，该方法只返回单位的id
+     */
     public List<DeptTreeId> getDeptIdTreeByUser() {
         User user = UserUtils.getCurrentUser();
         if (Util.hasAny(Role::equalsRole, user.getRole(), "ROLE_HIGH_GRADE_ADMIN")) {

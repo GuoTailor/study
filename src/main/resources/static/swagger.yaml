@@ -1376,6 +1376,11 @@ paths:
           description: 手机号
           required: false
           type: string
+        - name: logo
+          in: query
+          description: logo路径
+          required: false
+          type: string
         - name: sex
           in: query
           description: 性别
@@ -1536,6 +1541,11 @@ paths:
           required: false
           type: integer
           format: int64
+        - name: logo
+          in: query
+          description: logo路径
+          required: false
+          type: string
         - name: email
           in: query
           description: 邮箱

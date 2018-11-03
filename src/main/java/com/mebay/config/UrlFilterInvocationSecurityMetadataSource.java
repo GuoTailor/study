@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 
 /**
  * Created by gyh on 2018/9/14.
+ * url过滤策略
  */
 @Component
 public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {

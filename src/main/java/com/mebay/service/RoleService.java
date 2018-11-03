@@ -27,6 +27,11 @@ public class RoleService {
         this.menuService = menuService;
     }
 
+    /**
+     * 获取所有的角色
+     * @param pageQuery 分页参数
+     * @return 分页之后的角色列表
+     */
     public PageView<Role> roles(PageQuery pageQuery) {
         Page<Role> page = PageHelper.startPage(pageQuery);
         roleMapper.findAllRole(pageQuery.buildSubSql());
@@ -37,6 +42,11 @@ public class RoleService {
         return roleMapper.findRolesById(id);
     }
 
+    /**
+     * 增加一个角色
+     * @param role 角色的英文名，要注意格式
+     * @param roleZh 角色的中文名
+     */
     public int addNewRole(String role, String roleZh) {
         if (role == null || "".equals(role))
             return -1;
@@ -62,6 +72,11 @@ public class RoleService {
         return roleMapper.updateRole(role, id);
     }
 
+    /**
+     * 更新角色的具体能访问的url路径和方法
+     * @param menuRoles
+     * @param id 角色id
+     */
     public void update(Map<Long, List<String>> menuRoles, Long id) {
         UrlFilterInvocationSecurityMetadataSource.INVALID = true;
         List<Menu> menus = menuService.getMenusByRole(roleMapper.findRoleById(id));
@@ -82,6 +97,11 @@ public class RoleService {
         addMenuToRole(id, addSet);              //添加新的菜单
     }
 
+    /**
+     * 通过角色id获取他能访问的菜单
+     * @param id 角色id
+     * @return 菜单列表
+     */
     public List<Menu> getMenus(Long id) {
         return menuService.getMenusByRole(roleMapper.findRoleById(id));
     }
@@ -110,6 +130,12 @@ public class RoleService {
         roleMapper.addMenuMethodToRole(rid, mids);
     }
 
+    /**
+     * 移除两个列表中所有相同的元素
+     * @param c1 一个列表
+     * @param c2 另一个列表
+     * @param <T> 元素的类型
+     */
     public <T> void removeAllSame(Collection<T> c1,Collection<T> c2) {
         c1.removeIf(c -> {
             if (c2.contains(c)) {

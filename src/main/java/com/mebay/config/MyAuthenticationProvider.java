@@ -18,6 +18,7 @@ import org.springframework.util.StringUtils;
 
 /**
  * Created by gyh on 2018/10/26.
+ * 自定义的权限验证
  */
 @Component
 public class MyAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {

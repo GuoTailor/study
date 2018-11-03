@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * Swagger配置
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
