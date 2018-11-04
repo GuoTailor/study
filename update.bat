@@ -1,0 +1,1 @@
+scp target/study-0.0.13-SNAPSHOT.jar root@39.108.114.59:~

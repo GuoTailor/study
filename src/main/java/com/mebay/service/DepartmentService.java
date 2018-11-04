@@ -102,7 +102,7 @@ public class DepartmentService {
             DeptTreeId d = deptId.findSubById(id);
             if (d != null) {
                 String logoPath = getDepById(d.getId()).getLogo();
-                if(d.getChildren().isEmpty() && userService.getUserByDepId(d.getId()) == null) {
+                if(d.getChildren().isEmpty() && userService.getUserByDepId(d.getId()).isEmpty()) {
                     int i = departmentMapper.deleteDep(id);
                     if(i == 1) {
                         FileUtil.deleteFile("." + logoPath);
