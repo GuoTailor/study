@@ -59,8 +59,10 @@ public class DepartmentService {
             if (d != null) {
                 String logoPath = getDepById(d.getId()).getLogo();
                 int i = departmentMapper.updateDep(dep, did);
-                if (i == 1 && logoPath != null) {
+                logger.info(logoPath + " >> " + dep.getLogo());
+                if (i == 1 && logoPath != null && dep.getLogo() != null && !logoPath.equals(dep.getLogo())) {
                     FileUtil.deleteFile("." + logoPath);
+                    logger.info("删除》》》》》");
                 }
                 return i;
             }

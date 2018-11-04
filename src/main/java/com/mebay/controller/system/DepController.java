@@ -20,8 +20,6 @@ import java.sql.Date;
 @Api(tags = "单位")
 public class DepController {
     final private DepartmentService departmentService;
-    @Autowired
-    private ExcelUtil excelUtil;
 
     @Autowired
     public DepController(DepartmentService departmentService) {
@@ -88,8 +86,4 @@ public class DepController {
         return new RespBody<>(1, departmentService.getDeptByUid(pageQuery));
     }
 
-    @GetMapping("/dep/download")
-    public RespBody<String> getExe(@RequestBody String tabName) {
-        return new RespBody<>(1, excelUtil.returnExcel(tabName));
-    }
 }
