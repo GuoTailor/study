@@ -2,7 +2,6 @@ package com.mebay;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletComponentScan;
@@ -11,8 +10,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.io.IOException;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -20,6 +17,7 @@ import java.util.logging.Logger;
  */
 @SpringBootApplication
 // 添加servlet组件扫描，使得Spring能够扫描到我们编写的servlet和filter
+
 @ServletComponentScan
 //@EnableTransactionManagement
 @MapperScan("com.mebay.mapper")
