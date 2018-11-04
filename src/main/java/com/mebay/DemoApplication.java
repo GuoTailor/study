@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 @SpringBootApplication
 // 添加servlet组件扫描，使得Spring能够扫描到我们编写的servlet和filter
 @ServletComponentScan
+
 //@EnableTransactionManagement
 @MapperScan("com.mebay.mapper")
 public class DemoApplication {
