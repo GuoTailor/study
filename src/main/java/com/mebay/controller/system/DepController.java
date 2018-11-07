@@ -1,15 +1,13 @@
 package com.mebay.controller.system;
 
-import com.mebay.Constant;
 import com.mebay.bean.*;
 import com.mebay.common.FileUtil;
-import com.mebay.common.excel.ExcelUtil;
+import com.mebay.common.excel.ExcelExport;
 import com.mebay.service.DepartmentService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,7 +19,7 @@ import java.sql.Date;
 public class DepController {
     final private DepartmentService departmentService;
     @Autowired
-    private ExcelUtil excelUtil;
+    private ExcelExport excelExport;
 
     @Autowired
     public DepController(DepartmentService departmentService) {
@@ -90,6 +88,6 @@ public class DepController {
 
     @GetMapping("/dep/download")
     public RespBody<String> getExe(@RequestBody String tabName) {
-        return new RespBody<>(1, excelUtil.returnExcel(tabName));
+        return new RespBody<>(1, excelExport.returnExcel(tabName));
     }
 }

@@ -16,9 +16,9 @@ import java.sql.*;
 /**
  * 把数据导入到Excel公用类
  */
-public class ExcelUtil {
+public class ExcelExport {
     //得到一个Log对象,用做日志记录
-    private static Log log = LogFactory.getLog(ExcelUtil.class);
+    private static Log log = LogFactory.getLog(ExcelExport.class);
     private String fileName;
     @Value("${resourcesPath}")
     private String resourcesPath;
