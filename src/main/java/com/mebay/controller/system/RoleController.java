@@ -54,9 +54,9 @@ public class RoleController {
     }
 
     @GetMapping(value = "/role")
-    @ApiOperation(value = "获取所有的角色列表")
-    public RespBody<PageView<Role>> getAll(PageQuery pageQuery) {
-        return new RespBody<>(1, roleService.roles(pageQuery));
+    @ApiOperation(value = "获取该角色能访问的角色列表")
+    public RespBody<List<Role>> getAll() {
+        return new RespBody<>(1, roleService.roles());
     }
 
     @PutMapping("/role/assignment/{id}")

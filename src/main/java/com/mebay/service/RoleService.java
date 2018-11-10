@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.mebay.Constant;
 import com.mebay.bean.*;
+import com.mebay.common.UserUtils;
 import com.mebay.common.Util;
 import com.mebay.config.UrlFilterInvocationSecurityMetadataSource;
 import com.mebay.mapper.RoleMapper;
@@ -20,26 +21,42 @@ public class RoleService {
 
     private final RoleMapper roleMapper;
     private final MenuService menuService;
+    private final UserService userService;
 
     @Autowired
-    public RoleService(RoleMapper roleMapper, MenuService menuService) {
+    public RoleService(RoleMapper roleMapper, MenuService menuService, UserService userService) {
         this.roleMapper = roleMapper;
         this.menuService = menuService;
+        this.userService = userService;
     }
 
     /**
-     * 获取所有的角色
-     * @param pageQuery 分页参数
+     * 获取该角色能访问的角色列表
      * @return 分页之后的角色列表
      */
-    public PageView<Role> roles(PageQuery pageQuery) {
-        Page<Role> page = PageHelper.startPage(pageQuery);
-        roleMapper.findAllRole(pageQuery.buildSubSql());
-        return PageView.build(page);
+    public List<Role> roles() {
+        Long id = userService.getCurrentUser().getRole().stream().max(Comparator.comparing(Role::getId)).get().getId();
+        IdTree idTree = roleMapper.getRoleIdTreeById(id);
+        List<Long> ids = new ArrayList<>();
+        idTree.getIDs(ids);
+        return roleMapper.getRoleByIds(ids, null);
     }
 
     public Role getRolesById(Long id) {
         return roleMapper.findRolesById(id);
+    }
+
+    public Role findRolesById(Long id) {
+        return roleMapper.findRolesById(id);
+    }
+
+    public Role getAll() {
+        Role role = (Role) Constant.map.get("Role");
+        if (role == null) {
+            role = roleMapper.findRolesById(1L);
+            Constant.map.put("Role", role);
+        }
+        return role;
     }
 
     /**
@@ -78,21 +95,20 @@ public class RoleService {
      * @param id 角色id
      */
     public void update(Map<Long, List<String>> menuRoles, Long id) {
-        UrlFilterInvocationSecurityMetadataSource.INVALID = true;
         List<Menu> menus = menuService.getMenusByRole(roleMapper.findRoleById(id));
         Map<Long, List<String>> remove = menus.stream().collect(Collectors.toMap(Menu::getId, ms -> ms.getRoles().get(0).getMethod()));
         for (Map.Entry<Long, List<String>> entry : menuRoles.entrySet()) {
             List<String> roleList;
             if ((roleList = remove.get(entry.getKey())) != null) {  //在已有的权限中找请求的菜单id
                 List<String> strings = entry.getValue();
-                removeAllSame(roleList, strings);//去掉相同的
+                Util.removeAllSame(roleList, strings);//去掉相同的
             }
         }
         removeMenuMethodByRole(id, remove);     //移除没有的菜单访问方法
         addMenuMethodToRole(id, menuRoles);     //添加新的菜单访问方法
         Set<Long> removeSet = remove.keySet();
         Set<Long> addSet = menuRoles.keySet();
-        removeAllSame(removeSet, addSet);
+        Util.removeAllSame(removeSet, addSet);
         removeMenuByRole(id, removeSet);        //移除没有的菜单
         addMenuToRole(id, addSet);              //添加新的菜单
     }
@@ -128,22 +144,6 @@ public class RoleService {
         if (mids == null || mids.isEmpty())
             return;
         roleMapper.addMenuMethodToRole(rid, mids);
-    }
-
-    /**
-     * 移除两个列表中所有相同的元素
-     * @param c1 一个列表
-     * @param c2 另一个列表
-     * @param <T> 元素的类型
-     */
-    public <T> void removeAllSame(Collection<T> c1,Collection<T> c2) {
-        c1.removeIf(c -> {
-            if (c2.contains(c)) {
-                c2.remove(c);
-                return true;
-            }
-            return false;
-        });
     }
 
 }

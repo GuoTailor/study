@@ -1,6 +1,9 @@
 package com.mebay;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * 经常用到的一些通用常量，基本已弃用
  */
@@ -51,7 +54,8 @@ public class Constant {
 
     /**
      * ================================================================
-     * 类型码
+     * 缓存
      * ================================================================
      */
+    public static final Map<String, Object> map = new HashMap<>();
 }

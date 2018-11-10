@@ -70,6 +70,14 @@ public class Department implements StreamTree<Department> {
         return name != null ? name.equals(that.name) : that.name == null;
     }
 
+    @JsonIgnore
+    public void getIDs(List<Long> deptIsds) {
+        deptIsds.add(id);
+        for (Department dept : children) {
+            dept.getIDs(deptIsds);
+        }
+    }
+
     public List<Department> getChildren() {
         return children;
     }

@@ -38,7 +38,7 @@
 		SELECT r.* FROM user_role h,role r where h.roleid=r.id AND h.userid=#{id};
 	</select>
 
-	<select id="getUserByDeptId" resultType="com.mebay.bean.User">
+	<select id="getUserByDeptId" resultMap="lazyLoadRoles">
 		select * from user where depId = #{deptId};
 	</select>
 

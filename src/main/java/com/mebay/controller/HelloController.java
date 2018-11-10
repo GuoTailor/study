@@ -21,6 +21,8 @@ public class HelloController {
     private final MenuService menuService;
     @Value("${resourcesPath}")
     private String resourcesPath;
+    @Value("${resourcesTempPath}")
+    private String resourcesTempPath;
     @Autowired
     public HelloController(MenuService menuService, UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource) {
         this.menuService = menuService;
@@ -46,11 +48,6 @@ public class HelloController {
         return new RespBody<>(1, menuService.getMenusByUserId());
     }
 
-    @GetMapping("/update")
-    public void update() {
-        urlFilterInvocationSecurityMetadataSource.update();
-    }
-
     @PostMapping("/upload")
     @ApiOperation(value = "上传文件")
     public RespBody<String> upload(@RequestParam(value = "file" ,required = false) MultipartFile file) {
@@ -60,7 +57,6 @@ public class HelloController {
             return new RespBody<>(0, "文件保存失败!请联系管理员");
         }else
             return new RespBody<>(1, filePath.replaceFirst("\\.", ""));
-
     }
 
 }

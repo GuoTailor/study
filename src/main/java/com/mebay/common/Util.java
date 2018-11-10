@@ -1,5 +1,7 @@
 package com.mebay.common;
 
+import com.mebay.bean.StreamTree;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.beans.IntrospectionException;
@@ -9,8 +11,25 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 public class Util {
+    /**
+     * 移除两个列表中所有相同的元素
+     * @param c1 一个列表
+     * @param c2 另一个列表
+     * @param <T> 元素的类型
+     */
+    public static <T> void removeAllSame(Collection<T> c1,Collection<T> c2) {
+        c1.removeIf(c -> {
+            if (c2.contains(c)) {
+                c2.remove(c);
+                return true;
+            }
+            return false;
+        });
+    }
+
     public static <T> boolean hasAny(List<T> gather, T... element) {
         for (T t : gather) {
             for (T e : element) {
@@ -81,6 +100,45 @@ public class Util {
                 return false;
         }
         return true;
+    }
+
+    public static <T extends StreamTree> T max(T t, Collection<T> collection) {
+        T tt = null;
+        int temp = -1;
+        for (T t1 : collection) {
+            int d = t.getTier(t1.getId());
+            if(d > temp) {
+                temp = d;
+                tt = t1;
+            }
+        }
+        return tt;
+    }
+
+    public static <N> N max(Collection<N> collection, BiFunction<N, Integer, Integer> fun) {
+        N nn = null;
+        int temp = -1;
+        for (N n : collection) {
+            int t = fun.apply(n, temp);
+            if (t > temp) {
+                temp = t;
+                nn = n;
+            }
+        }
+        return nn;
+    }
+
+    public static <N> N min(Collection<N> collection, BiFunction<N, Integer, Integer> fun) {
+        N nn = null;
+        int temp = Integer.MAX_VALUE;
+        for (N n : collection) {
+            int t = fun.apply(n, temp);
+            if (t < temp) {
+                temp = t;
+                nn = n;
+            }
+        }
+        return nn;
     }
 
     /**

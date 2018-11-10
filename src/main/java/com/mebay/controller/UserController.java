@@ -6,6 +6,8 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 @Api(tags = "用户")
@@ -30,11 +32,15 @@ public class UserController {
 
     @ApiOperation(value = "注册用户", notes = "权限存在问题，关于权限字段不用传")
     @PostMapping()
-    public RespBody<String> logon(@ModelAttribute User user) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "query", name = "rid", value = "角色id列表", required = true, dataType = "Long"),
+    })
+    public RespBody<String> logon(@ModelAttribute User user, @RequestParam List<Long> rid) {
         System.out.println(user.toString());
-        return new RespBody<String>(userService.register(user))
+        return new RespBody<String>(userService.register(user, rid))
                 .put(-2, "注册失败!用户名重复")
                 .put(-1, "该用户不能在该单位下，注册失败")
+                .put(-4, "权限不足")
                 .put(1, "注册成功!")
                 .put(0, "系统异常!请联系管理员")
                 .put(-3, "注册失败!密码必须为大写字母+小写字母+数字");
@@ -77,8 +83,22 @@ public class UserController {
     })
     public RespBody<String> addRole(@PathVariable Long id, @RequestParam Long rid) {
         return new RespBody<String>(userService.addRole(id, rid))
-                .put(-1, "没有该用户或角色，或没有该用户的操作权限")
+                .put(-1, "没有该用户的操作权限")
                 .put(-2, "重复添加")
+                .put(1,"添加成功")
+                .put(0, "添加失败，未知错误");
+    }
+
+    @PutMapping("/role/{id}")
+    @ApiOperation(value = "更新角色信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(paramType = "path", name = "id", value = "用户id", required = true, dataType = "Long"),
+            @ApiImplicitParam(paramType = "query", name = "rid", value = "角色id列表", required = true, dataType = "Long"),
+    })
+    public RespBody<String> updata(@PathVariable Long id, @RequestParam List<Long> rid) {
+        return new RespBody<String>(userService.updateRole(id, rid))
+                .put(-1, "权限不足，不足已分配该角色")
+                .put(-2, "没有该用户的操作权限")
                 .put(1,"添加成功")
                 .put(0, "添加失败，未知错误");
     }

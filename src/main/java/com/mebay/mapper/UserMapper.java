@@ -4,6 +4,7 @@ import com.mebay.bean.Role;
 import com.mebay.bean.User;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface UserMapper {
@@ -64,7 +65,7 @@ public interface UserMapper {
      * @param rids 角色id列表
      * @return 受影响的行数 1：插入一行； 0：插入0行（插入失败）
      */
-    int addRolesForUser(@Param("userid") Long id, @Param("rids") Long[] rids);
+    int addRolesForUser(@Param("userid") Long id, @Param("rids") Collection<Long> rids);
 
     /**
      * 为用户添加多个角色

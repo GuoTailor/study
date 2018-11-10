@@ -6,9 +6,9 @@ import java.util.List;
 /**
  * Created by gyh on 2018/10/22.
  */
-public class DeptTreeId implements StreamTree<DeptTreeId> {
+public class IdTree implements StreamTree<IdTree> {
     private Long id;
-    private List<DeptTreeId> children = new ArrayList<>();
+    private List<IdTree> children = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -18,18 +18,18 @@ public class DeptTreeId implements StreamTree<DeptTreeId> {
         this.id = id;
     }
 
-    public List<DeptTreeId> getChildren() {
+    public List<IdTree> getChildren() {
         return children;
     }
 
-    public void setChildren(List<DeptTreeId> children) {
+    public void setChildren(List<IdTree> children) {
         this.children = children;
     }
 
     public void getIDs(List<Long> deptIsds) {
         deptIsds.add(id);
-        for (DeptTreeId deptTreeId : children) {
-            deptTreeId.getIDs(deptIsds);
+        for (IdTree idTree : children) {
+            idTree.getIDs(deptIsds);
         }
     }
 }

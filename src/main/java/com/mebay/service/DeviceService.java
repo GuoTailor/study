@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +35,7 @@ public class DeviceService {
      * @param pageQuery 分页参数
      */
     public PageView<Device> getDeviceByDepId(PageQuery pageQuery) {
-        List<DeptTreeId> deptId = departmentService.getDeptIdTreeByUser();
+        List<IdTree> deptId = departmentService.getDeptIdTreeByUser();
         List<Long> ids = new LinkedList<>();
         deptId.forEach(d -> d.getIDs(ids));
         Page<Device> page = PageHelper.startPage(pageQuery);

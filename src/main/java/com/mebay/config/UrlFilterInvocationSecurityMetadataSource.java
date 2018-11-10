@@ -1,5 +1,6 @@
 package com.mebay.config;
 
+import com.mebay.Constant;
 import com.mebay.bean.Menu;
 import com.mebay.bean.RequestMethod;
 import com.mebay.common.Util;
@@ -25,12 +26,9 @@ import java.util.regex.Pattern;
 @Component
 public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocationSecurityMetadataSource {
     private static final Logger logger = Logger.getLogger(UrlFilterInvocationSecurityMetadataSource.class.getSimpleName());
-    private List<Menu> allMenu;
     private final MenuService menuService;
     private final RequestMethodMapper requestMethodMapper;
-    private List<RequestMethod> allMethod;
     private final List<String> permit;
-    public static boolean INVALID = true;
 
     @Autowired
     public UrlFilterInvocationSecurityMetadataSource(MenuService menuService, RequestMethodMapper requestMethodMapper) {
@@ -47,7 +45,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
                 "/druid([?/].*|$)",//swagger api文档一律通过
                 "/swagger-resources([?/].*|$)",
                 "/swagger-ui.html",
-                "/swagger-resources",
+                ".*/swagger-resources",
                 "/v2([?/].*|$)",
                 "/images([?/].*|$)",
                 "/webjars([?/].*|$)",
@@ -69,12 +67,13 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         String requestUrl = ((FilterInvocation) o).getRequestUrl();
         String method = ((FilterInvocation) o).getHttpRequest().getMethod();
         Util.addHeader(((FilterInvocation) o).getHttpResponse(), ((FilterInvocation) o).getHttpRequest());
-        if (INVALID) {
-            update();
-        }
+        List<RequestMethod> allMethod = (List<RequestMethod>) Constant.map.get("method");
+        List<Menu> allMenu = (List<Menu>) Constant.map.get("menu");
         if (allMenu == null || allMethod == null) {
-            System.out.println("<<<<<<<<<<<<出错");
-            System.exit(0);
+            allMenu = menuService.getAllMenu();
+            allMethod = requestMethodMapper.getAll();
+            Constant.map.put("method", allMethod);
+            Constant.map.put("menu", allMenu);
         }
         if (method.equals("OPTIONS")){
             logger.info("OPTIONS");
@@ -106,13 +105,6 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
     @Override
     public boolean supports(Class<?> aClass) {
         return FilterInvocation.class.isAssignableFrom(aClass);
-    }
-
-    public void update() {
-        allMenu = menuService.getAllMenu();
-        allMethod = requestMethodMapper.getAll();
-        INVALID = false;
-        logger.info("更新菜单");
     }
 
 }

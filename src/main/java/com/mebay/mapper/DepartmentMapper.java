@@ -1,7 +1,7 @@
 package com.mebay.mapper;
 
 import com.mebay.bean.Department;
-import com.mebay.bean.DeptTreeId;
+import com.mebay.bean.IdTree;
 import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
@@ -62,11 +62,12 @@ public interface DepartmentMapper {
     List<Department> getDeptByIds(@Param("ids") List<Long> id, @Param("search") String search);
 
     /**
-     * 获取单位列表通过建造者的id
+     * 获取单位列表通过建造者的id,
+     * 该方法会返回自己和下一级单位，但不会递归返回下下级
      * @param uid 建造者的id
      * @return 单位列表
      */
-    List<DeptTreeId> getDeptsByCreationId(@Param("uid") Long uid);
+    List<IdTree> getDeptsByCreationId(@Param("uid") Long uid);
 
     /**
      * 获取所有的单位<p>
@@ -91,17 +92,18 @@ public interface DepartmentMapper {
     int updateDep(@Param("dep")Department dep, @Param("originalId") Long id);
 
     /**
-     * 获取单位通过单位的id
-     * 注意该方法将返回
+     * 获取单位通过单位的id,
+     * 注意该方法将返回自己和下一级单位，但不会递归返回下下级
      * @param id 单位的id
      * @return 单位
      */
-    DeptTreeId getDeptIdTreeByPid(@Param("id") Long id);
+    IdTree getDeptIdTreeByPid(@Param("id") Long id);
 
     /**
-     * 获取单位id树通过单位id
+     * 获取单位id树通过单位id,
+     * 该方法会返回自己和下一级单位，但不会递归返回下下级
      * @param id 单位的id
-     * @return 单位id树 见{@link com.mebay.bean.DeptTreeId}
+     * @return 单位id树 见{@link IdTree}
      */
-    DeptTreeId getDeptIdTreeById(@Param("id") Long id);
+    IdTree getDeptIdTreeById(@Param("id") Long id);
 }
