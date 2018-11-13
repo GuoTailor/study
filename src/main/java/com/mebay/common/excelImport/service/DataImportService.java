@@ -20,7 +20,6 @@ public class DataImportService {
     private List<String> titleList;
 
     public void importDatabase(File file, String tableName) throws IOException, InvalidFormatException {
-        tableName = "my";
         //得到文件名
         String fileName = file.getPath();
         //得到文件后缀名

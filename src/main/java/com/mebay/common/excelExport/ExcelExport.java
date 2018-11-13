@@ -8,6 +8,9 @@ import jxl.write.WriteException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,6 +19,7 @@ import java.sql.*;
 /**
  * 把数据导入到Excel公用类
  */
+@RestController
 public class ExcelExport {
     //得到一个Log对象,用做日志记录
     private static Log log = LogFactory.getLog(ExcelExport.class);
@@ -88,6 +92,7 @@ public class ExcelExport {
      *
      * @param tableName 表名
      */
+    @RequestMapping(method = RequestMethod.POST,value = "excelExport")
     public String returnExcel(String tableName) {
         String name = null;
         try {
