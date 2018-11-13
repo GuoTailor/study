@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.LeFS.poi.mapper.DatabaseMapper">
+    <insert id="insertData">
+        INSERT INTO `${tableName}`
+        <trim>
+            <foreach collection="headList" item="fieldName" open="(" separator="," close=")">
+                ${fieldName}
+            </foreach>
+        </trim>
+        VALUES
+        <trim>
+            <foreach collection="dataList" item="data" open="(" separator="," close=")">
+                #{data}
+            </foreach>
+        </trim>
+    </insert>
+</mapper>

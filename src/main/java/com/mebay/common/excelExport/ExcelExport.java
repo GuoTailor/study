@@ -1,4 +1,4 @@
-package com.mebay.common.excel;
+package com.mebay.common.excelExport;
 
 import jxl.Workbook;
 import jxl.write.Label;
