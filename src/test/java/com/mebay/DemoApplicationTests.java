@@ -32,15 +32,7 @@ public class DemoApplicationTests {
     public void contextLoads() throws InterruptedException {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         System.out.println(antPathMatcher.match("/trip/**", "/trip?nmka=1"));
-        System.out.println(antPathMatcher.match("/trip/**", "/trip/e?nmka=1"));
-        List<Integer> list = new LinkedList<>();
-        for (int i = 0; i < 100; i++) {
-            list.add(i);
-        }
-        list.stream().filter((s) -> {
-                logger.info(s + " >>" + System.currentTimeMillis());
-                return s < 50;
-        }).limit(49).forEach((s) -> logger.info(s + "   " + System.currentTimeMillis()));
+        System.out.println(antPathMatcher.match("/trip/**", "/trip/nm/e?nmka=1"));
         System.out.println(no10(100,10));
         System.out.println("ROLE_ENGINEER".matches("ROLE_[\\w]*_ADMIN"));
         Map<String, List<String>> nmka = new HashMap<>();

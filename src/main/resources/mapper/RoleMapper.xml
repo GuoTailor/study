@@ -8,11 +8,34 @@
         <result column="name" property="name"/>
         <result column="nameZh" property="nameZh"/>
         <result column="pid" property="pid"/>
+    </resultMap>
+
+    <resultMap id="childResultMap" type="com.mebay.bean.Role" extends="BaseResultMap">
         <collection property="children" ofType="com.mebay.bean.Role" column="id" select="findRoleByPid"/>
     </resultMap>
 
-    <select id="findRolesById" resultMap="BaseResultMap">
-        SELECT * FROM role where id = #{id}
+    <resultMap id="IdResultMap" type="com.mebay.bean.IdTree">
+        <id property="id" column="id"/>
+        <collection property="children" ofType="com.mebay.bean.IdTree"
+                    select="getRoleIdTreeByPid" column="id"/>
+    </resultMap>
+
+    <select id="getRoleIdTreeByPid" resultMap="IdResultMap">
+        select r.id
+        from role r
+        where r.pid = #{id}
+    </select>
+
+    <select id="getRoleIdTreeById" resultMap="IdResultMap">
+        select r.id
+        from role r
+        where r.id = #{id}
+    </select>
+
+    <select id="findRolesById" resultMap="childResultMap">
+        SELECT *
+        FROM role
+        where id = #{id}
     </select>
 
     <select id="findAllRole" resultType="com.mebay.bean.Role">
@@ -34,16 +57,32 @@
         </where>
     </select>
 
-    <select id="findRoleByPid" resultMap="BaseResultMap">
-        select * from role where pid = #{pid};
+    <select id="findRoleByPid" resultMap="childResultMap">
+        select *
+        from role
+        where pid = #{pid};
     </select>
 
     <select id="findRoleById" resultType="com.mebay.bean.Role">
-        select * from role where id = #{id}
+        select *
+        from role
+        where id = #{id}
     </select>
 
-    <insert id="addNewRole">
-        INSERT INTO role set name = #{role}, nameZh = #{roleZh};
+    <select id="getRoleByIds" resultMap="BaseResultMap">
+        select r.*
+        from role r
+        where r.`id` in
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <insert id="addNewRole" parameterType="com.mebay.bean.Role">
+        INSERT INTO role(name, nameZh, pid) values (#{name}, #{nameZh}, #{pid})
     </insert>
 
     <insert id="addMenuToRole">
@@ -76,7 +115,9 @@
     </update>
 
     <delete id="deleteRoleById" parameterType="Long">
-        DELETE FROM role WHERE id = #{rid};
+        DELETE
+        FROM role
+        WHERE id = #{rid};
     </delete>
 
     <delete id="removeMenuByRole">

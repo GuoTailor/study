@@ -11,7 +11,7 @@
  Target Server Version : 80011
  File Encoding         : 65001
 
- Date: 19/10/2018 11:28:04
+ Date: 12/11/2018 14:01:33
 */
 CREATE DATABASE `study` DEFAULT CHARACTER SET utf8;
 
@@ -34,20 +34,27 @@ CREATE TABLE `department`  (
   `type` enum('总公司','终端','组机','经销商') CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL,
   `creationTime` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0),
   `deptSite` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
+  `contact` varchar(32) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
+  `contactPhone` varchar(11) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
+  `deptUrl` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
+  `remark` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `name`(`name`) USING BTREE,
   INDEX `creationUid`(`creationUid`) USING BTREE,
   CONSTRAINT `department_ibfk_1` FOREIGN KEY (`creationUid`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of department
 -- ----------------------------
-INSERT INTO `department` VALUES (1, '重庆铭贝科技有限公司', -1, 1, NULL, NULL, '总公司', '2018-10-17 13:49:09', NULL);
-INSERT INTO `department` VALUES (3, '经销商单位', 1, 1, 2, '/E:/IntelliJ/study/target/classes/static/images/logo/e9cdb5d9-4475-4044-aaf9-21133bb45ef2-1537350443434.bmp', '经销商', '2018-10-17 13:49:09', NULL);
-INSERT INTO `department` VALUES (9, '组机厂单位', 1, 1, 2, NULL, '组机', '2018-10-17 13:49:09', NULL);
-INSERT INTO `department` VALUES (10, '终端用户单位', 1, 1, 2, NULL, '终端', '2018-10-17 13:49:09', NULL);
-INSERT INTO `department` VALUES (16, '终端用户单位2', 10, 1, 2, NULL, '终端', '2018-10-17 13:49:09', NULL);
+INSERT INTO `department` VALUES (1, '重庆铭贝科技有限公司', -1, 1, NULL, '/resources/img/8c7d35f1-09cf-4934-b648-80ce7c319ffb-1540870786072.bmp', '总公司', '2018-10-17 13:49:09', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `department` VALUES (3, '经销商单位', 1, 1, 2, '/resources/img/bbf8e982-08c4-4b6a-a19a-aa1594250bf3-1540534816533.bmp', '经销商', '2018-10-17 13:49:09', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `department` VALUES (9, '组机厂单位', 1, 1, 2, NULL, '组机', '2018-10-17 13:49:09', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `department` VALUES (10, '终端用户单位', 1, 1, 2, NULL, '终端', '2018-10-17 13:49:09', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `department` VALUES (16, '终端用户单位2', 10, 1, NULL, NULL, '终端', '2018-10-17 13:49:09', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `department` VALUES (26, '终端用户单位3', 16, 1, NULL, NULL, '终端', '2018-11-07 12:36:18', NULL, NULL, NULL, NULL, NULL, NULL);
+INSERT INTO `department` VALUES (27, '2018新增', 1, 1, 2, '/resources/img/6eece5bf-0937-4335-91a6-3eb9112367b6-1541834826706.jpg', '经销商', '2018-11-14 00:00:00', '123123', '123123', '123123', '123123', '123123', NULL);
 
 -- ----------------------------
 -- Table structure for device_detail
@@ -55,38 +62,57 @@ INSERT INTO `department` VALUES (16, '终端用户单位2', 10, 1, 2, NULL, '终
 DROP TABLE IF EXISTS `device_detail`;
 CREATE TABLE `device_detail`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `DTUId` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT 'DTU编号',
-  `DTUModel` varchar(16) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT 'DTU型号',
-  `siteName` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '站点名称',
-  `controllerModel` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '控制器型号',
-  `communicationNumber` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '通信号码',
+  `DTUId` varchar(32) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT 'DTU编号',
+  `DTUModel` varchar(16) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT 'DTU型号',
+  `siteName` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '站点名称',
+  `controllerModel` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '控制器型号',
+  `communicationNumber` varchar(32) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '通信号码',
   `registrationDate` datetime(0) NOT NULL COMMENT '注册日期',
   `licenseExpirationDate` datetime(0) NOT NULL COMMENT '许可到期日',
-  `uploadPhoto` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '照片上传',
-  `controllerBrand` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '控制器品牌',
-  `controllerType` enum('控制器类型1','控制器类型2') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '控制器类型',
+  `uploadPhoto` varchar(128) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '照片上传',
+  `controllerBrand` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '控制器品牌',
+  `controllerType` enum('控制器类型1','控制器类型2') CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '控制器类型',
   `userId` int(11) NOT NULL COMMENT '操作员/工程师',
-  `licensePeriod` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '许可周期',
-  `deviceStatus` enum('运行','待机','离线','报警') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '设备状态',
-  `other` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '其他',
-  `unitModel` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '机组型号',
-  `engineModel` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '发动机型号',
-  `speedControlType` varchar(32) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '调速类型',
-  `speedControlBoardModel` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '调速板型号',
-  `pressureRegulatorType` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '调压器类型',
-  `manufacturer` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '生产厂家',
-  `electricGeneratorModel` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '发电机型号',
-  `actuatorType` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '执行器类型',
+  `licensePeriod` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '许可周期',
+  `deviceStatus` enum('运行','待机','离线','报警') CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '设备状态',
+  `other` text CHARACTER SET utf16 COLLATE utf16_general_ci NULL COMMENT '其他',
+  `unitModel` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '机组型号',
+  `engineModel` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '发动机型号',
+  `speedControlType` varchar(32) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '调速类型',
+  `speedControlBoardModel` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '调速板型号',
+  `pressureRegulatorType` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '调压器类型',
+  `manufacturer` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '生产厂家',
+  `electricGeneratorModel` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '发电机型号',
+  `actuatorType` varchar(64) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '执行器类型',
   `fuelTankCapacity` float NOT NULL COMMENT '油箱容量',
-  `reference` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '备注',
-  `accessory` varchar(128) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '附件',
+  `reference` text CHARACTER SET utf16 COLLATE utf16_general_ci NULL COMMENT '备注',
+  `accessory` varchar(128) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '附件',
   `electronicFenceStatus` tinyint(1) NOT NULL DEFAULT 0 COMMENT '电子围栏状态',
-  `electronicFenceScope` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '围栏范围设置',
+  `electronicFenceScope` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '围栏范围设置',
   `createTime` datetime(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '添加时间',
   `depId` int(11) NOT NULL COMMENT '单位id',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `DTUId`(`DTUId`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for device_upkeep
+-- ----------------------------
+DROP TABLE IF EXISTS `device_upkeep`;
+CREATE TABLE `device_upkeep`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `DTUId` varchar(32) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT 'DTU编号',
+  `controllerType` enum('控制器类型1','控制器类型2') CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL COMMENT '控制器类型',
+  `upkeepUser` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '保养人员',
+  `upkeepMechanism` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '保养机构',
+  `upkeepCost` decimal(10, 2) NOT NULL COMMENT '保养费用',
+  `upkeepTime` datetime(0) NOT NULL COMMENT '保养时间',
+  `nextUpkeepTime` datetime(0) NOT NULL COMMENT '下次保养日期',
+  `upkeepContent` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NOT NULL COMMENT '保养内容',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `DTUId`(`DTUId`) USING BTREE,
+  CONSTRAINT `device_upkeep_ibfk_1` FOREIGN KEY (`DTUId`) REFERENCES `device_detail` (`dtuid`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE = InnoDB CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for menu
@@ -100,19 +126,19 @@ CREATE TABLE `menu`  (
   `enabled` tinyint(1) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `parentId`(`parentId`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of menu
 -- ----------------------------
 INSERT INTO `menu` VALUES (1, '/', '所有', NULL, 1);
-INSERT INTO `menu` VALUES (2, '/user/**', '用户管理', 1, 1);
-INSERT INTO `menu` VALUES (3, '/test/**', '测试', 1, 0);
-INSERT INTO `menu` VALUES (4, '/system/dep/**', '单位管理', 1, 1);
-INSERT INTO `menu` VALUES (5, '/system/role/**', '权限管理', 1, 1);
-INSERT INTO `menu` VALUES (6, '/system/device/**', '设备管理', 1, 1);
-INSERT INTO `menu` VALUES (7, '/system/role/assignment/**', '权限分配', 4, 1);
-INSERT INTO `menu` VALUES (9, '/user/role/**', '角色分配', 2, 1);
+INSERT INTO `menu` VALUES (2, '/user([?/].*|$)', '用户管理', 1, 1);
+INSERT INTO `menu` VALUES (3, '/test([?/].*|$)', '测试', 1, 0);
+INSERT INTO `menu` VALUES (4, '/system/dep([?/].*|$)', '单位管理', 1, 1);
+INSERT INTO `menu` VALUES (5, '/system/role([?/].*|$)', '权限管理', 1, 1);
+INSERT INTO `menu` VALUES (6, '/system/device([?/].*|$)', '设备管理', 1, 1);
+INSERT INTO `menu` VALUES (7, '/system/role/assignment([?/].*|$)', '权限分配', 4, 1);
+INSERT INTO `menu` VALUES (9, '/user/role([?/].*|$)', '角色分配', 2, 1);
 
 -- ----------------------------
 -- Table structure for menu_role
@@ -128,7 +154,7 @@ CREATE TABLE `menu_role`  (
   INDEX `menu_role_ibfk_2`(`rid`) USING BTREE,
   CONSTRAINT `menu_role_ibfk_1` FOREIGN KEY (`mid`) REFERENCES `menu` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `menu_role_ibfk_2` FOREIGN KEY (`rid`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 34 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of menu_role
@@ -176,7 +202,7 @@ CREATE TABLE `request_method`  (
   INDEX `request_method_ibfk_2`(`menuId`) USING BTREE,
   CONSTRAINT `request_method_ibfk_1` FOREIGN KEY (`roleId`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `request_method_ibfk_2` FOREIGN KEY (`menuId`) REFERENCES `menu` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 73 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 81 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of request_method
@@ -271,7 +297,7 @@ CREATE TABLE `role`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `pid`(`pid`) USING BTREE,
   CONSTRAINT `role_ibfk_1` FOREIGN KEY (`pid`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 10 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 13 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of role
@@ -300,23 +326,30 @@ CREATE TABLE `user`  (
   `updateTime` datetime(0) NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
   `depId` int(11) NULL DEFAULT NULL,
   `logo` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
+  `email` varchar(255) CHARACTER SET utf16 COLLATE utf16_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `username`(`username`) USING BTREE,
   INDEX `user_ibfk_1`(`depId`) USING BTREE,
   CONSTRAINT `user_ibfk_1` FOREIGN KEY (`depId`) REFERENCES `department` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 51 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 'test', '$2a$10$vHlFh92LPD.514uAqAHuUOOxJHyf2hXSMpdPPvGz7k5xBOvDVT./6', 'cq', '男', NULL, '2018-09-04 16:46:41', '2018-10-09 15:22:24', 1, NULL);
-INSERT INTO `user` VALUES (2, '高级管理员', '$2a$10$ph0QH3sRyHBHtizuWOUgI.iAfF0GOOQ3hyh3Q/uSttgBUvXa5kRIa', 'cp', '男', NULL, '2018-09-04 16:49:52', '2018-10-09 15:30:11', 1, NULL);
-INSERT INTO `user` VALUES (3, '经销商管理员', '$2a$10$.70JwfyvWeRahB6jYKIfVeEXWjX/Bkw7k0bs.Tf/nWPl6y75ul1WW', '张三', NULL, NULL, '2018-10-09 15:33:17', '2018-10-09 15:33:36', NULL, NULL);
-INSERT INTO `user` VALUES (4, '机组厂管理员', '$2a$10$h3HsrjFNvueJz/AS2MnhIOz.h9Re.S/Bp3fzrm3/QuG.RtPF4T/ZO', '张三', NULL, NULL, '2018-10-09 15:34:06', '2018-10-09 15:38:02', NULL, NULL);
-INSERT INTO `user` VALUES (5, '终端用户管理员', '$2a$10$Xc2hVpefXR8c0IIUBrSL.u7RPMpqIQF3/bs2muw2a9szzFRCPnOau', '张三', '男', '11011211912', '2018-10-09 15:46:50', '2018-10-09 15:47:56', 1, NULL);
-INSERT INTO `user` VALUES (6, '工程师', '$2a$10$8DJvD6mOOvUm7k86P.RR7OFZY1pkGJqAc5206ZgLiNasVa6vhd4Qm', '张三', '女', '11011211912', '2018-10-09 15:47:26', '2018-10-17 17:30:26', 1, NULL);
-INSERT INTO `user` VALUES (7, '操作员', '$2a$10$UY/gi5.OXFa6KP7rWikduuycGPgZOoJTKxenWrulsfM0iHr4/YiMa', '张三', '男', '11011211912', '2018-10-09 15:48:20', '2018-10-09 15:48:34', 1, NULL);
-INSERT INTO `user` VALUES (8, '观察员', '$2a$10$oupPoCeP9LMtwmb0f1w4lOeB5kdnyN5Ry8uEl7YJ4iIp914K2IAO2', '张三', '女', '11011211912', '2018-10-09 15:47:44', '2018-10-09 15:48:30', 1, NULL);
+INSERT INTO `user` VALUES (1, 'test', '$2a$10$0NhPAVvW1ldcYIof2OSwV.TNZODTXeBA/e060rED./XNGrc74MLH6', 'cq', '男', NULL, '2018-09-04 16:46:41', '2018-10-25 15:59:53', 1, NULL, NULL);
+INSERT INTO `user` VALUES (2, '高级管理员', '$2a$10$ph0QH3sRyHBHtizuWOUgI.iAfF0GOOQ3hyh3Q/uSttgBUvXa5kRIa', 'cp', '男', NULL, '2018-09-04 16:49:52', '2018-10-09 15:30:11', 1, NULL, NULL);
+INSERT INTO `user` VALUES (3, '经销商管理员', '$2a$10$.70JwfyvWeRahB6jYKIfVeEXWjX/Bkw7k0bs.Tf/nWPl6y75ul1WW', '张三', NULL, NULL, '2018-10-09 15:33:17', '2018-10-20 14:56:29', 3, NULL, NULL);
+INSERT INTO `user` VALUES (4, '机组厂管理员', '$2a$10$h3HsrjFNvueJz/AS2MnhIOz.h9Re.S/Bp3fzrm3/QuG.RtPF4T/ZO', '张三', NULL, NULL, '2018-10-09 15:34:06', '2018-10-20 15:00:36', 9, NULL, NULL);
+INSERT INTO `user` VALUES (5, '终端用户管理员', '$2a$10$Xc2hVpefXR8c0IIUBrSL.u7RPMpqIQF3/bs2muw2a9szzFRCPnOau', '张三', '男', '11011211912', '2018-10-09 15:46:50', '2018-10-09 15:47:56', 1, NULL, NULL);
+INSERT INTO `user` VALUES (6, '工程师', '$2a$10$N0.L2pwx0.vIyTxk5oJZXOo3celyoXHCCrwkUHAFfaTU5N0hY9MQi', '张三', '女', '11011211912', '2018-10-09 15:47:26', '2018-10-25 15:49:27', 1, NULL, NULL);
+INSERT INTO `user` VALUES (7, '操作员', '$2a$10$UY/gi5.OXFa6KP7rWikduuycGPgZOoJTKxenWrulsfM0iHr4/YiMa', '张三', '男', '11011211912', '2018-10-09 15:48:20', '2018-10-09 15:48:34', 1, NULL, NULL);
+INSERT INTO `user` VALUES (8, '观察员', '$2a$10$oupPoCeP9LMtwmb0f1w4lOeB5kdnyN5Ry8uEl7YJ4iIp914K2IAO2', '张三', '女', '11011211912', '2018-10-09 15:47:44', '2018-10-09 15:48:30', 1, NULL, NULL);
+INSERT INTO `user` VALUES (44, 'nmka', '$2a$10$TM7jsAIDNBlFAhcwIhefGejJJiiADIHmojM0QEoqHJyxkd2HZeCoK', 'lishi', '女', '12345678910', '2018-11-07 11:19:38', '2018-11-07 11:19:38', 1, NULL, NULL);
+INSERT INTO `user` VALUES (46, 'nmka2', '$2a$10$bd6a4bKQsdJMNvaKezgK3ODzipQy6ev/I/RuL9ykjdK58S/rIudBi', 'lishi', '女', '12345678910', '2018-11-07 12:34:15', '2018-11-07 12:34:15', 3, NULL, NULL);
+INSERT INTO `user` VALUES (47, 'nmka3', '$2a$10$DZDX9AxjXKeX5hl0qx3koeXwIquasgxHz2QUfj8CDanxzGnySBISa', 'lishi', '女', '12345678910', '2018-11-07 12:34:59', '2018-11-07 12:34:59', 16, NULL, NULL);
+INSERT INTO `user` VALUES (48, '12545', '$2a$10$SwMv/.wrnCED/8fFKJ0mWeBsShCGyVO3WVPiCg19zIjpfox588/VG', '235', NULL, NULL, '2018-11-09 17:29:07', '2018-11-09 17:29:07', 1, NULL, NULL);
+INSERT INTO `user` VALUES (49, '12545121211', '$2a$10$Mfsb9JpiveL0hmxbJ8ShgeRRswcQNKbxSvp6h8r3DHID4ZxCclK3e', '23521', NULL, NULL, '2018-11-09 21:30:34', '2018-11-09 21:30:34', 1, NULL, NULL);
+INSERT INTO `user` VALUES (50, '我去', '$2a$10$Xd1S7A.mSjZUfO7GxHfdxufdpE05S8aRNrsS3Vs8R6vxgSTQZ3/uq', '123', '男', NULL, '2018-11-10 16:09:39', '2018-11-10 16:09:39', 1, '/resources/img/f19a0f27-c3d7-481b-9092-39870b9b57b2-1541836341535.jpg', '123');
 
 -- ----------------------------
 -- Table structure for user_role
@@ -331,7 +364,7 @@ CREATE TABLE `user_role`  (
   INDEX `user_role_ibfk_2`(`roleid`) USING BTREE,
   CONSTRAINT `user_role_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_role_ibfk_2` FOREIGN KEY (`roleid`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 31 CHARACTER SET = utf16 COLLATE = utf16_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user_role
@@ -344,5 +377,10 @@ INSERT INTO `user_role` VALUES (5, 5, 3);
 INSERT INTO `user_role` VALUES (6, 6, 6);
 INSERT INTO `user_role` VALUES (7, 7, 7);
 INSERT INTO `user_role` VALUES (8, 8, 8);
+INSERT INTO `user_role` VALUES (26, 44, 3);
+INSERT INTO `user_role` VALUES (27, 44, 4);
+INSERT INTO `user_role` VALUES (28, 49, 1);
+INSERT INTO `user_role` VALUES (29, 49, 3);
+INSERT INTO `user_role` VALUES (30, 50, 8);
 
 SET FOREIGN_KEY_CHECKS = 1;

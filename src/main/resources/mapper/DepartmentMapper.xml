@@ -18,31 +18,47 @@
         <result column="email" property="email"/>
         <result column="deptUrl" property="deptUrl"/>
         <result column="remark" property="remark"/>
-        <association property="superiorName" column="parentId" select="com.mebay.mapper.DepartmentMapper.getDeptNameById"/>
+        <association property="superiorName" column="parentId"
+                     select="com.mebay.mapper.DepartmentMapper.getDeptNameById"/>
     </resultMap>
-    
+
     <resultMap id="elementaryResultMap" type="com.mebay.bean.Department" extends="BaseResultMap">
         <collection property="children" ofType="com.mebay.bean.Department"
                     select="com.mebay.mapper.DepartmentMapper.getDepByPid" column="id">
         </collection>
     </resultMap>
 
-    <resultMap id="DeptTreeId" type="com.mebay.bean.DeptTreeId">
+    <resultMap id="DeptTreeId" type="com.mebay.bean.IdTree">
         <id property="id" column="id"/>
-        <collection property="children" ofType="com.mebay.bean.DeptTreeId"
+        <collection property="children" ofType="com.mebay.bean.IdTree"
                     select="getDeptIdTreeByPid" column="id"/>
     </resultMap>
 
-    <select id="getDeptIdTreeByPid" resultMap="DeptTreeId">
-        select d.id from department d where d.parentId = #{id} and d.enabled = true
+    <select id="getDeptIdTreeByPid" resultType="com.mebay.bean.IdTree">
+        select d.id
+        from department d
+        where d.parentId = #{id}
+          and d.enabled = true
     </select>
 
     <select id="getDeptIdTreeById" resultMap="DeptTreeId">
-        select d.id from department d where d.id = #{id} and d.enabled = true
+        select d.id
+        from department d
+        where d.id = #{id}
+          and d.enabled = true
+    </select>
+
+    <select id="getDeptsByCreationId" resultMap="DeptTreeId">
+        select d1.id
+        from department d1
+        where d1.`creationUid` = #{uid}
+          AND d1.enabled = true
     </select>
 
     <select id="getDeptNameById" resultType="String">
-        select name from department where id = #{id};
+        select name
+        from department
+        where id = #{id};
     </select>
 
     <select id="getDeptById" resultMap="BaseResultMap">
@@ -80,17 +96,10 @@
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
-          AND d1.enabled = true
+        AND d1.enabled = true
         <if test="search != null">
             and ${search}
         </if>
-    </select>
-
-    <select id="getDeptsByCreationId" resultMap="DeptTreeId">
-        select d1.id
-        from department d1
-        where d1.`creationUid` = #{uid}
-          AND d1.enabled = true
     </select>
 
     <select id="getAllDeps" resultType="com.mebay.bean.Department">

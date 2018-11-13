@@ -13,7 +13,7 @@ public class UserUtils {
 
     /**
      * 获取当前登陆的用户<P>
-     *     注意：该方法只返回用户的id，用户名，角色的中文名，dapid
+     *     注意：该方法只返回用户的id,所属单位id，用户名，角色的中文名，dapid
      * @return 用户
      */
     public static User getCurrentUser() {

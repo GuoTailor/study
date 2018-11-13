@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +69,14 @@ public class Department implements StreamTree<Department> {
         Department that = (Department) o;
 
         return name != null ? name.equals(that.name) : that.name == null;
+    }
+
+    @JsonIgnore
+    public void getIDs(List<Long> deptIsds) {
+        deptIsds.add(id);
+        for (Department dept : children) {
+            dept.getIDs(deptIsds);
+        }
     }
 
     public List<Department> getChildren() {

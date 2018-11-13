@@ -1,5 +1,6 @@
 package com.mebay.mapper;
 
+import com.mebay.bean.IdTree;
 import com.mebay.bean.Role;
 import org.apache.ibatis.annotations.Param;
 
@@ -28,6 +29,8 @@ public interface RoleMapper {
      */
     List<Role> findAllRole(@Param("search") String search);
 
+    IdTree getRoleIdTreeById(@Param("id") Long id);
+
     /**
      * 获取角色通过角色的名字（中文或英文）
      *
@@ -46,6 +49,15 @@ public interface RoleMapper {
     Role findRoleById(@Param("id") Long id);
 
     /**
+     * 获取角色通过id列表
+     *
+     * @param id     id列表
+     * @param search 分页参数{@link com.mebay.bean.PageQuery}.buildSubSql();
+     * @return role列表
+     */
+    List<Role> getRoleByIds(@Param("ids") List<Long> id, @Param("search") String search);
+
+    /**
      * 通过角色的父本id获取role
      * 该方法将返回它的子角色
      *
@@ -57,11 +69,10 @@ public interface RoleMapper {
     /**
      * 添加一个新的角色
      *
-     * @param role   角色的英文名字
-     * @param roleZh 角色的中文描述
+     * @param role   角色的信息
      * @return 受影响的行数1：插入一行； 0：插入0行（插入失败）
      */
-    int addNewRole(@Param("role") String role, @Param("roleZh") String roleZh);
+    int addNewRole(Role role);
 
     /**
      * 删除一个角色通过角色的id
@@ -98,14 +109,16 @@ public interface RoleMapper {
 
     /**
      * 为角色添加具体能访问的url菜单的访问方法
-     * @param rid 角色id
+     *
+     * @param rid     角色id
      * @param menuIds url菜单的访问方法map 键为url的id 值为（GET，POST，DELETE，PUT）
      */
     void addMenuMethodToRole(@Param("rid") Long rid, @Param("menuIds") Map<Long, List<String>> menuIds);
 
     /**
      * 移除角色能访问的具体url菜单的访问方法
-     * @param rid 角色id
+     *
+     * @param rid     角色id
      * @param menuIds 要移除的url菜单的访问方法map 键为url的id 值为（GET，POST，DELETE，PUT）
      */
     void removeMenuMethodByRole(@Param("rid") Long rid, @Param("menuIds") Map<Long, List<String>> menuIds);

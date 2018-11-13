@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @Api(tags = "其他杂项接口", description = "只有login无需jwt验证")
 public class HelloController {
@@ -21,6 +23,8 @@ public class HelloController {
     private final MenuService menuService;
     @Value("${resourcesPath}")
     private String resourcesPath;
+    @Value("${resourcesTempPath}")
+    private String resourcesTempPath;
     @Autowired
     public HelloController(MenuService menuService, UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource) {
         this.menuService = menuService;
@@ -46,9 +50,9 @@ public class HelloController {
         return new RespBody<>(1, menuService.getMenusByUserId());
     }
 
-    @GetMapping("/update")
-    public void update() {
-        urlFilterInvocationSecurityMetadataSource.update();
+    @GetMapping("/menus")
+    public RespBody<List<Menu>> getMenus() {
+        return new RespBody<>(1, menuService.getMenus());
     }
 
     @PostMapping("/upload")
@@ -60,7 +64,6 @@ public class HelloController {
             return new RespBody<>(0, "文件保存失败!请联系管理员");
         }else
             return new RespBody<>(1, filePath.replaceFirst("\\.", ""));
-
     }
 
 }

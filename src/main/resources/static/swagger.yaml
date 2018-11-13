@@ -15,7 +15,7 @@ info:
 externalDocs:
   description: Find out more about Swagger
   url: 'http://swagger.io'
-host: 39.108.114.59
+host: 39.108.114.59:81
 basePath: /
 tags:
   - name: 其他杂项接口
