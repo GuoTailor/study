@@ -130,6 +130,10 @@ public class UserService implements UserDetailsService {
                 if (tier1 > tier2) {    //深度越深权限越小
                     return -4;
                 }
+                if (UserUtils.isAdmin(role.findSubById(tier2).getName())) {
+                    if (!userMapper.getUserByRoleId(tier2, user.getDepId()).isEmpty())
+                        return -5;
+                }
                 user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
                 if (userMapper.insert(user) == 1) {
                     Long id = userMapper.getUserByUsername(user.getUsername()).getId();
@@ -211,15 +215,16 @@ public class UserService implements UserDetailsService {
         for (IdTree d : dept) {     //如果获取的用户不在自己管辖的范围内疚返回-1
             if (d.findSubById(user.getDepId()) != null) {
                 Role allRole = roleService.getAll();
-                Role role = Util.min(present.getRole(), (r, i) -> Math.min(allRole.getTier(r.getId()), i));
-                for(Long r : roles) {
-                    if (role.findSubById(r) != null) {
-                        userMapper.addRoleForUser(id, r);
-                    }else {
-                        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();  //手动回滚事务
-                        return -1;
-                    }
+                Long tier1 = Util.min(present.getRole(), (r, i) -> Math.min(allRole.getTier(r.getId()), i)).getId();
+                Long tier2 = Util.min(roles, (r, i) -> Math.min(allRole.getTier(r), i));
+                if (tier1 > tier2) {    //深度越深权限越小
+                    return -1;
                 }
+                if (UserUtils.isAdmin(allRole.findSubById(tier2).getName())) {
+                    if (!userMapper.getUserByRoleId(tier2, user.getDepId()).isEmpty())
+                        return -3;  //已存在一个管理员
+                }
+                userMapper.addRolesForUser(id, roles);
                 for (Long rid : lodRole) {
                     userMapper.deleteRoleForUser(id, rid);
                 }
@@ -255,14 +260,24 @@ public class UserService implements UserDetailsService {
      * @param id 要删除的用户id
      */
     public int delete(Long id) {
+        User present = userMapper.getUserById(id);
+        if (UserUtils.isAdmin(Util.min(present.getRole(), (r, i) -> Math.min(r.getId().intValue(), i)).getName())) {
+            List<IdTree> list = departmentService.getDeptsByCreationId(id);
+            if (list != null && !list.isEmpty()) {
+                return -2;
+            }
+        }
         if (UserUtils.getCurrentUser().getId().equals(id)) {   //如果删除的是自己
             return userMapper.deleteUser(id);
         }
-        User present = userMapper.getUserById(id);
         List<IdTree> deptId = departmentService.getDeptIdTreeByUser();
         if (Util.hasAny((t, k) -> t.findSubById(k) != null, deptId, present.getDepId()))   //如果在自己单位下
             return userMapper.deleteUser(id);
         return -1;
+    }
+
+    public Long getUserCountByRoleId(Long rid) {
+        return userMapper.getUserCountByRoleId(rid);
     }
 
 }

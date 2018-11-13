@@ -34,6 +34,14 @@
 		SELECT * FROM user WHERE username = #{username};
 	</select>
 
+    <select id="getUserCountByRoleId" resultType="Long">
+        select count(*) from user_role where roleid = #{rid}
+    </select>
+    
+	<select id="getUserByRoleId" resultType="com.mebay.bean.User">
+		select u.* from user u, user_role ur where ur.roleid = #{rid} and u.depId = #{did} and ur.userid = u.id
+	</select>
+
 	<select id="getRolesByUserId" resultType="com.mebay.bean.Role">
 		SELECT r.* FROM user_role h,role r where h.roleid=r.id AND h.userid=#{id};
 	</select>

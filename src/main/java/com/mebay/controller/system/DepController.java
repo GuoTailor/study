@@ -29,8 +29,8 @@ public class DepController {
 
     @PostMapping(value = "/dep")
     @ApiOperation(value = "添加一个单位到本单位下")
-    @ApiImplicitParam(paramType = "query", name = "id", required = true, value = "用户id", dataType = "Long")
-    public RespBody addDep(@Valid Department department, @RequestParam Long id) {
+    //@ApiImplicitParam(paramType = "query", name = "id", required = true, value = "用户id", dataType = "Long")
+    public RespBody addDep(@Valid Department department) {
         //department.setCreationUid(UserUtils.getCurrentUser().getId());
         if (!StringUtils.isEmpty(department.getCreationTime())) {
             department.setTime(Date.valueOf(department.getCreationTime()));

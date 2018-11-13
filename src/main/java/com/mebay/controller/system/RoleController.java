@@ -28,9 +28,10 @@ public class RoleController {
     @ApiOperation(value = "添加一个角色")
     @ApiImplicitParam(paramType = "query", name = "nameZh", value = "角色中文名称（角色描述）", required = true, dataType = "String")
     public RespBody<String> addRole(Role role) {
-        RespBody<String> respBody = new RespBody<>(roleService.addNewRole(role.getName(), role.getNameZh()));
+        RespBody<String> respBody = new RespBody<>(roleService.addNewRole(role));
         respBody.put(-1, "英文名不能为空")
                 .put(-2, "英文或中文名已存在")
+                .put(-3, "请选择层级")
                 .put(1, "添加成功")
                 .put(0, "添加失败");
         return respBody;
@@ -40,7 +41,9 @@ public class RoleController {
     @ApiOperation(value = "删除一个角色")
     public RespBody<String> deleteRole(@PathVariable Long id) {
         RespBody<String> respBody = new RespBody<>(roleService.deleteRoleById(id));
-        respBody.put(1, "成功").put(0, "删除失败!资源未找到");
+        respBody.put(1, "成功")
+                .put(-1, "删除失败!该角色正在使用，请先解除所有用户对该角色的绑定")
+                .put(0, "资源未找到");
         return respBody;
     }
 

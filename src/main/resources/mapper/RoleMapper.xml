@@ -81,10 +81,8 @@
         </if>
     </select>
 
-    <insert id="addNewRole">
-        INSERT INTO role
-        set name   = #{role},
-            nameZh = #{roleZh};
+    <insert id="addNewRole" parameterType="com.mebay.bean.Role">
+        INSERT INTO role(name, nameZh, pid) values (#{name}, #{nameZh}, #{pid})
     </insert>
 
     <insert id="addMenuToRole">

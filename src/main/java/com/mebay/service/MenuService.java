@@ -1,5 +1,6 @@
 package com.mebay.service;
 
+import com.mebay.Constant;
 import com.mebay.bean.Menu;
 import com.mebay.bean.Role;
 import com.mebay.bean.User;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
@@ -32,11 +34,23 @@ public class MenuService {
         if (user.getId() == null){
             return null;
         }
-        List<Menu> menus = mapper.getAllMenu(null);
+        List<Menu> menus = (List<Menu>) Constant.map.get("menu");
+        if (menus == null) {
+            menus = mapper.getAllMenu(null);
+            Constant.map.put("menu", menus);
+        }
         List<Long> mid = mapper.getMenuIdByUserId(user.getId());
         Menu m = getChild(1L, menus);
-        empty(m, mid, UserUtils.getCurrentUser().getRole());
+        empty(m, mid, user.getRole());
         return m;
+    }
+
+    public List<Menu> getMenus() {
+        User user = UserUtils.getCurrentUser();
+        if (user.getId() == null){
+            return null;
+        }
+        return mapper.getAllMenu(user.getId());
     }
 
     public List<Menu> getMenusByRole(Role role) {
@@ -60,7 +74,8 @@ public class MenuService {
      * 去掉树中没用到的节点,并去掉没有的权限
      *
      * @param menus menu树
-     * @param mid   没用的节点集合
+     * @param mid   用户的节点集合
+     * @param role 用户的角色集合
      * @return menu树
      */
     boolean empty(Menu menus, List<Long> mid, List<Role> role) {
@@ -68,11 +83,9 @@ public class MenuService {
             return false;
         List<Menu> menuList = menus.getChildren();
         AtomicBoolean flag = new AtomicBoolean(false);  //子节点是否有用标志位，如无用将删除该节点
+        menus.setRoles(menus.getRoles().stream().filter(role::contains).limit(role.size()).collect(Collectors.toList()));
         if (menuList.isEmpty()) {
-            boolean b = mid.contains(menus.getId());
-            if (b)
-                menus.setRoles(menus.getRoles().stream().filter(role::contains).limit(role.size()).collect(Collectors.toList()));
-            return b;
+            return mid.contains(menus.getId());
         }
         menus.setChildren(menuList.parallelStream().filter(m -> {
             if (empty(m, mid, role)) {
@@ -92,11 +105,13 @@ public class MenuService {
      * @return menu树
      */
     Menu getChild(Long id, List<Menu> menuList) {
-        Menu menus = new Menu();
+        Menu menus = null;
         for (Menu menu : menuList) {
             if (menu.getId().equals(id))
                 menus = menu;
         }
+        if (menus == null)
+            return null;
         for (Menu menu : menuList) {
             System.out.println(menu.getParentId() + " " + menu.getId());
             if (menu.getId().equals(1L))
@@ -106,5 +121,17 @@ public class MenuService {
             }
         }
         return menus;
+    }
+
+    List<Menu> buildTree(List<Menu> menus) {
+        ArrayList<Menu> menuList = new ArrayList<>(menus.size());
+        for (Menu menu : menus) {
+            if (menuList.contains(menu)) {
+                menuList.get(menuList.indexOf(menu)).getChildren().add(menu);
+            }else {
+                menuList.add(menu);
+            }
+        }
+        return menuList;
     }
 }

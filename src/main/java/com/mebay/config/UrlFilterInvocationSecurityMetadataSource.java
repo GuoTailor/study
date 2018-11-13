@@ -39,6 +39,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
                 "/login",
                 "/update",
                 "/menu",
+                "/menus",
                 "/error",
                 "/index.html",
 

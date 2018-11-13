@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @RestController
 @Api(tags = "其他杂项接口", description = "只有login无需jwt验证")
 public class HelloController {
@@ -46,6 +48,11 @@ public class HelloController {
     @ApiOperation(value = "获取该用户能访问的菜单", notes = "如果该用户未登陆就返回null")
     public RespBody<Menu> getMenu(){
         return new RespBody<>(1, menuService.getMenusByUserId());
+    }
+
+    @GetMapping("/menus")
+    public RespBody<List<Menu>> getMenus() {
+        return new RespBody<>(1, menuService.getMenus());
     }
 
     @PostMapping("/upload")

@@ -69,11 +69,10 @@ public interface RoleMapper {
     /**
      * 添加一个新的角色
      *
-     * @param role   角色的英文名字
-     * @param roleZh 角色的中文描述
+     * @param role   角色的信息
      * @return 受影响的行数1：插入一行； 0：插入0行（插入失败）
      */
-    int addNewRole(@Param("role") String role, @Param("roleZh") String roleZh);
+    int addNewRole(Role role);
 
     /**
      * 删除一个角色通过角色的id

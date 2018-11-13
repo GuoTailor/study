@@ -40,7 +40,8 @@ public class UserController {
         return new RespBody<String>(userService.register(user, rid))
                 .put(-2, "注册失败!用户名重复")
                 .put(-1, "该用户不能在该单位下，注册失败")
-                .put(-4, "权限不足")
+                .put(-4, "权限不足，不能添加高于自己的角色")
+                .put(-5, "该单位下已存在一个管理员")
                 .put(1, "注册成功!")
                 .put(0, "系统异常!请联系管理员")
                 .put(-3, "注册失败!密码必须为大写字母+小写字母+数字");
@@ -71,6 +72,7 @@ public class UserController {
     public RespBody<String> delete(@PathVariable(value = "id") Long id) {
         return new RespBody<String>(userService.delete(id))
                 .put(-1, "没有该用户，或没有该用户的操作权限")
+                .put(-2, "该高级管理员下存在单位！请先移除")
                 .put(1,"删除成功")
                 .put(0, "删除失败，未知错误");
     }
@@ -99,6 +101,7 @@ public class UserController {
         return new RespBody<String>(userService.updateRole(id, rid))
                 .put(-1, "权限不足，不足已分配该角色")
                 .put(-2, "没有该用户的操作权限")
+                .put(-3, "该单位下已存在一个管理员")
                 .put(1,"添加成功")
                 .put(0, "添加失败，未知错误");
     }

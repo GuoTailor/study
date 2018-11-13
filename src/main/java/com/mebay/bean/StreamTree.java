@@ -18,8 +18,9 @@ public interface StreamTree<T extends StreamTree> {
             return (T)this;
         if (!getChildren().isEmpty()) {
             for (T dep : getChildren()) {
-                if (dep.findSubById(id) != null) {
-                    return dep;
+                T temp = (T) dep.findSubById(id);
+                if (temp != null) {
+                    return temp;
                 }
             }
         }

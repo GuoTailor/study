@@ -21,13 +21,13 @@ public class RoleService {
 
     private final RoleMapper roleMapper;
     private final MenuService menuService;
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
     @Autowired
-    public RoleService(RoleMapper roleMapper, MenuService menuService, UserService userService) {
+    public RoleService(RoleMapper roleMapper, MenuService menuService) {
         this.roleMapper = roleMapper;
         this.menuService = menuService;
-        this.userService = userService;
     }
 
     /**
@@ -61,18 +61,20 @@ public class RoleService {
 
     /**
      * 增加一个角色
-     * @param role 角色的英文名，要注意格式
-     * @param roleZh 角色的中文名
+     * @param role 角色
      */
-    public int addNewRole(String role, String roleZh) {
-        if (role == null || "".equals(role))
+    public int addNewRole(Role role) {
+        if (role.getName() == null || "".equals(role.getName()))
             return -1;
-        if (!role.startsWith("ROLE_")) {
-            role = "ROLE_" + role;
+        if (role.getPid() == null) {
+            return -3;
         }
-        if (roleMapper.findRolesByName(role, roleZh) != null)
+        if (!role.getName().startsWith("ROLE_")) {
+            role.setName("ROLE_" + role.getName());
+        }
+        if (roleMapper.findRolesByName(role.getName(), role.getNameZh()) != null)
             return -2;
-        return roleMapper.addNewRole(role, roleZh);
+        return roleMapper.addNewRole(role);
     }
 
     public Role findRolesByName(String role, String roleZh) {
@@ -80,6 +82,9 @@ public class RoleService {
     }
 
     public int deleteRoleById(Long rid) {
+        if (userService.getUserCountByRoleId(rid) != 0) {
+            return -1;
+        }
         return roleMapper.deleteRoleById(rid);
     }
 

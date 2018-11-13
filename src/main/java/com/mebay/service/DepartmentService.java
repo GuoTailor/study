@@ -83,6 +83,10 @@ public class DepartmentService {
         return Collections.singletonList(departmentMapper.getDeptIdTreeById(user.getDepId()));
     }
 
+    public List<IdTree> getDeptsByCreationId(Long id) {
+        return departmentMapper.getDeptsByCreationId(id);
+    }
+
     /**
      * 获取单位
      *
