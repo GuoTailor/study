@@ -171,7 +171,7 @@ public class UserService implements UserDetailsService {
             user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
         else user.setPassword(null);
         List<IdTree> deptId = departmentService.getDeptIdTreeByUser();
-        if (!Util.hasAny((t, k) -> t.findSubById(k) != null, deptId, present.getDepId()))   //如果不在自己单位下就么有权限
+        if (!Util.hasAny((t, k) -> t.findSubById(k) == null, deptId, present.getDepId()))   //如果不在自己单位下就么有权限
             return -3;
         if (UserUtils.isAdmin()) {
             //user.setId(null);
