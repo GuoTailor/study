@@ -54,8 +54,8 @@ public class DepartmentService {
             return -2;
         Long deptId = UserUtils.getCurrentUser().getDepId();
         if (!did.equals(deptId)) {  //如果修改的不是自己
-            List<Department> depts = departmentMapper.findDeptByPid(deptId);
-            if (!Util.hasAny((s, d) -> s.getId().equals(d), depts, did)) {  //也不是自己管理的单位下的
+            List<IdTree> deptIds = getDeptIdTreeByUser();
+            if (!Util.hasAny((ids, id) -> ids.findSubById(id) != null, deptIds, did)) {
                 return -1;
             }
         }
