@@ -58,4 +58,5 @@ public class Constant {
      * ================================================================
      */
     public static final Map<String, Object> map = new HashMap<>();
+
 }

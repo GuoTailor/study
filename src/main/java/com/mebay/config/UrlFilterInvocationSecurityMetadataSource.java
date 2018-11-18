@@ -38,6 +38,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
         permit = Arrays.asList(
                 "/login",
                 "/update",
+                "/upload",
                 "/menu",
                 "/menus",
                 "/error",

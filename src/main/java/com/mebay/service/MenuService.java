@@ -34,13 +34,15 @@ public class MenuService {
         if (user.getId() == null){
             return null;
         }
-        List<Menu> menus = (List<Menu>) Constant.map.get("menu");
+        ArrayList<Menu> menus = (ArrayList<Menu>) Constant.map.get("menu");
         if (menus == null) {
-            menus = mapper.getAllMenu(null);
-            Constant.map.put("menu", menus);
+            menus = (ArrayList<Menu>) mapper.getAllMenu(null);
+            Constant.map.put("menu", new ArrayList<>(menus));
         }
         List<Long> mid = mapper.getMenuIdByUserId(user.getId());
         Menu m = getChild(1L, menus);
+        System.out.println(menus.size());
+        System.out.println(m.getChildren().size());
         empty(m, mid, user.getRole());
         return m;
     }
@@ -107,11 +109,13 @@ public class MenuService {
     Menu getChild(Long id, List<Menu> menuList) {
         Menu menus = null;
         for (Menu menu : menuList) {
-            if (menu.getId().equals(id))
-                menus = menu;
+            if (menu.getId().equals(id)) {
+                menus = (Menu) menu.clone();
+            }
         }
-        if (menus == null)
+        if (menus == null) {
             return null;
+        }
         for (Menu menu : menuList) {
             System.out.println(menu.getParentId() + " " + menu.getId());
             if (menu.getId().equals(1L))

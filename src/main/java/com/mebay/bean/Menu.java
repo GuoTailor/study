@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Menu {
+public class Menu implements Cloneable{
     private Long id;
     private String url;
     private String name;
@@ -78,6 +78,17 @@ public class Menu {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (url != null ? url.hashCode() : 0);
         return result;
+    }
+
+    public Object clone() {
+        Menu menu = null;
+        try {
+            menu = (Menu) super.clone();
+            menu.children = new ArrayList<>();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return menu;
     }
 
     @Override

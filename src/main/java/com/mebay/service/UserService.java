@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.mebay.Constant;
 import com.mebay.bean.*;
+import com.mebay.common.FileUtil;
 import com.mebay.common.UserUtils;
 import com.mebay.common.Util;
 import com.mebay.mapper.RoleMapper;
@@ -49,6 +50,9 @@ public class UserService implements UserDetailsService {
      */
     public User getUserById(Long id) {
         User user = userMapper.getUserById(id);
+        if (id.equals(UserUtils.getCurrentUser().getId())) {
+            return user;
+        }
         List<IdTree> deptId = departmentService.getDeptIdTreeByUser();
         for (IdTree d : deptId) {     //如果获取的用户不在自己管辖的范围内疚返回null
             if (d.findSubById(user.getDepId()) != null) {
@@ -154,10 +158,10 @@ public class UserService implements UserDetailsService {
     public int update(User user, Long id) {
         if (Util.isEmpty(user))
             return -2;
-        User present = userMapper.getUserById(UserUtils.getCurrentUser().getId());
         user.setId(0L);
-        if (present.getId().equals(id)) {   //如果修改的是自己
+        if (UserUtils.getCurrentUser().getId().equals(id)) {   //如果修改的是自己
             user.setDepId(null);
+            User present = userMapper.getUserById(UserUtils.getCurrentUser().getId());
             if (user.getOldPassword() != null && !StringUtils.isEmpty(user.getPassword())) {   //如果旧密码不为空
                 if (new BCryptPasswordEncoder().matches(user.getOldPassword(), present.getPassword()))
                     user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
@@ -165,17 +169,31 @@ public class UserService implements UserDetailsService {
                     return -2;
             } else
                 user.setPassword(null);
-            return userMapper.updateUser(id, user);
+            String logoPath = present.getLogo();
+            int i = userMapper.updateUser(id, user);
+            if (i == 1 && logoPath != null && user.getLogo() != null && !logoPath.equals(user.getLogo())) {
+                FileUtil.deleteFile("." + logoPath);
+                System.out.println("删除" + logoPath);
+            }
+            return i;
         }
         if (user.getPassword() != null && !user.getPassword().equals(""))
             user.setPassword(UserUtils.passwordEncoder(user.getPassword()));
         else user.setPassword(null);
         List<IdTree> deptId = departmentService.getDeptIdTreeByUser();
-        if (!Util.hasAny((t, k) -> t.findSubById(k) == null, deptId, present.getDepId()))   //如果不在自己单位下就么有权限
+        User u = userMapper.getUserById(id);
+        if (!Util.hasAny((t, k) -> t.findSubById(k) != null, deptId, u.getDepId()))   //如果不在自己单位下就么有权限
             return -3;
         if (UserUtils.isAdmin()) {
             //user.setId(null);
-            return userMapper.updateUser(id, user);
+            User present = userMapper.getUserById(id);
+            String logoPath = present.getLogo();
+            int i = userMapper.updateUser(id, user);
+            if (i == 1 && logoPath != null && user.getLogo() != null && !logoPath.equals(user.getLogo())) {
+                FileUtil.deleteFile("." + logoPath);
+                System.out.println("删除" + logoPath);
+            }
+            return i;
         }
         return -1;
     }
@@ -214,17 +232,19 @@ public class UserService implements UserDetailsService {
         List<IdTree> dept = departmentService.getDeptIdTreeByUser();
         for (IdTree d : dept) {     //如果获取的用户不在自己管辖的范围内疚返回-1
             if (d.findSubById(user.getDepId()) != null) {
-                Role allRole = roleService.getAll();
-                Long tier1 = Util.min(present.getRole(), (r, i) -> Math.min(allRole.getTier(r.getId()), i)).getId();
-                Long tier2 = Util.min(roles, (r, i) -> Math.min(allRole.getTier(r), i));
-                if (tier1 > tier2) {    //深度越深权限越小
-                    return -1;
+                if (roles.size() > 0) {
+                    Role allRole = roleService.getAll();
+                    Long tier1 = Util.min(present.getRole(), (r, i) -> Math.min(allRole.getTier(r.getId()), i)).getId();
+                    Long tier2 = Util.min(roles, (r, i) -> Math.min(allRole.getTier(r), i));
+                    if (tier1 > tier2) {    //深度越深权限越小
+                        return -1;
+                    }
+                    if (UserUtils.isAdmin(allRole.findSubById(tier2).getName())) {
+                        if (!userMapper.getUserByRoleId(tier2, user.getDepId()).isEmpty())
+                            return -3;  //已存在一个管理员
+                    }
+                    userMapper.addRolesForUser(id, roles);
                 }
-                if (UserUtils.isAdmin(allRole.findSubById(tier2).getName())) {
-                    if (!userMapper.getUserByRoleId(tier2, user.getDepId()).isEmpty())
-                        return -3;  //已存在一个管理员
-                }
-                userMapper.addRolesForUser(id, roles);
                 for (Long rid : lodRole) {
                     userMapper.deleteRoleForUser(id, rid);
                 }
@@ -260,14 +280,18 @@ public class UserService implements UserDetailsService {
      * @param id 要删除的用户id
      */
     public int delete(Long id) {
-        User present = userMapper.getUserById(id);
+        User u = UserUtils.getCurrentUser();
+        if (Util.hasAny((r, s) -> r.getName().equals(s),u.getRole(), "ROLE_SUPER_ADMIN")) {
+            return userMapper.deleteUser(id);
+        }
+        User present = userMapper.getUserById(u.getId());
         if (UserUtils.isAdmin(Util.min(present.getRole(), (r, i) -> Math.min(r.getId().intValue(), i)).getName())) {
             List<IdTree> list = departmentService.getDeptsByCreationId(id);
             if (list != null && !list.isEmpty()) {
                 return -2;
             }
         }
-        if (UserUtils.getCurrentUser().getId().equals(id)) {   //如果删除的是自己
+        if (u.getId().equals(id)) {   //如果删除的是自己
             return userMapper.deleteUser(id);
         }
         List<IdTree> deptId = departmentService.getDeptIdTreeByUser();
