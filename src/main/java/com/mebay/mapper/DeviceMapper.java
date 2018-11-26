@@ -25,6 +25,13 @@ public interface DeviceMapper {
     List<Device> getDeviceByDepId(@Param("depIds") Collection<Long> depIds, @Param("search") String search);
 
     /**
+     * 获取DTUid的个数
+     * @param dtuId 要查询的id
+     * @return 相同DTUId的个数
+     */
+    int isExistDeviceDTUId(@Param("DTUId") String dtuId);
+
+    /**
      * 获取设备通过设备id
      *
      * @param id 设备的id
@@ -47,7 +54,7 @@ public interface DeviceMapper {
      * @param device 设备信息
      * @return 受影响的行数 1：插入一行； 0：插入0行（新增失败）
      */
-    int addDevice(@Param("device") Device device);
+    int addDevice(Device device);
 
     /**
      * 删除一个设备

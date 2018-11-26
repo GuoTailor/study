@@ -78,7 +78,7 @@ public class DepartmentService {
         if (Util.hasAny(Role::equalsRole, user.getRole(), "ROLE_HIGH_GRADE_ADMIN")) {
             return departmentMapper.getDeptsByCreationId(user.getId());
         }else if (Util.hasAny(Role::equalsRole, user.getRole(), "ROLE_SUPER_ADMIN")) {
-            //TODO
+            //TODO 返回全部的直属和隶属单位
         }
         return Collections.singletonList(departmentMapper.getDeptIdTreeById(user.getDepId()));
     }

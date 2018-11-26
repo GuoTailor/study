@@ -46,9 +46,10 @@ public class UserUtils {
 
     /**
      * 判断给定用户是否为管理员
-     * @param role 用户的角色的中文名
+     * @param role 用户的角色的英文名
      * @return true：是管理员，false：不是
      */
+    //TODO 隐藏的BUG
     public static boolean isAdmin(String role) {
         return role.matches("ROLE_[\\w]*_ADMIN");
     }

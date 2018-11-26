@@ -1,19 +1,12 @@
 package com.mebay.filter.token;
 
-import java.util.Date;
+import com.mebay.Constant;
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
+import io.jsonwebtoken.*;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import com.mebay.Constant;
-import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
-
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtBuilder;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.SignatureException;
+import java.util.Date;
 
 /**
  * 签发和验证token的类
@@ -47,18 +40,18 @@ public class TokenMgr {
 //        claims.setSubject("测试主题~");
 //        claims.put(key, value);	//设置其他属性，类似map放入键值对，再用get()取出即可
         JwtBuilder builder = Jwts.builder()
-                .setId(id)                                        // JWT_ID
-                .setSubject(subject)                            // 主题
-                .setAudience(role)                                // 接受者
-                //.setClaims(null)                                // 自定义属性
-                .setIssuer(issuer)                                 // 签发者
-                .setNotBefore(new Date())                       // 开始时间
-                .setIssuedAt(now)                                // 签发时间
-                .signWith(signatureAlgorithm, secretKey);        // 签名算法以及密匙
+                .setId(id)                                          // JWT_ID
+                .setSubject(subject)                                // 主题
+                .setAudience(role)                                  // 接受者
+                //.setClaims(null)                                  // 自定义属性
+                .setIssuer(issuer)                                  // 签发者
+                .setNotBefore(new Date())                           // 开始时间
+                .setIssuedAt(now)                                   // 签发时间
+                .signWith(signatureAlgorithm, secretKey);           // 签名算法以及密匙
         if (ttlMillis >= 0) {
             long expMillis = nowMillis + ttlMillis;
             Date expDate = new Date(expMillis);
-            builder.setExpiration(expDate);                        // 失效时间
+            builder.setExpiration(expDate);                         // 失效时间
         }
         return builder.compact();
     }

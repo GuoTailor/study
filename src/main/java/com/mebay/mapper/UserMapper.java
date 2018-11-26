@@ -43,6 +43,14 @@ public interface UserMapper {
     List<User> getUserByRoleId(@Param("rid")Long rid, @Param("did")Long did);
 
     /**
+     * 查询角色的权限
+     * @param search 分页查询参数 见{@link com.mebay.bean.PageQuery}.buildSubSql()
+     * @param did 单位id
+     * @return 用户
+     */
+    List<User> getUsersByRole(@Param("search") String search, @Param("listId")List<Long> did);
+
+    /**
      * 统计拥有该角的用户数量
      * @param rid 要统计的角色id
      * @return 数量

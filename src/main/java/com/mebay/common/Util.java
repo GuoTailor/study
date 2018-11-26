@@ -11,16 +11,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public class Util {
     /**
      * 移除两个列表中所有相同的元素
-     * @param c1 一个列表
-     * @param c2 另一个列表
+     *
+     * @param c1  一个列表
+     * @param c2  另一个列表
      * @param <T> 元素的类型
      */
-    public static <T> void removeAllSame(Collection<T> c1,Collection<T> c2) {
+    public static <T> void removeAllSame(Collection<T> c1, Collection<T> c2) {
         c1.removeIf(c -> {
             if (c2.contains(c)) {
                 c2.remove(c);
@@ -102,12 +102,21 @@ public class Util {
         return true;
     }
 
+    /**
+     * 用户判断方法不灵活  已被弃用
+     *
+     * @param t
+     * @param collection
+     * @param <T>
+     * @return
+     */
+    @Deprecated
     public static <T extends StreamTree> T max(T t, Collection<T> collection) {
         T tt = null;
         int temp = -1;
         for (T t1 : collection) {
             int d = t.getTier(t1.getId());
-            if(d > temp) {
+            if (d > temp) {
                 temp = d;
                 tt = t1;
             }
@@ -128,6 +137,14 @@ public class Util {
         return nn;
     }
 
+    /**
+     * 用用户的自己的判断方法查找集合中的最小值
+     *
+     * @param collection 要查找的集合
+     * @param fun        用户自己的判断方法
+     * @param <N>        集合的类类型
+     * @return 最下值
+     */
     public static <N> N min(Collection<N> collection, BiFunction<N, Integer, Integer> fun) {
         N nn = null;
         int temp = Integer.MAX_VALUE;
@@ -145,7 +162,7 @@ public class Util {
      * 添加跨域支持
      *
      * @param httpServletResponse 响应
-     * @param httpServletRequest 请求
+     * @param httpServletRequest  请求
      */
     public static void addHeader(HttpServletResponse httpServletResponse, HttpServletRequest httpServletRequest) {
         System.out.println(UserUtils.getIpAddr(httpServletRequest) + "   " + httpServletRequest.getHeader("Origin"));

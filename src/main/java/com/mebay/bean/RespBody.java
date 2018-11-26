@@ -10,6 +10,7 @@ import java.util.function.BiConsumer;
 
 /**
  * Created by gyh on 2018/10/25.
+ * 统一放回
  */
 @ApiModel(value = "返回对象",description = "统一返回格式")
 public class RespBody<T> {

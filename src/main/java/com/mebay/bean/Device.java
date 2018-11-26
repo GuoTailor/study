@@ -3,7 +3,7 @@ package com.mebay.bean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-import java.util.Date;
+import java.sql.Date;
 
 @ApiModel(value = "设备")
 public class Device {

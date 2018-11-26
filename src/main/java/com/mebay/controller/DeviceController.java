@@ -1,19 +1,17 @@
 package com.mebay.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.mebay.Constant;
-import com.mebay.bean.*;
+import com.mebay.bean.Device;
+import com.mebay.bean.PageQuery;
+import com.mebay.bean.PageView;
+import com.mebay.bean.RespBody;
 import com.mebay.service.DeviceService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RequestMapping("/device")
 @RestController()
@@ -46,6 +44,7 @@ public class DeviceController {
         return new RespBody<>(deviceService.addDevice(device))
                 .put(1, device)
                 .put(-1, "添加失败，权限不足")
+                .put(-2, "存在相同的DTUId")
                 .put(0, "添加失败，请联系管理员");
     }
 
@@ -63,8 +62,8 @@ public class DeviceController {
     public RespBody update(Device device, @PathVariable Long id) {
         return new RespBody<>(deviceService.updateDevice(id, device))
                 .put(1, device)
-                .put(-1, "跟新失败，权限不足")
-                .put(0, "跟新失败，请联系管理员");
+                .put(-1, "更新失败，权限不足")
+                .put(0, "更新失败，请联系管理员");
     }
 
 }

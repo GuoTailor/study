@@ -2,12 +2,10 @@ package com.mebay.service;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.mebay.Constant;
 import com.mebay.bean.*;
 import com.mebay.common.FileUtil;
 import com.mebay.common.UserUtils;
 import com.mebay.common.Util;
-import com.mebay.mapper.RoleMapper;
 import com.mebay.mapper.UserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,15 +14,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.StringUtils;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
  * user的数据库连接服务
+ * 用户表
  */
 @Service
 @Transactional
@@ -76,6 +76,13 @@ public class UserService implements UserDetailsService {
      * @return 用户列表
      */
     public PageView<User> getAll(PageQuery pageQuery) {
+        if (!StringUtils.isEmpty(pageQuery.getSearchField()) && pageQuery.getSearchField().equals("nameZh")) {
+            List<Long> ids = new LinkedList<>();
+            departmentService.getDeptIdTreeByUser().forEach(d -> d.getIDs(ids));
+            Page<User> page = PageHelper.startPage(pageQuery.getPageNum(), pageQuery.getPageSize(), pageQuery.getOrderBy());
+            userMapper.getUsersByRole(pageQuery.buildSubSql(), ids);
+            return PageView.build(page);
+        }
         if (!UserUtils.isAdmin()) {
             return PageView.build(Collections.singletonList(userMapper.getUserById(UserUtils.getCurrentUser().getId())));
         }
@@ -170,6 +177,10 @@ public class UserService implements UserDetailsService {
             } else
                 user.setPassword(null);
             String logoPath = present.getLogo();
+            if (StringUtils.isEmpty(user.getLogo())) {
+                System.out.println("nmka " + user.getLogo());
+                user.setLogo(null);
+            } 
             int i = userMapper.updateUser(id, user);
             if (i == 1 && logoPath != null && user.getLogo() != null && !logoPath.equals(user.getLogo())) {
                 FileUtil.deleteFile("." + logoPath);

@@ -15,6 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 角色表
+ */
+
 @Service
 @Transactional(rollbackFor={Exception.class})
 public class RoleService {
@@ -104,18 +108,18 @@ public class RoleService {
         Map<Long, List<String>> remove = menus.stream().collect(Collectors.toMap(Menu::getId, ms -> ms.getRoles().get(0).getMethod()));
         for (Map.Entry<Long, List<String>> entry : menuRoles.entrySet()) {
             List<String> roleList;
-            if ((roleList = remove.get(entry.getKey())) != null) {  //在已有的权限中找请求的菜单id
+            if ((roleList = remove.get(entry.getKey())) != null) {  // 在已有的权限中找请求的菜单id
                 List<String> strings = entry.getValue();
-                Util.removeAllSame(roleList, strings);//去掉相同的
+                Util.removeAllSame(roleList, strings);              // 去掉相同的
             }
         }
-        removeMenuMethodByRole(id, remove);     //移除没有的菜单访问方法
-        addMenuMethodToRole(id, menuRoles);     //添加新的菜单访问方法
+        removeMenuMethodByRole(id, remove);                         // 移除没有的菜单访问方法
+        addMenuMethodToRole(id, menuRoles);                         // 添加新的菜单访问方法
         Set<Long> removeSet = remove.keySet();
         Set<Long> addSet = menuRoles.keySet();
         Util.removeAllSame(removeSet, addSet);
-        removeMenuByRole(id, removeSet);        //移除没有的菜单
-        addMenuToRole(id, addSet);              //添加新的菜单
+        removeMenuByRole(id, removeSet);                            // 移除没有的菜单
+        addMenuToRole(id, addSet);                                  // 添加新的菜单
     }
 
     /**

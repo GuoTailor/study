@@ -28,6 +28,10 @@
         where id = #{id};
     </select>
 
+    <select id="isExistDeviceDTUId" resultType="int">
+        select count(0) from device_detail where DTUId = #{DTUId}
+    </select>
+
     <update id="updateDevice">
         update device_detail
         <set>
@@ -123,67 +127,75 @@
     </update>
 
     <insert id="addDevice">
-        insert into device_detail(
-                `DTUId`,
-                `DTUModel`,
-                `siteName`,
-                `controllerModel`,
-                `communicationNumber`,
-                `registrationDate`,
-                `licenseExpirationDate`,
-                `uploadPhoto` ,
-                `controllerBrand`,
-                `controllerType`,
-                `userId`,
-                `licensePeriod`,
-                `deviceStatus`,
-                `other`,
-                `unitModel`,
-                `engineModel`,
-                `speedControlType`,
-                `speedControlBoardModel`,
-                `pressureRegulatorType` ,
-                `manufacturer`,
-                `electricGeneratorModel`,
-                `actuatorType`,
-                `fuelTankCapacity`,
-                `reference`,
-                `accessory`,
-                `electronicFenceStatus` ,
-                `electronicFenceScope`,
-                `depId`)
-        value (
-               #{DTUId},
-               #{DTUModel},
-               #{siteName},
-               #{controllerModel},
-               #{communicationNumber},
-               #{ergistrationDate},
-               #{licenseExpirationDate},
-               #{uploadPhoto},
-               #{controllerBrand},
-               #{controllerType},
-               #{userId},
-               #{licensePeriod},
-               #{deviceStatus},
-               #{other},
-               #{unitModel},
-               #{engineModel},
-               #{speedControlType},
-               #{speedControlBoardModel},
-               #{pressureRegulatorType},
-               #{manufacturer},
-               #{electricGeneratorModel},
-               #{actuatorType},
-               #{fuelTankCapacity},
-               #{reference},
-               #{accessory},
-               #{electronicFenceStatus},
-               #{electronicFenceScope},
-               #{depId});
+        insert
+        into device_detail
+        set
+        <if test="DTUModel != null">
+            DTUModel = #{DTUModel},
+        </if>
+        <if test="controllerModel != null">
+            controllerModel = #{controllerModel},
+        </if>
+        <if test="uploadPhoto != null">
+            uploadPhoto = #{uploadPhoto},
+        </if>
+        <if test="controllerBrand != null">
+            controllerBrand = #{controllerBrand},
+        </if>
+        <if test="other != null">
+            other = #{other},
+        </if>
+        <if test="speedControlType != null">
+            speedControlType = #{speedControlType},
+        </if>
+        <if test="speedControlBoardModel != null">
+            speedControlBoardModel = #{speedControlBoardModel},
+        </if>
+        <if test="pressureRegulatorType != null">
+            pressureRegulatorType = #{pressureRegulatorType},
+        </if>
+        <if test="manufacturer != null">
+            manufacturer = #{manufacturer},
+        </if>
+        <if test="actuatorType != null">
+            actuatorType = #{actuatorType},
+        </if>
+        <if test="reference != null">
+            reference = #{reference},
+        </if>
+        <if test="accessory != null">
+            accessory = #{accessory},
+        </if>
+        <if test="electronicFenceStatus != null">
+            electronicFenceStatus = #{electronicFenceStatus},
+        </if>
+        <if test="electronicFenceScope != null">
+            electronicFenceScope = #{electronicFenceScope},
+        </if>
+        <if test="createTime != null">
+            createTime = #{createTime},
+        </if>
+        <if test="depId != null">
+            depId = #{depId},
+        </if>
+        DTUId = #{DTUId},
+        siteName = #{siteName},
+        communicationNumber = #{communicationNumber},
+        registrationDate = #{registrationDate},
+        licenseExpirationDate = #{licenseExpirationDate},
+        controllerType = #{controllerType},
+        userId = #{userId},
+        licensePeriod = #{licensePeriod},
+        deviceStatus = #{deviceStatus},
+        unitModel = #{unitModel},
+        engineModel = #{engineModel},
+        electricGeneratorModel = #{electricGeneratorModel},
+        fuelTankCapacity = #{fuelTankCapacity}
     </insert>
 
-    <delete id="deleteDeviceById" >
-        delete from device_detail where id=#{id};
+    <delete id="deleteDeviceById">
+        delete
+        from device_detail
+        where id = #{id};
     </delete>
 </mapper>

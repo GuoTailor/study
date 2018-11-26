@@ -52,7 +52,9 @@ public class RoleController {
     @ApiImplicitParam(paramType = "query", name = "name", value = "角色名", dataType = "String")
     public RespBody<String> updateRole(Role role, @PathVariable Long PutId) {
         RespBody<String> respBody = new RespBody<>(roleService.updateRole(role, PutId));
-        respBody.put(1, "成功").put(0, "更新失败!资源未找到").put(-1, "更新失败!请至少更新一个属性（字段）");
+        respBody.put(1, "成功")
+                .put(0, "更新失败!资源未找到")
+                .put(-1, "更新失败!请至少更新一个属性（字段）");
         return respBody;
     }
 

@@ -14,6 +14,9 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * 设备表
+ */
 @Service
 @Transactional(rollbackFor={Exception.class})
 public class DeviceService {
@@ -49,6 +52,9 @@ public class DeviceService {
      */
     public int addDevice(Device device) {
         device.setDepId(UserUtils.getCurrentUser().getDepId());
+        if(deviceMapper.isExistDeviceDTUId(device.getDTUId()) > 0) {
+            return -2;
+        }
         return deviceMapper.addDevice(device);
     }
 

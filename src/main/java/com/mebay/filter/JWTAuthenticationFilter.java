@@ -6,7 +6,6 @@ import com.mebay.bean.Role;
 import com.mebay.bean.User;
 import com.mebay.filter.token.CheckPOJO;
 import com.mebay.filter.token.TokenMgr;
-import com.mebay.service.UserService;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,10 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 
 /**
+ * 每一次url访问都会调用此类
  * 登陆的校验
  * 该类继承自BasicAuthenticationFilter，在doFilterInternal方法中，
  * 从http头的Authorization 项读取token数据，然后用Jwts包提供的方法校验token的合法性。

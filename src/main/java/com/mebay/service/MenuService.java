@@ -15,6 +15,10 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
+/**
+ * 菜单表
+ */
+
 @Service
 @Transactional
 public class MenuService {

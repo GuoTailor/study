@@ -4,21 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mebay.mapper.RoleMapper;
 import com.mebay.service.MenuService;
-import com.mebay.service.RoleService;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.AntPathMatcher;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 //@RunWith(SpringRunner.class)
 //@SpringBootTest
@@ -65,6 +58,7 @@ public class DemoApplicationTests {
         System.out.println(matcher2.matches());
         System.out.println(Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\S]{6,16}$").matcher("123D5a").matches());
         System.out.println("./dfj.jsjk".replaceFirst("\\.", ""));
+        Date date = new Date();
     }
 
     public double no10(int m, double n) {
