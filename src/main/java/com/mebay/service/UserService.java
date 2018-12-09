@@ -76,20 +76,17 @@ public class UserService implements UserDetailsService {
      * @return 用户列表
      */
     public PageView<User> getAll(PageQuery pageQuery) {
-        if (!StringUtils.isEmpty(pageQuery.getSearchField()) && pageQuery.getSearchField().equals("nameZh")) {
-            List<Long> ids = new LinkedList<>();
-            departmentService.getDeptIdTreeByUser().forEach(d -> d.getIDs(ids));
-            Page<User> page = PageHelper.startPage(pageQuery.getPageNum(), pageQuery.getPageSize(), pageQuery.getOrderBy());
-            userMapper.getUsersByRole(pageQuery.buildSubSql(), ids);
-            return PageView.build(page);
-        }
         if (!UserUtils.isAdmin()) {
             return PageView.build(Collections.singletonList(userMapper.getUserById(UserUtils.getCurrentUser().getId())));
         }
         List<Long> ids = new LinkedList<>();
         departmentService.getDeptIdTreeByUser().forEach(d -> d.getIDs(ids));
         Page<User> page = PageHelper.startPage(pageQuery.getPageNum(), pageQuery.getPageSize(), pageQuery.getOrderBy());
-        userMapper.getUsersByDeptId(ids, pageQuery.buildSubSql());
+        if(!StringUtils.isEmpty(pageQuery.getSearchField()) && pageQuery.getSearchField().equals("nameZh")) {
+            userMapper.getUsersByRole(pageQuery.buildSubSql(), ids);
+        }else {
+            userMapper.getUsersByDeptId(ids, pageQuery.buildSubSql());
+        }
         return PageView.build(page);
     }
 

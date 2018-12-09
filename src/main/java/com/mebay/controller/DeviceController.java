@@ -42,7 +42,7 @@ public class DeviceController {
     @ApiOperation(value = "添加一个设备")
     public RespBody addDevice(Device device) {
         return new RespBody<>(deviceService.addDevice(device))
-                .put(1, device)
+                .put(1, "添加成功")
                 .put(-1, "添加失败，权限不足")
                 .put(-2, "存在相同的DTUId")
                 .put(0, "添加失败，请联系管理员");
@@ -65,5 +65,7 @@ public class DeviceController {
                 .put(-1, "更新失败，权限不足")
                 .put(0, "更新失败，请联系管理员");
     }
+
+
 
 }

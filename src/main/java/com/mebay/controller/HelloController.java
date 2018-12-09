@@ -14,21 +14,22 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @Api(tags = "其他杂项接口", description = "只有login无需jwt验证")
 public class HelloController {
-    private final UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource;
     private final MenuService menuService;
     @Value("${resourcesPath}")
     private String resourcesPath;
     @Value("${resourcesTempPath}")
     private String resourcesTempPath;
     @Autowired
-    public HelloController(MenuService menuService, UrlFilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource) {
+    public HelloController(MenuService menuService) {
         this.menuService = menuService;
-        this.urlFilterInvocationSecurityMetadataSource = urlFilterInvocationSecurityMetadataSource;
     }
 
     @ApiOperation(value = "登陆", notes = "测试账号：test，密码：admin\n")
@@ -57,13 +58,28 @@ public class HelloController {
 
     @PostMapping("/upload")
     @ApiOperation(value = "上传文件")
-    public RespBody<String> upload(@RequestParam(value = "file" ,required = false) MultipartFile file) {
+    public RespBody<String> upload(@RequestParam(value = "file" ,required = false) MultipartFile file, @RequestParam(value = "name", required = false) String name) {
         String path = resourcesPath + (FileUtil.getFileType(file) != null ? "/img" : "/file");
-        String filePath = FileUtil.saveFile(file, path);
+        String filePath = FileUtil.saveFile(file, path, name);
         if (filePath == null) {
             return new RespBody<>(0, "文件保存失败!请联系管理员");
         }else
             return new RespBody<>(1, filePath.replaceFirst("\\.", ""));
+    }
+
+    @GetMapping("/fileInfo")
+    public RespBody getFileInfo(@RequestParam String fileName){
+        BasicFileAttributes info = FileUtil.getFileInfo("." + fileName);
+        if (info == null) {
+            return new RespBody<>(0, "没有找到该文件");
+        }
+
+        Map<String, Object> infoMap = new HashMap<>();
+        infoMap.put("size", info.size());
+        infoMap.put("creationTime", info.creationTime().toString());
+        infoMap.put("lastAccessTime", info.lastAccessTime().toString());
+        infoMap.put("lastModifiedTime", info.lastModifiedTime().toString());
+        return new RespBody<>(1, infoMap);
     }
 
 }

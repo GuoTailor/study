@@ -5,6 +5,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributeView;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -66,7 +72,7 @@ public class FileUtil {
      * @param path 要保存的路径
      * @return 保存之后的文件路径
      */
-    public static String saveFile(MultipartFile file, String path) {
+    public static String saveFile(MultipartFile file, String path, String name) {
         if (file != null) {
             // 文件名
             String fileName = file.getOriginalFilename();
@@ -75,10 +81,17 @@ public class FileUtil {
             if (fileName != null)
                 suffixName = fileName.substring(fileName.lastIndexOf("."));
 
-            // 重新生成唯一文件名，用于存储数据库
             String type = getFileType(file);
             System.out.println("原文件后缀名： " + suffixName + "\n新文件后缀名：" + type);
-            String newFileName = UUID.randomUUID().toString() + "-" + System.currentTimeMillis() + (type == null ? suffixName : type);
+            String newFileName = file.getOriginalFilename();    //TODO 文件类型
+            //如果类型不等于空说明是图片类文件
+            if (type != null) {
+                // 重新生成唯一文件名，用于存储数据库
+                newFileName = UUID.randomUUID().toString() + "-" + System.currentTimeMillis() + type;
+            }
+            else if (name != null) {
+                newFileName = name;
+            }
             System.out.println("新的文件名： " + newFileName);
             File f = new File(path);
             if (!f.exists() && !f.mkdirs())
@@ -98,7 +111,7 @@ public class FileUtil {
 
     /**
      * 删除文件
-     *
+     *2
      * @param path 文件路径
      * @return true：删除成功，false：删除失败
      */
@@ -106,4 +119,17 @@ public class FileUtil {
         System.out.println(path);
         return new File(path).delete();
     }
+
+    public static BasicFileAttributes getFileInfo(String filePath) {
+        Path path= Paths.get(filePath);
+        BasicFileAttributeView basicview= Files.getFileAttributeView(path, BasicFileAttributeView.class, LinkOption.NOFOLLOW_LINKS );
+        BasicFileAttributes attr = null;
+        try {
+            attr = basicview.readAttributes();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return attr;
+    }
+
 }
