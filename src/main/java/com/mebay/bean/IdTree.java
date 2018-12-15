@@ -26,6 +26,10 @@ public class IdTree implements StreamTree<IdTree> {
         this.children = children;
     }
 
+    /**
+     * 拆解整颗树，把树的所有节点添加到{@code deptIsds}中
+     * @param deptIsds 节点集合
+     */
     public void getIDs(List<Long> deptIsds) {
         deptIsds.add(id);
         for (IdTree idTree : children) {

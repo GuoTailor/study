@@ -77,7 +77,7 @@ public class DepartmentService {
         User user = UserUtils.getCurrentUser();
         if (Util.hasAny(Role::equalsRole, user.getRole(), "ROLE_HIGH_GRADE_ADMIN")) {
             return departmentMapper.getDeptsByCreationId(user.getId());
-        }else if (Util.hasAny(Role::equalsRole, user.getRole(), "ROLE_SUPER_ADMIN")) {
+        } else if (Util.hasAny(Role::equalsRole, user.getRole(), "ROLE_SUPER_ADMIN")) {
             //TODO 返回全部的直属和隶属单位
         }
         return Collections.singletonList(departmentMapper.getDeptIdTreeById(user.getDepId()));
@@ -97,7 +97,19 @@ public class DepartmentService {
         getDeptIdTreeByUser().forEach(d -> d.getIDs(ids));
         Page<Department> page = PageHelper.startPage(pageQuery);
         departmentMapper.getDeptByIds(ids, pageQuery.buildSubSql());
-        return PageView.build(page);
+        PageView<Department> depts = PageView.build(page);
+        depts.getList().forEach(d -> {
+            //获取它的上级id
+            long id = d.getParentId();
+            //i < 100 防止死循环
+            //当上级id==-1时就说明到最上面了
+            for (int i = 0; i < 100 && d.getLogo() == null && id != -1; i++) {
+                Department dept = departmentMapper.getDeptById(id);
+                id = dept.getParentId();
+                d.setLogo(dept.getLogo());
+            }
+        });
+        return depts;
     }
 
     public Department getDepById(Long id) {

@@ -25,9 +25,8 @@
     <select id="getAllMenu" resultMap="BaseResultMap">
         select m.*, r.`id` as rid, r.`name` as rname, r.`nameZh` as rnamezh, rm.method as rmethod
         from menu m
-                 left join menu_role mr on m.`id` = mr.`mid`
-                 left join role r on mr.`rid` = r.`id`
-                 left join request_method rm on mr.rid = rm.roleId and mr.mid = rm.menuId
+        left join request_method rm on rm.`menuId` = m.id
+        left join role r on rm.`roleId` = r.`id`
         WHERE m.`enabled` = true
         <if test="rid!=null">
             and r.id = #{rid}
@@ -35,7 +34,7 @@
         order by m.`id` desc
     </select>
 
-    <!-- TODO 查询不到访问方法 -->
+    <!-- TODO 查询不到访问方法
     <select id="getMenusByUserId" parameterType="Long" resultMap="BaseResultMap">
         select m.id, m.url, m.name, m.parentId
         from menu m
@@ -44,20 +43,20 @@
                             menu_role mr
                        where u_r.`roleid` = mr.`rid`
                          and u_r.`userid` = #{userId})
-        and m.enabled = true;
-    </select>
+          and m.enabled = true;
+    </select> -->
 
     <select id="getMenusByRoleId" resultType="Long">
-        select mr.mid
-        from menu_role mr where mr.rid = #{rid};
+        select menuId from request_method where roleId = #{rid} group by menuId;
     </select>
 
     <select id="getMenuIdByUserId" resultType="Long">
-        select mr.`mid`
+        select rm.`menuId`
         from user_role u_r,
-             menu_role mr
-        where u_r.`roleid` = mr.`rid`
+             request_method rm
+        where u_r.`roleid` = rm.`roleId`
           and u_r.`userid` = #{id}
+        group by rm.menuId
     </select>
 
     <select id="menuTree" resultMap="BaseResultMap">

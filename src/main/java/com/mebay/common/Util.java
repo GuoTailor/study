@@ -1,5 +1,7 @@
 package com.mebay.common;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mebay.bean.StreamTree;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.logging.Logger;
 
 public class Util {
     /**
@@ -38,6 +41,15 @@ public class Util {
             }
         }
         return false;
+    }
+
+    public static void Log(String TAG, Object msg) {
+        Logger logger = Logger.getLogger(TAG);
+        try {
+            logger.info(new ObjectMapper().writeValueAsString(msg));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
