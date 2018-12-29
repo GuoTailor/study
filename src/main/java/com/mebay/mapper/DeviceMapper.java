@@ -31,6 +31,8 @@ public interface DeviceMapper {
      */
     int isExistDeviceDTUId(@Param("DTUId") String dtuId);
 
+    Long getDeviceByDTUId(@Param("dtuId") String dtuId);
+
     /**
      * 获取设备通过设备id
      *

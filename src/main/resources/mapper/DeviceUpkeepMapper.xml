@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mebay.mapper.DeviceUpkeepMapper">
+
+    <select id="getRecordById" resultType="com.mebay.bean.DeviceUpkeep">
+        select * from device_upkeep where id = #{id}
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <select id="getRecordByDTUId" resultType="com.mebay.bean.DeviceUpkeep">
+        select * from device_upkeep where DTUId = #{DTUId}
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <select id="getRecordByDTUIds" resultType="com.mebay.bean.DeviceUpkeep">
+        select * from device_upkeep where DTUId in
+        <foreach collection="DTUIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <update id="updateByDTUId" parameterType="com.mebay.bean.DeviceUpkeep">
+        update device_upkeep
+        <set>
+            <if test="deviceUpkeep.DTUId != null">
+                DTUId = #{deviceUpkeep.DTUId},
+            </if>
+            <if test="deviceUpkeep.controllerType != null">
+                controllerType = #{deviceUpkeep.controllerType},
+            </if>
+            <if test="deviceUpkeep.upkeepUser != null">
+                upkeepUser = #{deviceUpkeep.upkeepUser},
+            </if>
+            <if test="deviceUpkeep.upkeepMechanism != null">
+                upkeepMechanism = #{deviceUpkeep.upkeepMechanism},
+            </if>
+            <if test="deviceUpkeep.upkeepCost != null">
+                upkeepCost = #{deviceUpkeep.upkeepCost},
+            </if>
+            <if test="deviceUpkeep.upkeepTime != null">
+                upkeepTime = #{deviceUpkeep.upkeepTime},
+            </if>
+            <if test="deviceUpkeep.nextUpkeepTime != null">
+                nextUpkeepTime = #{deviceUpkeep.nextUpkeepTime},
+            </if>
+            <if test="deviceUpkeep.upkeepContent != null">
+                upkeepContent = #{deviceUpkeep.upkeepContent},
+            </if>
+        </set>
+        where DTUId = #{DTUId}
+    </update>
+
+    <insert id="addUpkeep" parameterType="com.mebay.bean.DeviceUpkeep">
+        insert into device_upkeep(id, DTUId, controllerType, upkeepUser, upkeepMechanism, upkeepCost, upkeepTime,
+                                  nextUpkeepTime, upkeepContent)
+            value (#{id}, #{DTUId}, #{controllerType}, #{upkeepUser}, #{upkeepMechanism}, #{upkeepCost}, #{upkeepTime},
+                   #{nextUpkeepTime}, #{upkeepContent})
+    </insert>
+
+    <delete id="deleteUpkeepById" parameterType="Long">
+        delete
+        from device_upkeep
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteUpkeepByDTUId" parameterType="Long">
+        delete
+        from device_upkeep
+        where DTUId = #{DTUId}
+    </delete>
+
+</mapper>

@@ -25,9 +25,9 @@ public class UserController {
     @GetMapping("/{id}")
     public RespBody getUserById(@PathVariable(value = "id") Long id) {
         User user = userService.getUserById(id);
-        return new RespBody<>(user == null ? 0 : 1)
+        return new RespBody<>(user == null ? 0 : 1, user)
                 .put(0, "用户不存在")
-                .put(1, user);
+                .put(1, "成功");
     }
 
     @ApiOperation(value = "注册用户", notes = "权限存在问题，关于权限字段不用传")

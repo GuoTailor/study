@@ -32,95 +32,102 @@
         select count(0) from device_detail where DTUId = #{DTUId}
     </select>
 
+    <select id="getDeviceByDTUId" parameterType="String" resultType="Long">
+        select id from device_detail where DTUId = #{dtuId}
+    </select>
+
     <update id="updateDevice">
         update device_detail
         <set>
-            <if test="DTUId != null">
-                DTUId = #{DTUId},
+            <if test="device.DTUId != null">
+                DTUId = #{device.DTUId},
             </if>
-            <if test="DTUModel != null">
-                DTUModel = #{DTUModel},
+            <if test="device.DTUModel != null">
+                DTUModel = #{device.DTUModel},
             </if>
-            <if test="siteName != null">
-                siteName = #{siteName},
+            <if test="device.siteName != null">
+                siteName = #{device.siteName},
             </if>
-            <if test="controllerModel != null">
-                controllerModel = #{controllerModel},
+            <if test="device.controllerModel != null">
+                controllerModel = #{device.controllerModel},
             </if>
-            <if test="communicationNumber != null">
-                communicationNumber = #{communicationNumber},
+            <if test="device.communicationNumber != null">
+                communicationNumber = #{device.communicationNumber},
             </if>
-            <if test="registrationDate != null">
-                registrationDate = #{registrationDate},
+            <if test="device.registrationDate != null">
+                registrationDate = #{device.registrationDate},
             </if>
-            <if test="licenseExpirationDate != null">
-                licenseExpirationDate = #{licenseExpirationDate},
+            <if test="device.licenseExpirationDate != null">
+                licenseExpirationDate = #{device.licenseExpirationDate},
             </if>
-            <if test="uploadPhoto != null">
-                uploadPhoto = #{uploadPhoto},
+            <if test="device.uploadPhoto != null">
+                uploadPhoto = #{device.uploadPhoto},
             </if>
-            <if test="controllerBrand != null">
-                controllerBrand = #{controllerBrand},
+            <if test="device.controllerBrand != null">
+                controllerBrand = #{device.controllerBrand},
             </if>
-            <if test="controllerType != null">
-                controllerType = #{controllerType},
+            <if test="device.controllerType != null">
+                controllerType = #{device.controllerType},
             </if>
-            <if test="userId != null">
-                userId = #{userId},
+            <if test="device.userId != null">
+                userId = #{device.userId},
             </if>
-            <if test="licensePeriod != null">
-                licensePeriod = #{licensePeriod},
+            <if test="device.licensePeriod != null">
+                licensePeriod = #{device.licensePeriod},
             </if>
-            <if test="deviceStatus != null">
-                deviceStatus = #{deviceStatus},
+            <if test="device.deviceStatus != null">
+                deviceStatus = #{device.deviceStatus},
             </if>
-            <if test="other != null">
-                other = #{other},
+            <if test="device.other != null">
+                other = #{device.other},
             </if>
-            <if test="unitModel != null">
-                unitModel = #{unitModel},
+            <if test="device.unitModel != null">
+                unitModel = #{device.unitModel},
             </if>
-            <if test="engineModel != null">
-                engineModel = #{engineModel},
+            <if test="device.engineModel != null">
+                engineModel = #{device.engineModel},
             </if>
-            <if test="speedControlType != null">
-                speedControlType = #{speedControlType},
+            <if test="device.speedControlType != null">
+                speedControlType = #{device.speedControlType},
             </if>
-            <if test="speedControlBoardModel != null">
-                speedControlBoardModel = #{speedControlBoardModel},
+            <if test="device.speedControlBoardModel != null">
+                speedControlBoardModel = #{device.speedControlBoardModel},
             </if>
-            <if test="pressureRegulatorType != null">
-                pressureRegulatorType = #{pressureRegulatorType},
+            <if test="device.pressureRegulatorType != null">
+                pressureRegulatorType = #{device.pressureRegulatorType},
             </if>
-            <if test="manufacturer != null">
-                manufacturer = #{manufacturer},
+            <if test="device.manufacturer != null">
+                manufacturer = #{device.manufacturer},
             </if>
-            <if test="electricGeneratorModel != null">
-                electricGeneratorModel = #{electricGeneratorModel},
+            <if test="device.electricGeneratorModel != null">
+                electricGeneratorModel = #{device.electricGeneratorModel},
             </if>
-            <if test="actuatorType != null">
-                actuatorType = #{actuatorType},
+            <if test="device.actuatorType != null">
+                actuatorType = #{device.actuatorType},
             </if>
-            <if test="fuelTankCapacity != null">
-                fuelTankCapacity = #{fuelTankCapacity},
+            <if test="device.fuelTankCapacity != null">
+                fuelTankCapacity = #{device.fuelTankCapacity},
             </if>
-            <if test="reference != null">
-                reference = #{reference},
+            <if test="device.reference != null">
+                reference = #{device.reference},
             </if>
-            <if test="accessory != null">
-                accessory = #{accessory},
+            <if test="device.accessory != null">
+                accessory = #{device.accessory},
             </if>
-            <if test="electronicFenceStatus != null">
-                electronicFenceStatus = #{electronicFenceStatus},
+            <if test="device.electronicFenceStatus != null">
+                electronicFenceStatus = #{device.electronicFenceStatus},
             </if>
-            <if test="electronicFenceScope != null">
-                electronicFenceScope = #{electronicFenceScope},
+            <if test="device.electronicFenceScope != null">
+                electronicFenceScope = #{device.electronicFenceScope},
             </if>
-            <if test="createTime != null">
-                createTime = #{createTime},
+            <if test="device.createTime != null">
+                createTime = #{device.createTime},
             </if>
-            <if test="depId != null">
-                depId = #{depId},
+            <if test="device.depId != null">
+                depId = #{device.depId},
+            </if>
+            <if test="device.gearRange != null">
+                gearRange = #{device.gearRange},
             </if>
         </set>
         where id = #{id};
@@ -177,6 +184,9 @@
         </if>
         <if test="depId != null">
             depId = #{depId},
+        </if>
+        <if test="gearRange != null">
+            gearRange = #{gearRange},
         </if>
         DTUId = #{DTUId},
         siteName = #{siteName},

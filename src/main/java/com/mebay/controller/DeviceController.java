@@ -42,6 +42,7 @@ public class DeviceController {
     @ApiOperation(value = "添加一个设备")
     public RespBody addDevice(Device device) {
         return new RespBody<>(deviceService.addDevice(device))
+                .setData(deviceService.getDeviceByDTUId(device.getDTUId()))
                 .put(1, "添加成功")
                 .put(-1, "添加失败，权限不足")
                 .put(-2, "存在相同的DTUId")
@@ -58,11 +59,12 @@ public class DeviceController {
                 .put(0, "删除失败，请联系管理员");
     }
 
-    @PutMapping("/{id}")
-    public RespBody update(Device device, @PathVariable Long id) {
-        return new RespBody<>(deviceService.updateDevice(id, device))
-                .put(1, device)
+    @PutMapping("/{did}")
+    public RespBody<String> update(Device device, @PathVariable Long did) {
+        return new RespBody<String>(deviceService.updateDevice(did, device))
+                .put(1, "更新成功")
                 .put(-1, "更新失败，权限不足")
+                .put(-2, "请至少更新一个属性")
                 .put(0, "更新失败，请联系管理员");
     }
 

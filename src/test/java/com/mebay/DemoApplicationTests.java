@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.AntPathMatcher;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -22,7 +24,7 @@ public class DemoApplicationTests {
     @Autowired
     private MenuService menuService;
     @Test
-    public void contextLoads() throws InterruptedException {
+    public void contextLoads() throws InterruptedException, ParseException {
         AntPathMatcher antPathMatcher = new AntPathMatcher();
         System.out.println(antPathMatcher.match("/trip/**", "/trip?nmka=1"));
         System.out.println(antPathMatcher.match("/trip/**", "/trip/nm/e?nmka=1"));
@@ -59,6 +61,9 @@ public class DemoApplicationTests {
         System.out.println(Pattern.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[\\S]{6,16}$").matcher("123D5a").matches());
         System.out.println("./dfj.jsjk".replaceFirst("\\.", ""));
         Date date = new Date();
+        SimpleDateFormat  s = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        date = s.parse("2018-11-10T16:00:00.000Z");
+        System.out.println(date.toString());
     }
 
     public double no10(int m, double n) {

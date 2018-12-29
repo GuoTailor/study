@@ -14,10 +14,11 @@ import java.util.function.BiConsumer;
  */
 @ApiModel(value = "返回对象",description = "统一返回格式")
 public class RespBody<T> {
-    private Map<Integer, T> parameters = new TreeMap<>();
+    private Map<Integer, String> parameters = new TreeMap<>();
     @ApiModelProperty(value = "状态码", allowableValues = "1:操作成功, 0:操作失败")
     private int code;
     private BiConsumer<Integer, T> function;
+    private T data;
 
     public RespBody() {
 
@@ -27,21 +28,37 @@ public class RespBody<T> {
         this.code = code;
     }
 
+    public RespBody(T data) {
+        this.data = data;
+    }
+
+    public RespBody(int code, String msg){
+        this.code = code;
+        parameters.put(code, msg);
+    }
+
+    public RespBody(int code, T data) {
+        this.code = code;
+        this.data = data;
+    }
+
+    public RespBody(int code, T data, String msg) {
+        this.code = code;
+        this.data = data;
+        parameters.put(code, msg);
+    }
+
     /**
      * 后续操作
      * 注意，该方法不会立即执行。只有在用 json 序列化时或调用{@link #getMsg()} 方法才会调用
      * @param function 要做的操作
      */
-    public void processing(BiConsumer<Integer, T> function) {
+    public RespBody<T> processing(BiConsumer<Integer, T> function) {
         this.function = function;
+        return this;
     }
 
-    public RespBody(int code, T msg){
-        this.code = code;
-        parameters.put(code, msg);
-    }
-
-    public RespBody<T> put(int code, T msg) {
+    public RespBody<T> put(int code, String msg) {
         parameters.put(code, msg);
         return this;
     }
@@ -55,9 +72,18 @@ public class RespBody<T> {
     }
 
     @ApiModelProperty(value = "对应信息")
-    public T getMsg() {
+    public String getMsg() {
         LogAspect.threadLocal.set(code > 0 ? "成功" : (String)parameters.get(code));
-        if (function != null) function.accept(code, parameters.get(code));
+        if (function != null) function.accept(code, data);
         return parameters.get(code);
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public RespBody<T> setData(T data) {
+        this.data = data;
+        return this;
     }
 }

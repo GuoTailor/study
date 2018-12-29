@@ -1,9 +1,12 @@
 package com.mebay.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.sql.Date;
+
 
 @ApiModel(value = "设备")
 public class Device {
@@ -20,10 +23,12 @@ public class Device {
     @ApiModelProperty(value = "通信号码", required = true)
     private String communicationNumber;     //通信号码
     @ApiModelProperty(value = "注册日期", required = true)
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date registrationDate;          //注册日期
     @ApiModelProperty(value = "许可到期日", required = true)
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date licenseExpirationDate;     //许可到期日
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(value = "设备图片")
     private String uploadPhoto;             //照片上传
     @ApiModelProperty(value = "控制器品牌")
     private String controllerBrand;         //控制器品牌
@@ -57,16 +62,19 @@ public class Device {
     private Float fuelTankCapacity;         //油箱容量
     @ApiModelProperty(value = "备注")
     private String reference;               //备注
-    @ApiModelProperty(hidden = true)
+    @ApiModelProperty(value = "附件")
     private String accessory;               //附件
     @ApiModelProperty(value = "电子围栏状态")
     private Boolean electronicFenceStatus;  //电子围栏状态
     @ApiModelProperty(value = "围栏范围设置")
     private String electronicFenceScope;    //围栏范围设置
     @ApiModelProperty(hidden = true)
+    //@DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Date createTime;                //添加时间
     @ApiModelProperty(hidden = true)
     private Long depId;                     //单位id
+    @ApiModelProperty(value = "当前档位")
+    private String gearRange;               //当前档位
 
     public Long getId() {
         return id;
@@ -306,5 +314,13 @@ public class Device {
 
     public void setDepId(Long depId) {
         this.depId = depId;
+    }
+
+    public String getGearRange() {
+        return gearRange;
+    }
+
+    public void setGearRange(String gearRange) {
+        this.gearRange = gearRange;
     }
 }

@@ -68,9 +68,9 @@
 		</if>
 	</select>
 
-	<select id="">
+	<!--<select id="">
 		select * from
-	</select>
+	</select>-->
 
 	<insert id="insert" parameterType="User">
 		INSERT INTO user(id, username, password, sex, name, phone, depId, logo, email) VALUES (#{id}, #{username}, #{password}, #{sex}, #{name}, #{phone}, #{depId}, #{logo}, #{email});

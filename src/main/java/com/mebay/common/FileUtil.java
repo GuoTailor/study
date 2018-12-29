@@ -88,9 +88,10 @@ public class FileUtil {
             if (type != null) {
                 // 重新生成唯一文件名，用于存储数据库
                 newFileName = UUID.randomUUID().toString() + "-" + System.currentTimeMillis() + type;
-            }
-            else if (name != null) {
+            } else if (name != null) {
                 newFileName = name;
+            } else {
+                newFileName += "##" + UUID.randomUUID().toString() + "-" + System.currentTimeMillis();
             }
             System.out.println("新的文件名： " + newFileName);
             File f = new File(path);

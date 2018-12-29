@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class HelloController {
 
     @GetMapping("/menus")
     public RespBody<List<Menu>> getMenus() {
-        return new RespBody<>(1, menuService.getMenus());
+        return new RespBody<>(1, menuService.getMenus(), "成功");
     }
 
     @PostMapping("/upload")
@@ -64,22 +65,28 @@ public class HelloController {
         if (filePath == null) {
             return new RespBody<>(0, "文件保存失败!请联系管理员");
         }else
-            return new RespBody<>(1, filePath.replaceFirst("\\.", ""));
+            return new RespBody<>(1, filePath.replaceFirst("\\.", ""), "文件上传成功");
     }
 
     @GetMapping("/fileInfo")
-    public RespBody getFileInfo(@RequestParam String fileName){
-        BasicFileAttributes info = FileUtil.getFileInfo("." + fileName);
-        if (info == null) {
-            return new RespBody<>(0, "没有找到该文件");
+    @ApiOperation(value = "获取文件的信息")
+    @ApiImplicitParam(paramType = "query", name = "files", required = true, value = "文件数组", dataType = "String")
+    public RespBody<List<Map<String, Object>>> getFileInfo(@RequestParam List<String> files){
+        List<Map<String, Object>> fileList = new ArrayList<>(files.size());
+        for (String s : files) {
+            BasicFileAttributes info = FileUtil.getFileInfo("." + s);
+            if (info == null) {
+                continue;
+            }
+            Map<String, Object> infoMap = new HashMap<>();
+            infoMap.put("type", s.substring(s.lastIndexOf(".") + 1));
+            infoMap.put("size", info.size());
+            infoMap.put("creationTime", info.creationTime().toString());
+            infoMap.put("lastAccessTime", info.lastAccessTime().toString());
+            infoMap.put("lastModifiedTime", info.lastModifiedTime().toString());
+            fileList.add(infoMap);
         }
-
-        Map<String, Object> infoMap = new HashMap<>();
-        infoMap.put("size", info.size());
-        infoMap.put("creationTime", info.creationTime().toString());
-        infoMap.put("lastAccessTime", info.lastAccessTime().toString());
-        infoMap.put("lastModifiedTime", info.lastModifiedTime().toString());
-        return new RespBody<>(1, infoMap);
+        return new RespBody<>(1, fileList, "成功");
     }
 
 }

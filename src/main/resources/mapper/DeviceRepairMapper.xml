@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mebay.mapper.DeviceRepairMapper">
+
+    <select id="getRecordById" resultType="com.mebay.bean.DeviceRepair">
+        select * from device_repair where id = #{id}
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <select id="getRecordByDTUId" resultType="com.mebay.bean.DeviceRepair">
+        select * from device_repair where DTUId = #{DTUId}
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <select id="getRecordByDTUIds" resultType="com.mebay.bean.DeviceRepair">
+        select * from device_repair where DTUId in
+        <foreach collection="DTUIds" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+        <if test="search != null">
+            and ${search}
+        </if>
+    </select>
+
+    <update id="updateByDTUId" parameterType="com.mebay.bean.DeviceRepair">
+        update device_repair
+        <set>
+            <if test="deviceRepair.DTUId != null">
+                DTUId = #{deviceRepair.DTUId},
+            </if>
+            <if test="deviceRepair.repairMechanism != null">
+                repairMechanism = #{deviceRepair.repairMechanism},
+            </if>
+            <if test="deviceRepair.repairUser != null">
+                repairUser = #{deviceRepair.repairUser},
+            </if>
+            <if test="deviceRepair.controllerType != null">
+                controllerType = #{deviceRepair.controllerType},
+            </if>
+            <if test="deviceRepair.repairCost != null">
+                repairCost = #{deviceRepair.repairCost},
+            </if>
+            <if test="deviceRepair.repairTime != null">
+                repairTime = #{deviceRepair.repairTime},
+            </if>
+            <if test="deviceRepair.repairContent != null">
+                repairContent = #{deviceRepair.repairContent},
+            </if>
+        </set>
+          where DTUId = #{DTUId}
+    </update>
+
+    <insert id="addRepair" parameterType="com.mebay.bean.DeviceRepair">
+        insert into device_repair(DTUId, repairMechanism, repairUser, controllerType, repairCost, repairTime, repairContent)
+    </insert>
+</mapper>

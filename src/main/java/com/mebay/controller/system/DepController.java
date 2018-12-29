@@ -33,19 +33,19 @@ public class DepController {
         if (department.getCreationTime() != null && !department.getCreationTime().equals("")) {
             department.setTime(Date.valueOf(department.getCreationTime()));
         }
-        RespBody<Object> respBody = new RespBody<>(departmentService.creationDep(department));
-        respBody.put(1, department)
-                .put(0, "添加失败!")
-                .put(-1, "添加失败!没有该节点权限或父节点不存在");
         String finalFilePath = department.getLogo();
-        respBody.processing((code, msg) -> {
-            if (code <= 0) {
-                if (finalFilePath != null) {
-                    FileUtil.deleteFile("." + finalFilePath);
-                }
-            }
-        });
-        return respBody;
+        return new RespBody<>(departmentService.creationDep(department))
+                .setData(department)
+                .put(1, "添加成功")
+                .put(0, "添加失败!")
+                .put(-1, "添加失败!没有该节点权限或父节点不存在")
+                .processing((code, msg) -> {
+                    if (code <= 0) {
+                        if (finalFilePath != null) {
+                            FileUtil.deleteFile("." + finalFilePath);
+                        }
+                    }
+                });
     }
 
     @PutMapping(value = "/dep/{putId}")
@@ -53,20 +53,20 @@ public class DepController {
     @ApiImplicitParam(paramType = "path", name = "putId", required = true, value = "单位id", dataType = "Long")
     public RespBody updateDep(Department department, @PathVariable Long putId) {
         System.out.println(putId);
-        RespBody<Object> respBody = new RespBody<>(departmentService.updateDep(department, putId));
-        respBody.put(1, department)
+        String finalFilePath = department.getLogo();
+        return new RespBody<>(departmentService.updateDep(department, putId))
+                .setData(department)
+                .put(1, "更新成功")
                 .put(0, "更新失败!")
                 .put(-1, "更新失败!没有该节点权限或父节点不存在")
-                .put(-2, "更新失败!请至少更新一个属性（字段）");
-        String finalFilePath = department.getLogo();
-        respBody.processing((code, msg) -> {
-            if (code <= 0) {
-                if (finalFilePath != null) {
-                    FileUtil.deleteFile("." + finalFilePath);
-                }
-            }
-        });
-        return respBody;
+                .put(-2, "更新失败!请至少更新一个属性（字段）")
+                .processing((code, msg) -> {
+                    if (code <= 0) {
+                        if (finalFilePath != null) {
+                            FileUtil.deleteFile("." + finalFilePath);
+                        }
+                    }
+                });
     }
 
     @DeleteMapping(value = "/dep/{id}")

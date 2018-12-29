@@ -3,16 +3,20 @@ package com.mebay.service;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.mebay.bean.*;
+import com.mebay.common.FileUtil;
 import com.mebay.common.UserUtils;
 import com.mebay.common.Util;
 import com.mebay.mapper.DeviceMapper;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * 设备表
@@ -20,6 +24,7 @@ import java.util.List;
 @Service
 @Transactional(rollbackFor={Exception.class})
 public class DeviceService {
+    private static Logger logger = Logger.getLogger(DeviceService.class.getSimpleName());
     private final DeviceMapper deviceMapper;
     private final DepartmentService departmentService;
 
@@ -78,9 +83,19 @@ public class DeviceService {
      * @param device 要跟新的信息
      */
     public int updateDevice(Long id, Device device) {
+        if (Util.isEmpty(device)) {
+            return -2;
+        }
         List<Device> deviceList = getEditDevices(null);
         for (Device d : deviceList) {
-            if (d.getDepId().equals(id)) {
+            if (d.getId().equals(id)) {
+                String logoPath = d.getUploadPhoto();
+                int i = deviceMapper.updateDevice(id, device);
+                logger.info(logoPath + " >> " + device.getUploadPhoto());
+                if (i == 1 && logoPath != null && StringUtils.isEmpty(device.getUploadPhoto()) && !logoPath.equals(device.getUploadPhoto())) {
+                    FileUtil.deleteFile("." + logoPath);
+                    logger.info("删除》》》》》");
+                }
                 return deviceMapper.updateDevice(id, device);
             }
         }
@@ -103,6 +118,10 @@ public class DeviceService {
         Page<Device> page = PageHelper.startPage(pageQuery);
         deviceMapper.getDeviceByDepId(Collections.singleton(user.getDepId()), pageQuery.buildSubSql());
         return PageView.build(page);
+    }
+
+    public Long getDeviceByDTUId(String dtuid) {
+        return deviceMapper.getDeviceByDTUId(dtuid);
     }
 
     /**

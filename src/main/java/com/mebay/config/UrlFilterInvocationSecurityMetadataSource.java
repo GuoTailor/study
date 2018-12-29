@@ -43,6 +43,7 @@ public class UrlFilterInvocationSecurityMetadataSource implements FilterInvocati
                 "/menus",
                 "/error",
                 "/index.html",
+                "/fileInfo",
 
                 "/druid([?/].*|$)",//swagger api文档一律通过
                 "/swagger-resources([?/].*|$)",
