@@ -35,13 +35,13 @@ public class DeviceUpkeepService {
         return PageView.build(page);
     }
 
-    public PageView<DeviceUpkeep> getRecordByDTUId(Long DTUId, PageQuery pageQuery) {
+    public PageView<DeviceUpkeep> getRecordByDTUId(String DTUId, PageQuery pageQuery) {
         Page<DeviceUpkeep> page = PageHelper.startPage(pageQuery);
         deviceUpkeepMapper.getRecordByDTUId(DTUId, pageQuery.buildSubSql());
         return PageView.build(page);
     }
 
-    public int updateByDTUId(DeviceUpkeep deviceUpkeep, Long DTUId) {
+    public int updateByDTUId(DeviceUpkeep deviceUpkeep, String DTUId) {
         if (Util.isEmpty(deviceUpkeep)) {
             return -1;
         }
@@ -56,7 +56,7 @@ public class DeviceUpkeepService {
         return deviceUpkeepMapper.deleteUpkeepById(id);
     }
 
-    public int deleteUpkeepByDTUId(Long DTUId) {
+    public int deleteUpkeepByDTUId(String DTUId) {
         return deviceUpkeepMapper.deleteUpkeepByDTUId(DTUId);
     }
 
@@ -65,7 +65,7 @@ public class DeviceUpkeepService {
         List<Long> ids = new LinkedList<>();
         deptId.forEach(d -> d.getIDs(ids));
         List<Device> devices = deviceMapper.getDeviceByDepId(ids, null);
-        List<Long> DTUIds = devices.stream().map(Device::getDepId).collect(Collectors.toList());
+        List<String> DTUIds = devices.stream().map(Device::getDTUId).collect(Collectors.toList());
         Page<DeviceUpkeep> page = PageHelper.startPage(pageQuery);
         deviceUpkeepMapper.getRecordByDTUIds(DTUIds, pageQuery.buildSubSql());
         return PageView.build(page);

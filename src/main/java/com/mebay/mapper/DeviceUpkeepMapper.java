@@ -24,11 +24,11 @@ public interface DeviceUpkeepMapper {
      * @param DTUId 设备的DTUId
      * @return 设备的所有保养记录
      */
-    List<DeviceUpkeep> getRecordByDTUId(@Param("DTUId") Long DTUId, @Param("search") String search);
+    List<DeviceUpkeep> getRecordByDTUId(@Param("DTUId") String DTUId, @Param("search") String search);
 
-    int updateByDTUId(@Param("deviceUpkeep") DeviceUpkeep deviceUpkeep, @Param("DTUId") Long DTUId);
+    int updateByDTUId(@Param("deviceUpkeep") DeviceUpkeep deviceUpkeep, @Param("DTUId") String DTUId);
 
-    List<DeviceUpkeep> getRecordByDTUIds(@Param("DTUIds") List<Long> DTUIds, @Param("search") String search);
+    List<DeviceUpkeep> getRecordByDTUIds(@Param("DTUIds") List<String> DTUIds, @Param("search") String search);
 
     int addUpkeep(DeviceUpkeep deviceUpkeep);
 
@@ -44,5 +44,5 @@ public interface DeviceUpkeepMapper {
      * @param DTUId 设备DTUId
      * @return 受影响的行数 n：删除n行； 0：删除0行（删除失败）
      */
-    int deleteUpkeepByDTUId(@Param("DTUId") Long DTUId);
+    int deleteUpkeepByDTUId(@Param("DTUId") String DTUId);
 }

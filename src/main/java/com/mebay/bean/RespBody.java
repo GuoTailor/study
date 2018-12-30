@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 
 /**
  * Created by gyh on 2018/10/25.
- * 统一放回
+ * 统一返回
  */
 @ApiModel(value = "返回对象",description = "统一返回格式")
 public class RespBody<T> {
@@ -50,7 +50,7 @@ public class RespBody<T> {
 
     /**
      * 后续操作
-     * 注意，该方法不会立即执行。只有在用 json 序列化时或调用{@link #getMsg()} 方法才会调用
+     * 注意，注册的方法不会立即被执行。只有在用 json 序列化时或调用{@link #getMsg()} 方法才会被调用
      * @param function 要做的操作
      */
     public RespBody<T> processing(BiConsumer<Integer, T> function) {

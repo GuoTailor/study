@@ -31,7 +31,7 @@ public class DeviceUpkeepController {
     @ApiOperation(value = "通过设备DTUId获取该设备的全部保养信息")
     @ApiImplicitParam(paramType = "path", name = "DTUId", value = "设备DTUId", required = true, dataType = "Long")
     @GetMapping("/DTUId/{DTUId}")
-    public RespBody<PageView<DeviceUpkeep>> getRecordByDTUId(@PathVariable Long DTUId, PageQuery pageQuery) {
+    public RespBody<PageView<DeviceUpkeep>> getRecordByDTUId(@PathVariable String DTUId, PageQuery pageQuery) {
         return new RespBody<>(1, deviceUpkeepService.getRecordByDTUId(DTUId, pageQuery), "成功");
     }
 
@@ -44,9 +44,9 @@ public class DeviceUpkeepController {
     }
 
     @ApiOperation(value = "通过设备的DTUId修改设备的保养记录")
-    @PutMapping("/DTUId/{DTUId}")
-    public RespBody<String> updateByDTUId(DeviceUpkeep deviceUpkeep, @PathVariable Long DTUId) {
-        return new RespBody<String>(deviceUpkeepService.updateByDTUId(deviceUpkeep, DTUId))
+    @PutMapping("/DTUId/{id}")
+    public RespBody<String> updateByDTUId(DeviceUpkeep deviceUpkeep, @PathVariable String id) {
+        return new RespBody<String>(deviceUpkeepService.updateByDTUId(deviceUpkeep, id))
                 .put(-1, "请至少更新一个字段")
                 .put(-2, "没有权限")
                 .put(0, "更新失败")
@@ -65,7 +65,7 @@ public class DeviceUpkeepController {
     @ApiOperation(value = "删除一个设备的所有保养记录")
     @ApiImplicitParam(paramType = "path", name = "id", value = "设备的DTUId", required = true, dataType = "Long")
     @DeleteMapping("/DTUId/{id}")
-    public RespBody<String> deleteUpkeepByDTUId(@PathVariable Long id) {
+    public RespBody<String> deleteUpkeepByDTUId(@PathVariable String id) {
         return new RespBody<String>(deviceUpkeepService.deleteUpkeepByDTUId(id))
                 .put(1, "删除成功")
                 .put(0, "删除失败");
