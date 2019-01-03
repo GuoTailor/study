@@ -57,6 +57,14 @@
     </update>
 
     <insert id="addRepair" parameterType="com.mebay.bean.DeviceRepair">
-        insert into device_repair(DTUId, repairMechanism, repairUser, controllerType, repairCost, repairTime, repairContent)
+        insert into device_repair(DTUId, repairMechanism, repairUser, controllerType, repairCost, repairTime, repairContent) values (#{DTUId}, #{repairMechanism}, #{repairUser}, #{controllerType}, #{repairCost}, #{repairTime}, #{repairContent})
     </insert>
+
+    <delete id="deleteRepairById">
+        delete from device_repair where id = #{id}
+    </delete>
+
+    <delete id="deleteRepairByDTUId">
+        delete from device_repair where DTUId = #{DTUId}
+    </delete>
 </mapper>

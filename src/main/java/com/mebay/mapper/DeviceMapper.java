@@ -2,10 +2,12 @@ package com.mebay.mapper;
 
 import com.mebay.bean.Device;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
 
+@Repository
 public interface DeviceMapper {
     /**
      * 获取设备通过用户id

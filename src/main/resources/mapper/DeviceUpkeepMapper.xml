@@ -66,13 +66,13 @@
                    #{nextUpkeepTime}, #{upkeepContent})
     </insert>
 
-    <delete id="deleteUpkeepById" parameterType="Long">
+    <delete id="deleteUpkeepById" parameterType="long">
         delete
         from device_upkeep
         where id = #{id}
     </delete>
 
-    <delete id="deleteUpkeepByDTUId" parameterType="Long">
+    <delete id="deleteUpkeepByDTUId" parameterType="string">
         delete
         from device_upkeep
         where DTUId = #{DTUId}
