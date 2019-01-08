@@ -1,6 +1,5 @@
 package com.mebay;
 
-import com.mebay.config.Aliyun;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -43,8 +42,6 @@ public class DemoApplication {
         FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
         bean.setOrder(0);
 
-        //Aliyun al = new Aliyun();
-        //al.config();
         System.out.println(">>>>>>>>>>>");
         return new CorsFilter(source);
     }
